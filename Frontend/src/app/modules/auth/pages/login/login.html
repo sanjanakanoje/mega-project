@@ -1,1 +1,62 @@
-<p>login works!</p>
+<!-- src/app/modules/auth/pages/login/login.html -->
+
+<div class="login-page">
+
+  <div class="login-card">
+
+    <div class="left-panel">
+      <h1>Textile Lab Portal</h1>
+      <p>
+        Smart Sample Registration, Tracking &
+        AI Assisted Testing Management System
+      </p>
+
+      <ul>
+        <li>✔ Real Time Sample Tracking</li>
+        <li>✔ Secure Customer Login</li>
+        <li>✔ Instant Reports Access</li>
+        <li>✔ Barcode Based Workflow</li>
+      </ul>
+    </div>
+
+    <div class="right-panel">
+
+      <h2>Welcome Back</h2>
+      <p class="sub-text">Login to continue</p>
+
+      <form (ngSubmit)="loginUser()">
+
+        <div class="input-box">
+          <label>Email</label>
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="formData.email"
+            placeholder="Enter your email">
+        </div>
+
+        <div class="input-box">
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            [(ngModel)]="formData.password"
+            placeholder="Enter password">
+        </div>
+
+        <button type="submit">
+          Login
+        </button>
+
+      </form>
+
+      <p class="bottom-text">
+        New User?
+        <a routerLink="/register">Create Account</a>
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
