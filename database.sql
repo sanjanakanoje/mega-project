@@ -49,3 +49,7 @@ CREATE TABLE Tracking (
     FOREIGN KEY (SampleID) REFERENCES Samples(SampleID),
     FOREIGN KEY (UpdatedBy) REFERENCES Users(UserID)
 );
+
+
+
+SELECT * FROM users;
