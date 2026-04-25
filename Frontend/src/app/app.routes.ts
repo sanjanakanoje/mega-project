@@ -1,24 +1,43 @@
 import { Routes } from '@angular/router';
 
-import { LoginComponent } from './modules/auth/pages/login/login';
-import { RegisterComponent } from './modules/auth/pages/register/register';
+import { LoginComponent } from './modules/auth/pages/login/login.component';
+import { RegisterComponent } from './modules/auth/pages/register/register.component';
+import { WelcomeComponent } from './modules/auth/pages/welcome/welcome.component';
+
 
 export const routes: Routes = [
-
+  
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'auth',
     pathMatch: 'full'
   },
-
   {
-    path: 'login',
-    component: LoginComponent
+    path: 'auth',
+    loadChildren: () =>
+      import('./modules/auth/auth-module').then(m => m.AuthModule)
   },
 
-  {
-    path: 'register',
-    component: RegisterComponent
-  }
+
+  // {5
+  //   path: '',
+  //   redirectTo: 'welcome',
+  //   pathMatch: 'full'
+  // },
+
+  // {
+  //     path: '',
+  //     component: WelcomeComponent
+  // },
+
+  // {
+  //   path: 'login',
+  //   component: LoginComponent
+  // },
+
+  // {
+  //   path: 'register',
+  //   component: RegisterComponent
+  // }
 
 ];
