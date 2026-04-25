@@ -1,0 +1,145 @@
+
+.welcome-container {
+  position: relative;
+  min-height: 100vh; 
+  width: 100%;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9));
+  z-index: 1;
+}
+
+.content {
+  text-align: center;
+  z-index: 2;
+  color: white;
+}
+
+.content h1 {
+  font-size: 52px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.content p {
+  margin-top: 10px;
+  color: #cfcfcf;
+  font-size: 20px;
+}
+
+.buttons {
+  margin-top: 30px;
+}
+
+.btn {
+  padding: 14px 32px;
+  margin: 0 10px;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.register {
+  background: #ff7a1a;
+  color: white;
+}
+
+.register:hover {
+  background: #ff9a3c;
+  transform: scale(1.05);
+}
+
+.login {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+}
+
+.login:hover {
+  background: white;
+  color: black;
+  transform: scale(1.05);
+}
+
+/* Floating Images */
+.floating {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 12px;
+  opacity: 0.9;
+  z-index: 2;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+
+  /*  ANIMATION */
+  animation: floatMove 8s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+.floating:hover {
+  transform: scale(1.1);
+}
+
+/*  ANIMATION (left + right + up + down) */
+@keyframes floatMove {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  25% {
+    transform: translate(25px, -15px);   
+  }
+  50% {
+    transform: translate(0px, -25px);    
+  }
+  75% {
+    transform: translate(-25px, -15px);  
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+/* Positions */
+.img-top-left {
+  top: 8%;
+  left: 8%;
+}
+
+.img-top-right {
+  top: 12%;
+  right: 10%;
+  animation-delay: 2s;
+}
+
+.img-bottom-left {
+  bottom: 12%;
+  left: 10%;
+  animation-delay: 4s;
+}
+
+.img-bottom-right {
+  bottom: 10%;
+  right: 12%;
+  animation-delay: 6s;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: black;
+  overflow: hidden;   
+}
