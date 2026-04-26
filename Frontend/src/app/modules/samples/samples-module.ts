@@ -1,10 +1,18 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+// import { NgModule } from '@angular/core';
+// import { CommonModule } from '@angular/common';
 
-import { SamplesRoutingModule } from './samples-routing-module';
+// import { SamplesRoutingModule } from './samples-routing-module';
+
+// @NgModule({
+//   declarations: [],
+//   imports: [CommonModule, SamplesRoutingModule],
+// })
+// export class SamplesModule {}
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [],
-  imports: [CommonModule, SamplesRoutingModule],
+  imports: [
+    CommonModule,
+    FormsModule
+  ]
 })
-export class SamplesModule {}

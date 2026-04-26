@@ -1,1 +1,59 @@
-<p>add-sample works!</p>
+<div class="form-container">
+  <div class="form-card">
+
+    <h2>Add Sample</h2>
+
+    <form #sampleForm="ngForm" (ngSubmit)="submitSample(sampleForm)">
+
+      <!-- Sample Name -->
+      <label>Sample Name</label>
+      <input 
+        type="text"
+        [(ngModel)]="sample.sampleName"
+        name="sampleName"
+        required
+      >
+
+      <!-- Customer Name -->
+      <label>Customer Name</label>
+      <input 
+        type="text"
+        [(ngModel)]="sample.customerName"
+        name="customerName"
+        required
+      >
+
+      <!-- Generate Barcode -->
+      <button 
+        type="button"
+        class="generate-btn"
+        (click)="generateBarcode()"
+      >
+        Generate Barcode
+      </button>
+
+      <!-- Barcode Text -->
+      <p class="barcode" *ngIf="generatedBarcode">
+        {{ generatedBarcode }}
+      </p>
+
+      <!-- Barcode SVG -->
+      <svg id="barcode" width="300" height="100"></svg>
+
+      <!-- Save -->
+      <button 
+        type="submit"
+        class="save-btn"
+        [disabled]="sampleForm.invalid"
+      >
+        Save Sample
+      </button>
+
+    </form>
+
+    <p class="message" *ngIf="message">
+      {{ message }}
+    </p>
+
+  </div>
+</div>

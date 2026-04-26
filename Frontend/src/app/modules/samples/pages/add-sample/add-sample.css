@@ -1,0 +1,101 @@
+/* Full page background */
+:host {
+  display: block;
+  height: 100vh;
+  background: #0b0b0b;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+/* Center container */
+.form-container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Card box */
+.form-card {
+  background: #111;
+  padding: 40px;
+  border-radius: 15px;
+  width: 350px;
+  box-shadow: 0 0 20px rgba(255, 122, 0, 0.2);
+}
+
+/* Title */
+.form-card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+/* Labels */
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #ccc;
+  font-size: 14px;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: #1c1c1c;
+  color: white;
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+/* Generate barcode button */
+.generate-btn {
+  background: transparent;
+  border: 1px solid #ff7a00;
+  color: #ff7a00;
+}
+
+/* Save button */
+.save-btn {
+  background: #ff7a00;
+  color: white;
+}
+
+/* Hover effects */
+.generate-btn:hover {
+  background: #ff7a00;
+  color: white;
+}
+
+.save-btn:hover {
+  opacity: 0.9;
+}
+
+/* Barcode text */
+.barcode {
+  text-align: center;
+  margin-top: 10px;
+  color: #00ffcc;
+  font-weight: bold;
+}
+
+/* Message */
+.message {
+  text-align: center;
+  margin-top: 15px;
+  color: #4caf50;
+}
