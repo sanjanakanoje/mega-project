@@ -1,10 +1,37 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-const routes: Routes = [];
+import { AddSampleComponent } from './pages/add-sample/add-sample';
+// import { SampleListComponent } from './pages/sample-list/sample-list';
+// import { SampleDetailsComponent } from './pages/sample-details/sample-details';
+
+const routes: Routes = [
+
+  {
+    path: '',
+    redirectTo: 'list',
+    pathMatch: 'full'
+  },
+
+  // {
+  //   path: 'list',
+  //   component: SampleListComponent
+  // },
+
+  {
+    path: 'add',
+    component: AddSampleComponent
+  },
+
+  // {
+  //   path: 'details/:id',
+  //   component: SampleDetailsComponent
+  // }
+
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-export class SamplesRoutingModule {}
+export class SamplesRoutingModule { }

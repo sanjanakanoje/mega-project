@@ -53,3 +53,23 @@ CREATE TABLE Tracking (
 
 
 SELECT * FROM users;
+
+
+
+SELECT column_name
+FROM information_schema.columns
+WHERE table_name='samples';
+
+
+SELECT * FROM samples;
+
+SELECT *
+FROM samples
+WHERE barcode = 'SMP-1001';
+
+INSERT INTO samples
+(userid, samplename, sampletype, quantity, barcode, priority, status, predictedcompletiontime, datereceived)
+VALUES
+(1, 'Fabric Test', 'Cotton', 10, 'SMP-1002', 'Normal', 'Pending', NOW(), NOW());
+
+SELECT * FROM samples;

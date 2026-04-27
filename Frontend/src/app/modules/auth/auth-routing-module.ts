@@ -6,6 +6,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login';
 import { RegisterComponent } from './pages/register/register';
 
+import { AddSampleComponent } from '../samples/pages/add-sample/add-sample';
+
+
 const routes: Routes = [
 
   {
@@ -22,7 +25,15 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent
+  },
+
+  {
+    path:'add-sample',
+    component:AddSampleComponent
   }
+
+
+
 
 ];
 

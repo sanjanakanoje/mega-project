@@ -1,1 +1,69 @@
-<p>add-sample works!</p>
+<!-- src/app/modules/samples/pages/add-sample/add-sample.html -->
+
+<div class="sample-page">
+
+  <div class="sample-card">
+
+    <h2>Add New Sample</h2>
+    <p class="sub-title">Laboratory Sample Entry Form</p>
+
+    <form [formGroup]="sampleForm" (ngSubmit)="submitSample()">
+
+      <div class="grid">
+
+        <div class="form-group">
+          <label>User ID</label>
+          <input type="number" formControlName="userid">
+        </div>
+
+        <div class="form-group">
+          <label>Sample Name</label>
+          <input type="text" formControlName="samplename">
+        </div>
+
+        <div class="form-group">
+          <label>Sample Type</label>
+          <select formControlName="sampletype">
+            <option value="">Select Type</option>
+            <option value="Cotton">Cotton</option>
+            <option value="Polyester">Polyester</option>
+            <option value="Silk">Silk</option>
+            <option value="Wool">Wool</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Quantity</label>
+          <input type="number" formControlName="quantity">
+        </div>
+
+        <div class="form-group">
+          <label>Priority</label>
+          <select formControlName="priority">
+            <option value="Normal">Normal</option>
+            <option value="Urgent">Urgent</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Completion Time</label>
+          <input type="datetime-local"
+                 formControlName="predictedcompletiontime">
+        </div>
+
+      </div>
+
+      <div class="barcode-box">
+        <span>Generated Barcode:</span>
+        <strong>{{ barcode }}</strong>
+      </div>
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Saving...' : 'Add Sample' }}
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
