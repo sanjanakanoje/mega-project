@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+// import { NgModule } from '@angular/core';
+// import { RouterModule, Routes } from '@angular/router';
 
 import { AddSampleComponent } from './pages/add-sample/add-sample';
 // import { SampleListComponent } from './pages/sample-list/sample-list';
