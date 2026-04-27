@@ -48,6 +48,9 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 
+import { ReactiveFormsModule } from '@angular/forms';
+
+
 @NgModule({
   declarations: [
     // LoginComponent,
@@ -61,7 +64,10 @@ import { WelcomeComponent } from './pages/welcome/welcome.component';
     AuthRoutingModule,
     LoginComponent, 
     RegisterComponent,
-    WelcomeComponent
+
+    AuthRoutingModule,
+    ReactiveFormsModule
+
   ]
 })
 export class AuthModule {}

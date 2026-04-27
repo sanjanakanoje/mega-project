@@ -1,101 +1,106 @@
-/* Full page background */
-:host {
-  display: block;
-  height: 100vh;
-  background: #0b0b0b;
-  color: white;
-  font-family: Arial, sans-serif;
+/* src/app/modules/samples/pages/add-sample/add-sample.css */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-/* Center container */
-.form-container {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.sample-page{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0f172a,#1e3a8a);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:30px;
 }
 
-/* Card box */
-.form-card {
-  background: #111;
-  padding: 40px;
-  border-radius: 15px;
-  width: 350px;
-  box-shadow: 0 0 20px rgba(255, 122, 0, 0.2);
+.sample-card{
+  width:100%;
+  max-width:900px;
+  background:#ffffff;
+  border-radius:18px;
+  padding:35px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.25);
 }
 
-/* Title */
-.form-card h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
+.sample-card h2{
+  font-size:30px;
+  color:#1e3a8a;
+  margin-bottom:5px;
 }
 
-/* Labels */
-label {
-  display: block;
-  margin-bottom: 5px;
-  color: #ccc;
-  font-size: 14px;
+.sub-title{
+  color:#64748b;
+  margin-bottom:25px;
 }
 
-/* Inputs */
-input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-  background: #1c1c1c;
-  color: white;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:18px;
 }
 
-/* Buttons */
-button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 25px;
-  border: none;
-  cursor: pointer;
-  font-size: 15px;
+.form-group{
+  display:flex;
+  flex-direction:column;
 }
 
-/* Generate barcode button */
-.generate-btn {
-  background: transparent;
-  border: 1px solid #ff7a00;
-  color: #ff7a00;
+label{
+  font-size:14px;
+  font-weight:600;
+  margin-bottom:7px;
+  color:#334155;
 }
 
-/* Save button */
-.save-btn {
-  background: #ff7a00;
-  color: white;
+input,
+select{
+  padding:12px;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  font-size:15px;
+  outline:none;
 }
 
-/* Hover effects */
-.generate-btn:hover {
-  background: #ff7a00;
-  color: white;
+input:focus,
+select:focus{
+  border-color:#2563eb;
 }
 
-.save-btn:hover {
-  opacity: 0.9;
+.barcode-box{
+  margin-top:22px;
+  padding:14px;
+  background:#eff6ff;
+  border-left:5px solid #2563eb;
+  border-radius:10px;
+  color:#1e3a8a;
 }
 
-/* Barcode text */
-.barcode {
-  text-align: center;
-  margin-top: 10px;
-  color: #00ffcc;
-  font-weight: bold;
+.barcode-box strong{
+  display:block;
+  margin-top:6px;
+  font-size:20px;
+  letter-spacing:2px;
 }
 
-/* Message */
-.message {
-  text-align: center;
-  margin-top: 15px;
-  color: #4caf50;
+button{
+  width:100%;
+  margin-top:25px;
+  padding:14px;
+  border:none;
+  background:#2563eb;
+  color:white;
+  font-size:16px;
+  font-weight:600;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#1d4ed8;
+}
+
+button:disabled{
+  background:#94a3b8;
+  cursor:not-allowed;
 }

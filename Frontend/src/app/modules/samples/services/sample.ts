@@ -1,29 +1,54 @@
+// src/app/modules/samples/services/sample.service.ts
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-export interface Sample {
-  id?: string;
-  sampleName: string;
-  customerName: string;
-  barcode: string;
-  createdAt?: Date;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class SampleService {
 
-  private apiUrl = 'http://localhost:5000/api/samples';
+  // Backend API Base URL
+  private apiUrl = 'http://localhost:5000/api/sample';
 
   constructor(private http: HttpClient) {}
 
-  addSample(sample: Sample): Observable<Sample> {
-    return this.http.post<Sample>(this.apiUrl, sample);
+  // Add New Sample
+  addSample(data: any): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/add`,
+      data
+    );
   }
 
-  getSamples(): Observable<Sample[]> {
-    return this.http.get<Sample[]>(this.apiUrl);
+  // Get All Samples
+  getAllSamples(): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/all`
+    );
   }
+
+  // Get Sample By ID
+  getSampleById(id: number): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/${id}`
+    );
+  }
+
+  // Update Sample Status
+  updateSample(id: number, data: any): Observable<any> {
+    return this.http.put(
+      `${this.apiUrl}/update/${id}`,
+      data
+    );
+  }
+
+  // Delete Sample
+  deleteSample(id: number): Observable<any> {
+    return this.http.delete(
+      `${this.apiUrl}/delete/${id}`
+    );
+  }
+
 }

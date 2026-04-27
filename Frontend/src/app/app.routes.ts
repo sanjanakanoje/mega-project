@@ -6,6 +6,9 @@ import { WelcomeComponent } from './modules/auth/pages/welcome/welcome.component
 import { AddSampleComponent } from './modules/samples/pages/add-sample/add-sample';
 
 
+import { AddSampleComponent } from './modules/samples/pages/add-sample/add-sample';
+
+export const routes: Routes = [
 
 export const routes: Routes = [
   
@@ -21,29 +24,25 @@ export const routes: Routes = [
   },
   { path: 'add-sample', component: AddSampleComponent },
 
-  // default route
-  { path: '', redirectTo: 'add-sample', pathMatch: 'full' }
+  {
+    path: 'register',
+    component: RegisterComponent
+  },
 
+    {
+    path: '',
+    redirectTo: 'samples/add',
+    pathMatch: 'full'
+  },
 
-  // {5
-  //   path: '',
-  //   redirectTo: 'welcome',
-  //   pathMatch: 'full'
-  // },
+  {
+    path: 'samples/add',
+    component: AddSampleComponent
+  },
 
-  // {
-  //     path: '',
-  //     component: WelcomeComponent
-  // },
-
-  // {
-  //   path: 'login',
-  //   component: LoginComponent
-  // },
-
-  // {
-  //   path: 'register',
-  //   component: RegisterComponent
-  // }
+  {
+    path: '**',
+    redirectTo: 'samples/add'
+  }
 
 ];

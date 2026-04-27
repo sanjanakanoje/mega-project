@@ -1,18 +1,16 @@
-// import { NgModule } from '@angular/core';
-// import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
-// import { SamplesRoutingModule } from './samples-routing-module';
-
-// @NgModule({
-//   declarations: [],
-//   imports: [CommonModule, SamplesRoutingModule],
-// })
-// export class SamplesModule {}
-import { FormsModule } from '@angular/forms';
+import { SamplesRoutingModule } from './samples-routing-module';
+import { AddSampleComponent } from './pages/add-sample/add-sample';
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule
+    ReactiveFormsModule,
+    SamplesRoutingModule,
+    AddSampleComponent
   ]
 })
+export class SamplesModule { }
