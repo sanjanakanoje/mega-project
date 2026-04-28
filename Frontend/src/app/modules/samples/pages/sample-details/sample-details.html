@@ -1,1 +1,33 @@
-<p>sample-details works!</p>
+<div class="details-container" *ngIf="sample; else loading">
+  <h1>Sample Details</h1>
+
+  <div class="card">
+    <p><b>Sample ID:</b> {{ sample.sampleid }}</p>
+    <p><b>Customer Name:</b> {{ sample.customerName }}</p>
+    <p><b>Address:</b> {{ sample.address }}</p>
+    <p><b>Sample Type:</b> {{ sample.sampletype }}</p>
+    <p><b>Status:</b> {{ sample.status || 'Pending' }}</p>
+    <p><b>Completion Time:</b> {{ sample.predictedcompletiontime | date:'short' }}</p>
+  </div>
+
+  <!-- Barcode Box (Empty until button is clicked) -->
+    <div class="barcode-box">
+    <svg #barcodeElement></svg>
+  </div>
+
+  <div class="buttons">
+    <button class="btn generate" (click)="generateBarcode()">
+      Generate Barcode
+    </button>
+
+    <button class="btn print" (click)="printBarcode()">
+      Print Barcode
+    </button>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div style="text-align: center; padding: 50px;">
+    <p>Loading sample details...</p>
+  </div>
+</ng-template>

@@ -1,1 +1,88 @@
-<p>sample-list works!</p>
+<!-- <div class="container">
+
+  <div class="overlay"></div>
+
+  <div class="card">
+
+    <h1>Sample List</h1>
+    <p>Total Samples: {{ samples.length }}</p>
+
+    <table *ngIf="samples.length > 0">
+
+      <tr>
+        <th>ID</th>
+        <th>Fabric Type</th>
+        <th>Barcode</th>
+        <th>Action</th>
+      </tr>
+
+      <tr *ngFor="let s of samples">
+        <td>{{ s.sampleid }}</td>
+        <td>{{ s.sampletype }}</td>
+        <td>{{ s.barcode }}</td>
+
+        <td>
+          <button (click)="viewDetails(s.sampleid)">
+            View Details
+          </button>
+        </td>
+      </tr>
+
+    </table>
+
+    <p *ngIf="samples.length === 0">No samples found</p>
+
+  </div>
+
+</div> -->
+
+
+<div class="container">
+
+  <!-- Background overlay -->
+  <div class="overlay"></div>
+
+  <!-- Main card -->
+  <div class="card">
+
+    <h1>Sample List</h1>
+    <p>Total Samples: {{ samples.length }}</p>
+
+    <!-- Table -->
+    <table *ngIf="samples.length > 0">
+
+      <tr>
+        <th>ID</th>
+        <th>Sample Type</th>
+        <th>Completion Time</th>
+        <th>Action</th>
+      </tr>
+
+      <tr *ngFor="let s of samples">
+
+        <td>{{ s.sampleid }}</td>
+
+        <td>{{ s.sampletype }}</td>
+
+        <td>
+          {{ s.predictedcompletiontime 
+             ? (s.predictedcompletiontime | date:'short') 
+             : 'N/A' }}
+        </td>
+
+        <td>
+          <button (click)="viewDetails(s.sampleid)">
+            View
+          </button>
+        </td>
+
+      </tr>
+
+    </table>
+
+    <!-- Empty state -->
+    <p *ngIf="samples.length === 0">No samples found</p>
+
+  </div>
+
+</div>

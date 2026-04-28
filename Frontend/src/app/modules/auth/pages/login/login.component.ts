@@ -27,15 +27,32 @@ export class LoginComponent {
 
     this.auth.login(this.formData).subscribe({
 
+      // next: (res: any) => {
+
+      //   this.auth.saveToken(res.token);
+
+      //   alert('Login Successful');
+
+      //   this.router.navigate(['/dashboard']);
+      // },
       next: (res: any) => {
 
+        // save token
         this.auth.saveToken(res.token);
+
+        // ✅ SAVE ROLE (IMPORTANT)
+        localStorage.setItem('role', res.user.role);
 
         alert('Login Successful');
 
-        this.router.navigate(['/dashboard']);
-      },
+        // ✅ ROLE BASED REDIRECT
+        if (res.user.role === 'LabStaff') {
+          this.router.navigate(['/samples']);   // 👨‍🔬 lab staff
+        } else {
+          this.router.navigate(['/']);          // 👤 customer
+        }
 
+      },
       error: () => {
 
         alert('Invalid Email or Password');

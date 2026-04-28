@@ -23,6 +23,8 @@ const routes: Routes = [
     component: AddSampleComponent
   },
 
+  { path: '', component: SampleListComponent },
+  { path: 'details/:id', component: SampleDetailsComponent }
   // {
   //   path: 'details/:id',
   //   component: SampleDetailsComponent
