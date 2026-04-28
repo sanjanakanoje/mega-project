@@ -1,1 +1,7 @@
-<p>dashboard-home works!</p>
+<div *ngIf="authService.isLabStaff()">
+
+  <h2>Lab Staff Dashboard</h2>
+
+  <a routerLink="/samples">View Samples</a>
+
+</div>
