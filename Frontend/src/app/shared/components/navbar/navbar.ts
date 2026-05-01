@@ -1,9 +1,19 @@
 import { Component } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
-  imports: [],
-  templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
+  standalone: true,
+  imports: [RouterModule],
+  templateUrl: './navbar.html',   
+  styleUrls: ['./navbar.css']     
 })
-export class Navbar {}
+export class NavbarComponent {
+
+  constructor(private router: Router) {}
+logout() {
+  localStorage.clear();   // remove user data
+
+  this.router.navigateByUrl('/auth/login');   
+}
+}
