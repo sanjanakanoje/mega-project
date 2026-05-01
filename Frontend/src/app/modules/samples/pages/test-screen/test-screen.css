@@ -1,0 +1,28 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  color: white;
+  padding: 40px;
+  text-align: center;
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px auto;
+  width: 300px;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+h3 {
+  margin-top: 20px;
+}
+
+label {
+  display: block;
+  margin: 10px;
+}

@@ -119,3 +119,30 @@ exports.getSampleById = async (req, res) => {
     });
   }
 };
+
+exports.getFullSampleById = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // 1. Get sample
+    const sampleResult = await pool.query(
+      `SELECT * FROM samples WHERE sampleid = $1`,
+      [id]
+    );
+
+    // 2. Get test request
+    const testResult = await pool.query(
+      `SELECT * FROM test_requests WHERE sample_id = $1`,
+      [id]
+    );
+
+    res.json({
+      sample: sampleResult.rows[0],
+      test: testResult.rows[0]
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};

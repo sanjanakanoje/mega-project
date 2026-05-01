@@ -46,6 +46,13 @@ export const routes: Routes = [
   },
 
   {
+  path: 'test-screen/:id',
+  loadComponent: () =>
+    import('./modules/samples/pages/test-screen/test-screen')
+      .then(m => m.TestScreenComponent)
+  },
+
+  {
     path: '**',
     redirectTo: ''
   }

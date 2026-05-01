@@ -62,4 +62,8 @@ export class SampleService {
     return this.http.get<any>('http://localhost:5000/api/sample/' + id);
   }
 
+  getFullSample(id: number) {
+  return this.http.get<any>(`http://localhost:5000/api/sample/full/${id}`);
+  }
+
 }

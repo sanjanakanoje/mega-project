@@ -21,5 +21,6 @@ router.get('/', sampleController.getAllSamples);
 router.get('/:id', sampleController.getSampleById);
 
 router.post('/add', sampleController.addSample);
+router.get('/full/:id', sampleController.getFullSampleById);
 
 module.exports = router;
