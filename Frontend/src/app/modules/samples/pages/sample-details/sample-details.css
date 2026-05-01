@@ -1,4 +1,4 @@
-.container {
+/* .container {
   position: relative;
   min-height: 100vh;
   background: linear-gradient(135deg, #000000, #1a1a1a);
@@ -7,7 +7,6 @@
   align-items: center;
 }
 
-/* overlay */
 .overlay {
   position: absolute;
   width: 100%;
@@ -16,7 +15,6 @@
   z-index: 1;
 }
 
-/* card */
 .card {
   z-index: 2;
   width: 600px;
@@ -39,7 +37,6 @@
   color: #cfcfcf;
 }
 
-/* barcode */
 .barcode-box {
   margin-top: 20px;
   background: white;
@@ -47,7 +44,6 @@
   border-radius: 10px;
 }
 
-/* buttons */
 .buttons {
   margin-top: 25px;
 }
@@ -133,25 +129,15 @@ h1 {
 }
 
 
-
-
-
-
-
-
-/* This only triggers when the user hits 'Print' */
 @media print {
-  /* Hide every element on the page */
   body * {
     visibility: hidden;
   }
 
-  /* Show only the barcode container and its children */
   .barcode-box, .barcode-box * {
     visibility: visible;
   }
 
-  /* Position the barcode at the very top-left of the print page */
   .barcode-box {
     position: absolute;
     left: 0;
@@ -160,13 +146,11 @@ h1 {
     text-align: center;
   }
 
-  /* Hide buttons and headers specifically just in case */
   .buttons, h1, .card, .details-container {
     display: none !important;
   }
 }
 @media print {
-  /* 1. Hide everything except the barcode container */
   body > *:not(.details-container),
   .details-container > *:not(.barcode-box),
   .buttons, 
@@ -175,7 +159,6 @@ h1 {
     display: none !important;
   }
 
-  /* 2. Ensure the barcode container is visible and centered */
   .details-container,
   .barcode-box {
     display: block !important;
@@ -189,16 +172,198 @@ h1 {
     text-align: center;
   }
 
-  /* 3. Ensure SVG fills the area and is visible */
   svg {
     display: block !important;
     margin: 0 auto;
     max-width: 100%;
-    overflow: visible !important; /* Fixes potential SVG clipping issues */
+    overflow: visible !important; 
   }
 
-  /* Remove any browser-added margins/headers */
   @page {
     margin: 0;
   }
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 🌌 MAIN CONTAINER */
+.details-container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  padding: 40px 0;
 }
+
+/* 🌫️ OVERLAY */
+.details-container::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9));
+  z-index: 1;
+}
+
+/* 🎯 MAIN CONTENT */
+.content-fade-in {
+  z-index: 2;
+  width: 90%;
+  max-width: 700px;
+  color: white;
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* ✨ TITLE */
+h1 {
+  font-size: 42px;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+/* 🧾 CARD */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+}
+
+.card p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+/* 📦 BARCODE BOX */
+.barcode-box {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 20px auto;
+  width: fit-content;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* 🔘 BUTTONS */
+.buttons {
+  margin: 20px 0;
+}
+
+.btn {
+  padding: 12px 28px;
+  margin: 10px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+/* 🔥 GENERATE */
+.generate {
+  background: #ff7a1a;
+  color: white;
+}
+
+.generate:hover {
+  background: #ff9a3c;
+  transform: scale(1.05);
+}
+
+/* 🖨️ PRINT */
+.print {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+}
+
+.print:hover {
+  background: white;
+  color: black;
+  transform: scale(1.05);
+}
+
+/* 📋 SECTION CARD */
+.section-card {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+}
+
+.section-card h3 {
+  margin-bottom: 15px;
+}
+
+/* 📄 LIST */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.list-item {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.list-item:hover {
+  transform: translateX(5px);
+}
+
+/* ⚠️ STATES */
+.state-msg {
+  color: #ccc;
+  z-index: 2;
+}
+
+.state-msg.error {
+  color: red;
+}
+
+/* ✨ ANIMATION */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 🌍 GLOBAL FIX */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: black;
+}
+
+
+
+
+
+
+
+
