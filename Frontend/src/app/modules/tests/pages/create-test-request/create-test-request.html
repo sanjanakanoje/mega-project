@@ -1,0 +1,171 @@
+<div class="page">
+
+  <div class="form-card">
+
+    <h1>Create Test Request</h1>
+    <p>Manage • Track • Optimize Production</p>
+
+    <!-- ✅ FIXED FORM -->
+    <form [formGroup]="form" (ngSubmit)="submitForm()">
+
+      <div class="grid">
+
+        <input
+          type="text"
+          placeholder="Company Name"
+          formControlName="companyName"
+        >
+
+        <input
+          type="text"
+          placeholder="Submitted By"
+          formControlName="submittedBy"
+        >
+
+        <input
+          type="text"
+          placeholder="Merchant Name"
+          formControlName="merchantName"
+        >
+
+        <input
+          type="text"
+          placeholder="Brand / Label Name"
+          formControlName="brandLabelName"
+        >
+
+        <input
+          type="text"
+          placeholder="Vendor Code"
+          formControlName="vendorCode"
+        >
+
+        <input
+          type="email"
+          placeholder="Email"
+          formControlName="email"
+        >
+
+        <input
+          type="text"
+          placeholder="Phone Number"
+          formControlName="phoneNo"
+        >
+
+        <input
+          type="text"
+          placeholder="Sample Description"
+          formControlName="sampleDescription"
+        >
+
+        <input
+          type="text"
+          placeholder="Style No"
+          formControlName="styleNo"
+        >
+
+        <input
+          type="text"
+          placeholder="Season"
+          formControlName="season"
+        >
+
+        <input
+          type="text"
+          placeholder="Fiber Content"
+          formControlName="fiberContent"
+        >
+
+        <input
+          type="text"
+          placeholder="Fabric Weight"
+          formControlName="fabricWeight"
+        >
+
+        <input
+          type="text"
+          placeholder="Color"
+          formControlName="color"
+        >
+
+        <input
+          type="text"
+          placeholder="Construction"
+          formControlName="construction"
+        >
+
+      </div>
+
+      <div class="full-width">
+
+        <select formControlName="priority">
+          <option value="Regular">Regular</option>
+          <option value="Express">Express</option>
+          <option value="Super Express">Super Express</option>
+        </select>
+
+      </div>
+
+      <div class="section">
+
+        <h3>Finish Type</h3>
+
+        <div formArrayName="finishTypes" class="checkbox-grid">
+
+          <label>
+            <input type="checkbox" [formControlName]="0">
+            Regular Finish
+          </label>
+
+          <label>
+            <input type="checkbox" [formControlName]="1">
+            Peach Finish
+          </label>
+
+          <label>
+            <input type="checkbox" [formControlName]="2">
+            Garment Wash
+          </label>
+
+          <label>
+            <input type="checkbox" [formControlName]="3">
+            Over Dyed
+          </label>
+
+          <label>
+            <input type="checkbox" [formControlName]="4">
+            Other
+          </label>
+
+        </div>
+
+      </div>
+
+      <div class="section">
+
+        <h3>Tests Required</h3>
+
+        <div formArrayName="testsRequired" class="checkbox-grid">
+
+          <label><input type="checkbox" [formControlName]="0"> After Home Laundering</label>
+          <label><input type="checkbox" [formControlName]="1"> Dimensional Stability</label>
+          <label><input type="checkbox" [formControlName]="2"> Color Fastness Wash</label>
+          <label><input type="checkbox" [formControlName]="3"> Color Fastness Rubbing</label>
+          <label><input type="checkbox" [formControlName]="4"> Color Fastness Perspiration</label>
+          <label><input type="checkbox" [formControlName]="5"> Color Fastness Water</label>
+
+        </div>
+
+      </div>
+
+      <div class="btn-box">
+        <button type="submit">
+          Submit Request
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
