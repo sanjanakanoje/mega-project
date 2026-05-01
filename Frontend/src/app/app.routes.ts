@@ -1,14 +1,19 @@
 import { Routes } from '@angular/router';
 import { AboutComponent } from './pages/about/about';
-
-import { WelcomeComponent } from './modules/auth/pages/welcome/welcome.component';
 import { LoginComponent } from './modules/auth/pages/login/login.component';
 import { RegisterComponent } from './modules/auth/pages/register/register.component';
-// import { AddSampleComponent } from './modules/samples/pages/add-sample/add-sample';
+import { WelcomeComponent } from './modules/auth/pages/welcome/welcome.component';
+import { AddSampleComponent } from './modules/samples/pages/add-sample/add-sample';
 import { ProfileComponent } from './pages/profile/profile';
 
-export const routes: Routes = [
 
+
+
+
+
+export const routes: Routes = [
+  
+  
   {
     path: '',
     component: WelcomeComponent,
@@ -19,7 +24,14 @@ export const routes: Routes = [
     path: 'auth/login',
     component: LoginComponent
   },
+  { path: 'add-sample', component: AddSampleComponent },
+  { path: 'about', component: AboutComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'home', component: WelcomeComponent },
+  { path: 'about', component: AboutComponent },
 
+  //{ path: 'home', component: HomeComponent },
+  
   {
     path: 'auth/register',
     component: RegisterComponent
@@ -55,5 +67,6 @@ export const routes: Routes = [
     path: '**',
     redirectTo: ''
   }
+  
 
 ];

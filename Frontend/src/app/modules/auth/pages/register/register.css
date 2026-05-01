@@ -1,5 +1,3 @@
-/* src/app/modules/auth/pages/register/register.css */
-
 *{
   margin:0;
   padding:0;
@@ -7,30 +5,52 @@
   font-family:Arial, Helvetica, sans-serif;
 }
 
+/* PAGE BACKGROUND (BLACK THEME) */
 .register-page{
   min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
-  background:linear-gradient(135deg,#0f172a,#1e3a8a,#2563eb);
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  position: relative;
+  overflow: hidden;
   padding:20px;
 }
 
+/* OVERLAY (same as login/welcome) */
+.register-page::before{
+  content:"";
+  position:absolute;
+  width:100%;
+  height:100%;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9));
+  z-index:1;
+}
+
+/* CARD (GLASS EFFECT) */
 .register-card{
   width:980px;
   max-width:100%;
   min-height:620px;
-  background:#ffffff;
+
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+
   border-radius:18px;
   overflow:hidden;
   display:grid;
   grid-template-columns:1fr 1fr;
-  box-shadow:0 20px 45px rgba(0,0,0,0.25);
+
+  box-shadow:0 20px 45px rgba(0,0,0,0.6);
+  border:1px solid rgba(255,255,255,0.1);
+
+  z-index:2;
 }
 
+/* LEFT PANEL */
 .left-panel{
-  background:linear-gradient(135deg,#1d4ed8,#2563eb,#3b82f6);
-  color:#ffffff;
+  background: transparent;
+  color:white;
   padding:60px 40px;
   display:flex;
   flex-direction:column;
@@ -46,6 +66,7 @@
   font-size:16px;
   line-height:1.7;
   margin-bottom:28px;
+  color:#cfcfcf;
 }
 
 .left-panel ul{
@@ -57,24 +78,26 @@
   font-size:15px;
 }
 
+/* RIGHT PANEL */
 .right-panel{
   padding:45px 45px;
   display:flex;
   flex-direction:column;
   justify-content:center;
+  color:white;
 }
 
 .right-panel h2{
   font-size:32px;
-  color:#111827;
   margin-bottom:8px;
 }
 
 .sub-text{
-  color:#6b7280;
+  color:#cfcfcf;
   margin-bottom:25px;
 }
 
+/* INPUT */
 .input-box{
   margin-bottom:16px;
 }
@@ -83,35 +106,50 @@
   display:block;
   margin-bottom:8px;
   font-size:14px;
-  color:#374151;
-  font-weight:600;
+  color:#e5e7eb;
 }
 
 .input-box input,
 .input-box select{
   width:100%;
   padding:14px 15px;
-  border:1px solid #d1d5db;
+
+  background: rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.2);
+  color:white;
+
   border-radius:10px;
   outline:none;
-  font-size:15px;
   transition:0.3s;
-  background:#ffffff;
 }
 
+/* PLACEHOLDER */
+.input-box input::placeholder{
+  color:#9ca3af;
+}
+
+/* SELECT DROPDOWN */
+.input-box select{
+  color:#9ca3af;
+}
+
+/* FOCUS */
 .input-box input:focus,
 .input-box select:focus{
-  border-color:#2563eb;
-  box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+  border-color:#ff7a1a;
+  box-shadow:0 0 0 3px rgba(255,122,26,0.2);
 }
 
+/* BUTTON */
 button{
   width:100%;
   padding:14px;
   border:none;
   border-radius:10px;
-  background:#2563eb;
-  color:#ffffff;
+
+  background:#ff7a1a;
+  color:white;
+
   font-size:16px;
   font-weight:bold;
   cursor:pointer;
@@ -120,18 +158,19 @@ button{
 }
 
 button:hover{
-  background:#1d4ed8;
+  background:#ff9a3c;
   transform:translateY(-2px);
 }
 
+/* BOTTOM TEXT */
 .bottom-text{
   margin-top:20px;
   text-align:center;
-  color:#6b7280;
+  color:#cfcfcf;
 }
 
 .bottom-text a{
-  color:#2563eb;
+  color:#ff7a1a;
   font-weight:700;
   text-decoration:none;
 }
@@ -140,6 +179,7 @@ button:hover{
   text-decoration:underline;
 }
 
+/* MOBILE */
 @media(max-width:850px){
 
   .register-card{
