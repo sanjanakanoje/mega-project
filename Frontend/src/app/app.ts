@@ -11,6 +11,7 @@
 //   protected readonly title = signal('Frontend');
 // }
 
+import { NavbarComponent } from './shared/components/navbar/navbar';
 
 import { Component } from '@angular/core';
 
