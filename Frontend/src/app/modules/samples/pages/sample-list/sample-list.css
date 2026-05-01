@@ -1,0 +1,77 @@
+/* FULL PAGE BACKGROUND */
+.container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+}
+
+/* DARK OVERLAY EFFECT */
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9));
+  z-index: 1;
+}
+
+/* MAIN CARD */
+.card {
+  z-index: 2;
+  width: 900px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 30px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  text-align: center;
+}
+
+/* HEADING */
+.card h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #cfcfcf;
+}
+
+/* TABLE STYLE */
+table {
+  width: 100%;
+  margin-top: 25px;
+  border-collapse: collapse;
+}
+
+th {
+  color: #ff7a1a;
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* BUTTON */
+button {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background: #ff7a1a;
+  color: white;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #ff9a3c;
+  transform: scale(1.05);
+}

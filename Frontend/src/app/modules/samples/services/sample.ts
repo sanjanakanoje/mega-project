@@ -23,18 +23,21 @@ export class SampleService {
   }
 
   // Get All Samples
-  getAllSamples(): Observable<any> {
-    return this.http.get(
-      `${this.apiUrl}/all`
-    );
+  // getAllSamples(): Observable<any> {
+  //   return this.http.get(
+  //     `${this.apiUrl}/all`
+  //   );
+  // }
+  getAllSamples() {
+  return this.http.get<any[]>('http://localhost:5000/api/sample');
   }
 
-  // Get Sample By ID
-  getSampleById(id: number): Observable<any> {
-    return this.http.get(
-      `${this.apiUrl}/${id}`
-    );
-  }
+  // // Get Sample By ID
+  // getSampleById(id: number): Observable<any> {
+  //   return this.http.get(
+  //     `${this.apiUrl}/${id}`
+  //   );
+  // }
 
   // Update Sample Status
   updateSample(id: number, data: any): Observable<any> {
@@ -49,6 +52,14 @@ export class SampleService {
     return this.http.delete(
       `${this.apiUrl}/delete/${id}`
     );
+  }
+
+  getSamples() {
+  return this.http.get<any[]>('http://localhost:5000/api/sample');
+}
+
+  getSampleById(id: number) {
+    return this.http.get<any>('http://localhost:5000/api/sample/' + id);
   }
 
 }

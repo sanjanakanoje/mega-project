@@ -16,13 +16,13 @@ export const routes: Routes = [
   
   {
     path: '',
-    redirectTo: 'auth',
+    component: WelcomeComponent,
     pathMatch: 'full'
   },
+
   {
-    path: 'auth',
-    loadChildren: () =>
-      import('./modules/auth/auth-module').then(m => m.AuthModule)
+    path: 'auth/login',
+    component: LoginComponent
   },
   { path: 'add-sample', component: AddSampleComponent },
   { path: 'about', component: AboutComponent },
@@ -33,24 +33,39 @@ export const routes: Routes = [
   //{ path: 'home', component: HomeComponent },
   
   {
-    path: 'register',
+    path: 'auth/register',
     component: RegisterComponent
   },
-
-    {
-    path: '',
-    redirectTo: 'samples/add',
-    pathMatch: 'full'
+  {
+    path: 'samples',
+    loadChildren: () =>
+      import('./modules/samples/samples-module')
+      .then(m => m.SamplesModule)
   },
 
+  // ✅ TEST ROUTES
+  {
+    path: 'tests/create-request',
+    loadComponent: () =>
+      import('./modules/tests/pages/create-test-request/create-test-request')
+        .then(m => m.CreateTestRequestComponent)
+  },
+
+  // ✅ SAMPLE ROUTES
   {
     path: 'samples/add',
-    component: AddSampleComponent
+    loadComponent: () =>
+      import('./modules/samples/pages/add-sample/add-sample')
+        .then(m => m.AddSampleComponent)
   },
+  { path: 'about', component: AboutComponent },
+  { path: 'home', component: WelcomeComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'about', component: AboutComponent },
 
   {
     path: '**',
-    redirectTo: 'samples/add'
+    redirectTo: ''
   }
   
 

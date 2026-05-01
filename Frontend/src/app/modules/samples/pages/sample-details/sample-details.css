@@ -1,0 +1,204 @@
+.container {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* overlay */
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9));
+  z-index: 1;
+}
+
+/* card */
+.card {
+  z-index: 2;
+  width: 600px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 30px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  text-align: center;
+}
+
+.card h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.details p {
+  margin: 8px 0;
+  color: #cfcfcf;
+}
+
+/* barcode */
+.barcode-box {
+  margin-top: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+/* buttons */
+.buttons {
+  margin-top: 25px;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  background: #ff7a1a;
+  color: white;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #ff9a3c;
+  transform: scale(1.05);
+}
+
+.details-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: rgba(255,255,255,0.08);
+  padding: 25px;
+  border-radius: 12px;
+  width: 350px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.barcode-box {
+  margin: 20px 0;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.buttons {
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 12px 25px;
+  margin: 10px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.generate {
+  background: #ff7a1a;
+  color: white;
+}
+
+.generate:hover {
+  transform: scale(1.05);
+}
+
+.print {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+.print:hover {
+  background: white;
+  color: black;
+}
+
+
+
+
+
+
+
+
+/* This only triggers when the user hits 'Print' */
+@media print {
+  /* Hide every element on the page */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Show only the barcode container and its children */
+  .barcode-box, .barcode-box * {
+    visibility: visible;
+  }
+
+  /* Position the barcode at the very top-left of the print page */
+  .barcode-box {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Hide buttons and headers specifically just in case */
+  .buttons, h1, .card, .details-container {
+    display: none !important;
+  }
+}
+@media print {
+  /* 1. Hide everything except the barcode container */
+  body > *:not(.details-container),
+  .details-container > *:not(.barcode-box),
+  .buttons, 
+  h1, 
+  .card {
+    display: none !important;
+  }
+
+  /* 2. Ensure the barcode container is visible and centered */
+  .details-container,
+  .barcode-box {
+    display: block !important;
+    visibility: visible !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+
+  /* 3. Ensure SVG fills the area and is visible */
+  svg {
+    display: block !important;
+    margin: 0 auto;
+    max-width: 100%;
+    overflow: visible !important; /* Fixes potential SVG clipping issues */
+  }
+
+  /* Remove any browser-added margins/headers */
+  @page {
+    margin: 0;
+  }
+}
