@@ -1,0 +1,369 @@
+/* .container {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9));
+  z-index: 1;
+}
+
+.card {
+  z-index: 2;
+  width: 600px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 30px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  text-align: center;
+}
+
+.card h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.details p {
+  margin: 8px 0;
+  color: #cfcfcf;
+}
+
+.barcode-box {
+  margin-top: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.buttons {
+  margin-top: 25px;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  background: #ff7a1a;
+  color: white;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #ff9a3c;
+  transform: scale(1.05);
+}
+
+.details-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: rgba(255,255,255,0.08);
+  padding: 25px;
+  border-radius: 12px;
+  width: 350px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.barcode-box {
+  margin: 20px 0;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.buttons {
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 12px 25px;
+  margin: 10px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.generate {
+  background: #ff7a1a;
+  color: white;
+}
+
+.generate:hover {
+  transform: scale(1.05);
+}
+
+.print {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+.print:hover {
+  background: white;
+  color: black;
+}
+
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .barcode-box, .barcode-box * {
+    visibility: visible;
+  }
+
+  .barcode-box {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .buttons, h1, .card, .details-container {
+    display: none !important;
+  }
+}
+@media print {
+  body > *:not(.details-container),
+  .details-container > *:not(.barcode-box),
+  .buttons, 
+  h1, 
+  .card {
+    display: none !important;
+  }
+
+  .details-container,
+  .barcode-box {
+    display: block !important;
+    visibility: visible !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+
+  svg {
+    display: block !important;
+    margin: 0 auto;
+    max-width: 100%;
+    overflow: visible !important; 
+  }
+
+  @page {
+    margin: 0;
+  }
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 🌌 MAIN CONTAINER */
+.details-container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  padding: 40px 0;
+}
+
+/* 🌫️ OVERLAY */
+.details-container::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.9));
+  z-index: 1;
+}
+
+/* 🎯 MAIN CONTENT */
+.content-fade-in {
+  z-index: 2;
+  width: 90%;
+  max-width: 700px;
+  color: white;
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* ✨ TITLE */
+h1 {
+  font-size: 42px;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+/* 🧾 CARD */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+}
+
+.card p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+/* 📦 BARCODE BOX */
+.barcode-box {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 20px auto;
+  width: fit-content;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* 🔘 BUTTONS */
+.buttons {
+  margin: 20px 0;
+}
+
+.btn {
+  padding: 12px 28px;
+  margin: 10px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+/* 🔥 GENERATE */
+.generate {
+  background: #ff7a1a;
+  color: white;
+}
+
+.generate:hover {
+  background: #ff9a3c;
+  transform: scale(1.05);
+}
+
+/* 🖨️ PRINT */
+.print {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+}
+
+.print:hover {
+  background: white;
+  color: black;
+  transform: scale(1.05);
+}
+
+/* 📋 SECTION CARD */
+.section-card {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+}
+
+.section-card h3 {
+  margin-bottom: 15px;
+}
+
+/* 📄 LIST */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.list-item {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.list-item:hover {
+  transform: translateX(5px);
+}
+
+/* ⚠️ STATES */
+.state-msg {
+  color: #ccc;
+  z-index: 2;
+}
+
+.state-msg.error {
+  color: red;
+}
+
+/* ✨ ANIMATION */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 🌍 GLOBAL FIX */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: black;
+}
+
+
+
+
+
+
+
+

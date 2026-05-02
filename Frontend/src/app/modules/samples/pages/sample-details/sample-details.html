@@ -1,1 +1,57 @@
-<p>sample-details works!</p>
+<div *ngIf="!isBarcodeView">
+<div class="details-container">
+  
+  <div *ngIf="loading" class="state-msg">
+    <p>Loading data from server...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="state-msg error">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!loading && sample" class="content-fade-in">
+    <h1>Sample Details</h1>
+
+    <div class="card">
+      <p><strong>Sample ID:</strong> {{ sample.sampleid }}</p>
+      <p><strong>Customer:</strong> {{ test?.company_name || 'N/A' }}</p>
+      <p><strong>Status:</strong> {{ sample.status }}</p>
+      <p><strong>Fabric:</strong> {{ test?.fiber_content }}</p>
+      <p><strong>Color:</strong> {{ test?.color }}</p>
+    </div>
+
+    <div class="barcode-box" id="print-section">
+      <svg #barcode (click)="onBarcodeClick()"></svg>
+    </div>
+
+    <div class="buttons">
+      <button class="btn generate" (click)="generateBarcode()">
+        Generate Barcode
+      </button>
+      <button class="btn print" (click)="printBarcode()">
+        Print Barcode
+      </button>
+    </div>
+
+    <div class="section-card" *ngIf="testsRequired.length > 0">
+      <h3>Tests Required</h3>
+      <div class="list-container">
+        <label *ngFor="let t of testsRequired" class="list-item">
+          <input type="checkbox" (change)="markTestDone(t)"> {{ t }}
+        </label>
+      </div>
+    </div>
+
+    <div class="section-card" *ngIf="finishTypes.length > 0">
+      <h3>Finish Type</h3>
+      <div class="list-container">
+        <label *ngFor="let f of finishTypes" class="list-item">
+          <input type="radio" name="finish" [(ngModel)]="selectedFinish" [value]="f"> {{ f }}
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+

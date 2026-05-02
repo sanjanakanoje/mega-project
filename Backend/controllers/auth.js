@@ -4,14 +4,14 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, phone, role } = req.body;
+    const { name, email, password, role } = req.body;
 
     const hashPassword = await bcrypt.hash(password, 10);
 
     await pool.query(
-      `INSERT INTO users(name,email,password,phone,role)
-       VALUES($1,$2,$3,$4,$5)`,
-      [name, email, hashPassword, phone, role || 'customer']
+      `INSERT INTO users(name,email,password,role)
+       VALUES($1,$2,$3,$4)`,
+      [name, email, hashPassword, role || 'customer']
     );
 
     res.status(201).json({
@@ -19,11 +19,17 @@ exports.register = async (req, res) => {
       message: "User Registered Successfully"
     });
 
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+  // } catch (error) {
+  //   res.status(500).json({
+  //     success: false,
+  //     message: error.message
+  //   });
+  // }
+  }
+  catch (err) {
+  console.error("REGISTER ERROR FULL:", err);   // full object
+  console.error("REGISTER ERROR MSG:", err.message);
+  res.status(500).json({ message: err.message });
   }
 };
 
