@@ -1,12 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const tracking =
-require('../controllers/tracking');
+const trackingController = require("../controllers/tracking");
 
-router.post('/scan', tracking.scanBarcode);
-
-router.get('/history/:barcode',
-tracking.getHistory);
+// scan barcode → fetch tests only
+router.get("/test/:sampleId", trackingController.getTestRequirementsBySample);
 
 module.exports = router;

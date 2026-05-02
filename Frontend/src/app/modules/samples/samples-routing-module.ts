@@ -1,34 +1,40 @@
-// import { NgModule } from '@angular/core';
-// import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
-import { AddSampleComponent } from './pages/add-sample/add-sample';
-// import { SampleListComponent } from './pages/sample-list/sample-list';
-// import { SampleDetailsComponent } from './pages/sample-details/sample-details';
+
 
 const routes: Routes = [
 
+  // default → list page
   {
     path: '',
     redirectTo: 'list',
     pathMatch: 'full'
   },
 
-  // {
-  //   path: 'list',
-  //   component: SampleListComponent
-  // },
-
+  // ✅ Sample List (Test Requests List)
   {
-    path: 'add',
-    component: AddSampleComponent
+    path: 'list',
+    loadComponent: () =>
+      import('./pages/sample-list/sample-list')
+        .then(m => m.SampleListComponent)
   },
 
-  { path: '', component: SampleListComponent },
-  { path: 'details/:id', component: SampleDetailsComponent }
-  // {
-  //   path: 'details/:id',
-  //   component: SampleDetailsComponent
-  // }
+  // ✅ Add Sample
+  {
+    path: 'add',
+    loadComponent: () =>
+      import('./pages/add-sample/add-sample')
+        .then(m => m.AddSampleComponent)
+  },
+
+  // ✅ Details Page
+  {
+    path: 'details/:id',
+    loadComponent: () =>
+      import('./pages/sample-details/sample-details')
+        .then(m => m.SampleDetailsComponent)
+  }
 
 ];
 
@@ -36,4 +42,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class SamplesRoutingModule { }
+export class SamplesRoutingModule {}

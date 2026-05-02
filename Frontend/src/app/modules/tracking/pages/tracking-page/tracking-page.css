@@ -1,0 +1,47 @@
+.page {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+  background: #111;
+  min-height: 100vh;
+  font-family: Arial;
+}
+
+.card {
+  width: 850px;
+  background: #1e1e1e;
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+}
+
+h1 {
+  text-align: center;
+  color: #ff8800;
+  margin-bottom: 20px;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+h2 {
+  color: #ffb347;
+}
+
+p {
+  margin: 6px 0;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+li {
+  margin: 5px 0;
+}
+
+.error {
+  color: red;
+  text-align: center;
+}
