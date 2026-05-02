@@ -1,1 +1,235 @@
-<p>test-details works!</p>
+<!-- 
+
+<div class="page">
+
+  <div class="card">
+
+    <h1>Test Details</h1>
+
+    
+    <p *ngIf="loading">Loading details...</p>
+
+    
+    <div *ngIf="test && !loading">
+
+      
+      <div class="info-section">
+        <p><b>ID:</b> {{ test.id }}</p>
+        <p><b>Company Name:</b> {{ test.company_name }}</p>
+        <p><b>Submitted By:</b> {{ test.submitted_by }}</p>
+        <p><b>Merchant Name:</b> {{ test.merchant_name }}</p>
+        <p><b>Brand:</b> {{ test.brand_label_name }}</p>
+        <p><b>Priority:</b> {{ test.priority }}</p>
+        <p><b>Email:</b> {{ test.email }}</p>
+        <p><b>Phone:</b> {{ test.phone_no }}</p>
+        <p><b>Created At:</b> {{ test.created_at | date:'medium' }}</p>
+      </div>
+
+      <hr>
+
+     
+      <div class="info-section">
+        <p><b>Sample Description:</b> {{ test.sample_description }}</p>
+        <p><b>Style No:</b> {{ test.style_no }}</p>
+        <p><b>Season:</b> {{ test.season }}</p>
+        <p><b>Color:</b> {{ test.color }}</p>
+        <p><b>Fabric Weight:</b> {{ test.fabric_weight }}</p>
+      </div>
+
+      <hr>
+
+      
+      <div class="barcode-section">
+
+        <h3>Barcode</h3>
+
+        <div id="print-area">
+          <svg #barcode></svg>
+        </div>
+
+        <div class="btn-group">
+
+          <button (click)="printBarcode()">Print Barcode</button>
+        </div>
+
+      </div>
+
+    </div>
+
+   
+    <p *ngIf="!loading && !test">
+      No test details found
+    </p>
+
+  </div>
+
+</div> -->
+
+<!-- 
+<div class="page">
+
+  <div class="card">
+
+    <h1>Test Details</h1>
+
+   
+    <p *ngIf="loading">Loading...</p>
+
+    
+    <p *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </p>
+
+  
+    <div *ngIf="test && !loading">
+
+    
+      <div class="info-section">
+        <p><b>ID:</b> {{ test.id }}</p>
+        <p><b>Company:</b> {{ test.company_name }}</p>
+        <p><b>Submitted By:</b> {{ test.submitted_by }}</p>
+        <p><b>Priority:</b> {{ test.priority }}</p>
+        <p><b>Email:</b> {{ test.email }}</p>
+        <p><b>Phone:</b> {{ test.phone_no }}</p>
+      </div>
+
+      <hr>
+
+      
+      <div class="info-section">
+        <p><b>Description:</b> {{ test.sample_description }}</p>
+        <p><b>Style No:</b> {{ test.style_no }}</p>
+        <p><b>Season:</b> {{ test.season }}</p>
+        <p><b>Color:</b> {{ test.color }}</p>
+      </div>
+
+      <hr>
+
+      
+      <div class="info-section">
+        <h3>Tests Required</h3>
+
+        <ul>
+          <li *ngFor="let t of test?.tests_required">
+            {{ t }}
+          </li>
+        </ul>
+      </div>
+
+      <hr>
+
+    
+      <div class="barcode-section">
+
+        <h3>Barcode</h3>
+
+        <div
+          id="print-area"
+          (click)="onBarcodeClick(test.id)"
+          style="cursor:pointer; display:inline-block;"
+        >
+          <svg #barcode></svg>
+        </div>
+
+        <div class="btn-group">
+          <button (click)="printBarcode()">Print Barcode</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    
+    <p *ngIf="!loading && !test && !errorMessage">
+      No data found
+    </p>
+
+  </div>
+
+</div> -->
+
+<div class="page">
+
+  <div class="card">
+
+    <h1>Test Details</h1>
+
+    <!-- LOADING -->
+    <p *ngIf="loading">Loading...</p>
+
+    <!-- ERROR -->
+    <p *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </p>
+
+    <!-- DEBUG (REMOVE AFTER TESTING IF YOU WANT) -->
+    <!-- <pre>{{ test | json }}</pre> -->
+
+    <!-- DATA -->
+    <div *ngIf="test && !loading">
+
+      <!-- BASIC INFO -->
+      <div class="info-section">
+        <p><b>ID:</b> {{ test?.id }}</p>
+        <p><b>Company:</b> {{ test?.company_name }}</p>
+        <p><b>Submitted By:</b> {{ test?.submitted_by }}</p>
+        <p><b>Priority:</b> {{ test?.priority }}</p>
+        <p><b>Email:</b> {{ test?.email }}</p>
+        <p><b>Phone:</b> {{ test?.phone_no }}</p>
+      </div>
+
+      <hr>
+
+      <!-- SAMPLE INFO -->
+      <div class="info-section">
+        <p><b>Description:</b> {{ test?.sample_description }}</p>
+        <p><b>Style No:</b> {{ test?.style_no }}</p>
+        <p><b>Season:</b> {{ test?.season }}</p>
+        <p><b>Color:</b> {{ test?.color }}</p>
+      </div>
+
+      <hr>
+
+      <!-- TESTS REQUIRED -->
+      <div class="info-section">
+        <h3>Tests Required</h3>
+
+        <ul>
+          <li *ngFor="let t of test?.tests_required">
+            {{ t }}
+          </li>
+        </ul>
+      </div>
+
+      <hr>
+
+      <!-- BARCODE SECTION -->
+      <div class="barcode-section">
+
+        <h3>Barcode</h3>
+
+        <!-- CLICK → NAVIGATE -->
+        <div
+          id="print-area"
+          (click)="goToTestScreen(test?.id)"
+          style="cursor:pointer; display:inline-block;"
+        >
+          <svg #barcode></svg>
+        </div>
+
+        <div class="btn-group">
+          <button (click)="printBarcode()">Print Barcode</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    <p *ngIf="!loading && !test && !errorMessage">
+      No data found
+    </p>
+
+  </div>
+
+</div>

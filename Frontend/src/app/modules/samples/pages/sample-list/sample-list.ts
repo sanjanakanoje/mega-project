@@ -1,93 +1,97 @@
+
 // import { Component, OnInit } from '@angular/core';
+// import { CommonModule } from '@angular/common';
 // import { SampleService } from '../../services/sample';
 // import { Router } from '@angular/router';
-// import { CommonModule } from '@angular/common'; 
+// import { ChangeDetectorRef } from '@angular/core';
 
 // @Component({
 //   selector: 'app-sample-list',
-//   standalone: true,            
-//   imports: [CommonModule],
+//   standalone: true,   
+//   imports: [CommonModule],  
 //   templateUrl: './sample-list.html',
-//   styleUrls: ['./sample-list.css']   // optional but good practice
+//   styleUrls: ['./sample-list.css']
 // })
 // export class SampleListComponent implements OnInit {
 
 //   samples: any[] = [];
-//   loading: boolean = false;
-//   error: string = '';
+//   loading = true;
 
 //   constructor(
 //     private sampleService: SampleService,
-//     private router: Router
+//     private router: Router,
+//     private cd: ChangeDetectorRef
 //   ) {}
 
-//   ngOnInit(): void {
-//     this.loadSamples();
-//   }
-
-//   loadSamples(): void {
-//     this.loading = true;
-
+//   ngOnInit() {
 //     this.sampleService.getAllSamples().subscribe({
-//       next: (res: any[]) => {
+//       next: (res) => {
 //         console.log("DATA:", res);
 //         this.samples = res;
 //         this.loading = false;
+//         this.cd.detectChanges();
 //       },
 //       error: (err) => {
-//         console.error('Error loading samples:', err);
-//         this.error = 'Failed to load samples';
+//         console.error("Error loading samples:", err);
 //         this.loading = false;
 //       }
 //     });
 //   }
 
-//   viewDetails(id: number): void {
-//     if (!id) return;  // safety check
-//     this.router.navigate(['/samples/details', id]);
+//   viewDetails(id: number) {
+//   console.log("Clicked ID:", id); // DEBUG
+//   this.router.navigate(['/samples/details', id]);
 //   }
 // }
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SampleService } from '../../services/sample';
-import { Router } from '@angular/router';
-import { ChangeDetectorRef } from '@angular/core';
+import { TestService } from '../../../tests/services/test.service';
 
 @Component({
   selector: 'app-sample-list',
-  standalone: true,   
-  imports: [CommonModule],  
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './sample-list.html',
   styleUrls: ['./sample-list.css']
 })
 export class SampleListComponent implements OnInit {
 
-  samples: any[] = [];
-  loading = true;
+  // ✅ store API data
+  requests: any[] = [];
 
-  constructor(
-    private sampleService: SampleService,
-    private router: Router,
-    private cd: ChangeDetectorRef
-  ) {}
+  // ✅ loading state (optional but useful)
+  loading: boolean = false;
 
-  ngOnInit() {
-    this.sampleService.getAllSamples().subscribe({
-      next: (res) => {
-        console.log("DATA:", res);
-        this.samples = res;
+  constructor(private testService: TestService) {}
+
+  ngOnInit(): void {
+    this.loadRequests();
+  }
+
+  // ✅ fetch data from backend
+  loadRequests(): void {
+
+    this.loading = true;
+
+    this.testService.getAllRequests().subscribe({
+
+      next: (res: any) => {
+        console.log('API RESPONSE:', res);
+
+        // ✅ safe assignment
+        this.requests = res?.data || [];
+
         this.loading = false;
-        this.cd.detectChanges();
       },
-      error: (err) => {
-        console.error("Error loading samples:", err);
+
+      error: (err: any) => {
+        console.error('API ERROR:', err);
+
         this.loading = false;
       }
+
     });
   }
 
-  viewDetails(id: number) {
-  console.log("Clicked ID:", id); // DEBUG
-  this.router.navigate(['/samples/details', id]);
-  }
 }

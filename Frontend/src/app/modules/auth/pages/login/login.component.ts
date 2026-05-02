@@ -1,13 +1,20 @@
+
+
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { Auth } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule
+  ],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
@@ -25,36 +32,34 @@ export class LoginComponent {
 
   loginUser() {
 
+    if (!this.formData.email || !this.formData.password) {
+      alert('Please enter email and password');
+      return;
+    }
+
     this.auth.login(this.formData).subscribe({
 
-      // next: (res: any) => {
-
-      //   this.auth.saveToken(res.token);
-
-      //   alert('Login Successful');
-
-      //   this.router.navigate(['/dashboard']);
-      // },
       next: (res: any) => {
 
-        // save token
+        // Save token
         this.auth.saveToken(res.token);
 
-        // ✅ SAVE ROLE (IMPORTANT)
+        // Save role
         localStorage.setItem('role', res.user.role);
 
         alert('Login Successful');
 
-        // ✅ ROLE BASED REDIRECT
+        // Role based redirect
         if (res.user.role === 'LabStaff') {
-          this.router.navigate(['/samples']);   // 👨‍🔬 lab staff
+          this.router.navigate(['/samples']);
         } else {
-          this.router.navigate(['/']);          // 👤 customer
+          this.router.navigate(['/']);
         }
 
       },
-      error: () => {
 
+      error: (err: any) => {
+        console.log(err);
         alert('Invalid Email or Password');
       }
 

@@ -1,0 +1,68 @@
+<div class="page">
+
+  <div class="card">
+
+    <h1>Test Screen</h1>
+
+    <!-- LOADING -->
+    <p *ngIf="loading">Loading test data...</p>
+
+    <!-- ERROR -->
+    <p *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </p>
+
+    <!-- DATA -->
+    <div *ngIf="test && !loading">
+
+      <!-- COMPANY INFO -->
+      <div class="info">
+        <p><b>Company:</b> {{ test?.company_name }}</p>
+        <p><b>Test ID:</b> {{ test?.id }}</p>
+      </div>
+
+      <hr>
+
+      <!-- TESTS REQUIRED -->
+      <h3>Tests Required</h3>
+
+      <div class="test-list">
+
+        <div
+          class="test-item"
+          *ngFor="let t of testsRequired"
+        >
+
+          <label>
+            <input
+              type="checkbox"
+              [checked]="selectedTests.includes(t)"
+              (change)="toggleTest(t)"
+            />
+            {{ t }}
+          </label>
+
+          <button (click)="markDone(t)">
+            Done
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- SELECTED -->
+      <hr>
+
+      <h3>Selected Tests</h3>
+
+      <ul>
+        <li *ngFor="let s of selectedTests">
+          {{ s }}
+        </li>
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>

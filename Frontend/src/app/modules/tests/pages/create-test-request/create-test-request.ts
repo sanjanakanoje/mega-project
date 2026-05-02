@@ -8,7 +8,7 @@ import {
   Validators
 } from '@angular/forms';
 
-import { TestService } from '../../services/test';
+import { TestService } from '../../services/test.service';
 
 @Component({
   selector: 'app-create-test-request',

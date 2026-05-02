@@ -1,0 +1,154 @@
+.page {
+  padding: 20px;
+  background: #0f0f0f; /* black background */
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+}
+
+.card {
+  background: #1a1a1a; /* dark card */
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 900px;
+  margin: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  border: 1px solid #2a2a2a;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: #ff7a00; /* orange heading */
+}
+
+h3 {
+  margin-top: 15px;
+  color: #ff9a3d; /* light orange */
+}
+
+.info {
+  background: #121212;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  border-left: 4px solid #ff7a00;
+}
+
+.info p {
+  margin: 5px 0;
+  color: #d0d0d0;
+}
+
+hr {
+  margin: 15px 0;
+  border: none;
+  border-top: 1px solid #333;
+}
+
+/* =========================
+   TEST LIST
+========================= */
+.test-list {
+  margin-top: 10px;
+}
+
+.test-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #141414;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  transition: 0.2s;
+  border: 1px solid #222;
+}
+
+.test-item:hover {
+  background: #1f1f1f;
+  border-color: #ff7a00;
+}
+
+.test-item label {
+  cursor: pointer;
+  font-size: 14px;
+  color: #e0e0e0;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+button {
+  background: #ff7a00; /* orange button */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #e26500;
+}
+
+/* =========================
+   CHECKBOX
+========================= */
+input[type="checkbox"] {
+  margin-right: 8px;
+  transform: scale(1.1);
+  accent-color: #ff7a00; /* orange checkbox */
+}
+
+/* =========================
+   SELECTED TESTS
+========================= */
+.selected-box {
+  margin-top: 15px;
+  padding: 10px;
+  background: #121212;
+  border-radius: 6px;
+  border: 1px solid #2a2a2a;
+}
+
+.selected-box ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.selected-box li {
+  color: #dcdcdc;
+  margin: 4px 0;
+}
+
+/* =========================
+   LOADING / ERROR
+========================= */
+.error {
+  color: #ff4d4d;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* =========================
+   BARCODE SECTION
+========================= */
+.barcode-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.barcode-section svg {
+  margin-top: 10px;
+  padding: 10px;
+  background: #ffffff;
+  border: 2px dashed #ff7a00;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-group {
+  margin-top: 10px;
+}

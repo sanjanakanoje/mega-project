@@ -1,54 +1,17 @@
-<!-- <div class="container">
-
-  <div class="overlay"></div>
-
-  <div class="card">
-
-    <h1>Sample List</h1>
-    <p>Total Samples: {{ samples.length }}</p>
-
-    <table *ngIf="samples.length > 0">
-
-      <tr>
-        <th>ID</th>
-        <th>Fabric Type</th>
-        <th>Barcode</th>
-        <th>Action</th>
-      </tr>
-
-      <tr *ngFor="let s of samples">
-        <td>{{ s.sampleid }}</td>
-        <td>{{ s.sampletype }}</td>
-        <td>{{ s.barcode }}</td>
-
-        <td>
-          <button (click)="viewDetails(s.sampleid)">
-            View Details
-          </button>
-        </td>
-      </tr>
-
-    </table>
-
-    <p *ngIf="samples.length === 0">No samples found</p>
-
-  </div>
-
-</div> -->
-
+<!-- 
 
 <div class="container">
 
-  <!-- Background overlay -->
+  
   <div class="overlay"></div>
 
-  <!-- Main card -->
+ 
   <div class="card">
 
     <h1>Sample List</h1>
     <p>Total Samples: {{ samples.length }}</p>
 
-    <!-- Table -->
+   
     <table *ngIf="samples.length > 0">
 
       <tr>
@@ -80,8 +43,53 @@
 
     </table>
 
-    <!-- Empty state -->
+    
     <p *ngIf="samples.length === 0">No samples found</p>
+
+  </div>
+
+</div>  -->
+
+
+<div class="page">
+
+  <div class="table-card">
+
+    <h1>Test Requests</h1>
+    <p>Total Requests: {{ requests.length }}</p>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Company Name</th>
+          <th>Submitted By</th>
+          <th>Priority</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let item of requests">
+
+          <td>{{ item.id }}</td>
+          <td>{{ item.company_name }}</td>
+          <td>{{ item.submitted_by }}</td>
+          <td>{{ item.priority }}</td>
+          <td>{{ item.created_at | date:'short' }}</td>
+
+          <td>
+            <button>View</button>
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
 
   </div>
 
