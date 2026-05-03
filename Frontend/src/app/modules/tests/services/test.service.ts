@@ -77,4 +77,8 @@ export class TestService {
     return this.http.get(`${this.trackingUrl}/test/${id}`);
   }
 
+  getAllTests(userId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}?userId=${userId}`);
+  }
+
 }

@@ -73,6 +73,7 @@ require('dotenv').config();
 
 const app = express();
 
+
 /* ===============================
    MIDDLEWARE
 ================================= */
@@ -99,7 +100,7 @@ const trackingRoutes = require('./routes/tracking'); // ✅ IMPORTANT FIX
    API ROUTES
 ================================= */
 app.use('/api/auth', authRoutes);
-app.use('/api/sample', sampleRoutes);
+//app.use('/api/samples', sampleRoutes);
 app.use('/api/tests', testRoutes);
 app.use('/api/tracking', trackingRoutes); // ✅ FIXED
 
@@ -113,8 +114,15 @@ app.get('/', (req, res) => {
 /* ===============================
    TEMP SAMPLE API (testing purpose)
 ================================= */
-let samples = [];
+// let samples = [];
 
+// app.post('/api/samples', (req, res) => {
+
+//   const sample = {
+//     id: Date.now().toString(),
+//     ...req.body,
+//     createdAt: new Date()
+//   };
 // CREATE SAMPLE
 app.post('/api/samples', (req, res) => {
   const sample = {
@@ -123,13 +131,23 @@ app.post('/api/samples', (req, res) => {
     createdAt: new Date()
   };
 
-  samples.push(sample);
+//   samples.push(sample);
 
+//   console.log('Saved Data:', samples);
   console.log("Saved Sample:", sample);
-
-  res.json(sample);
 });
 
+//   res.json(sample);
+// });
+
+// app.get('/api/samples/:userId', (req, res) => {
+
+//   const userId = req.params.userId;
+
+//   const userSamples = samples.filter(s => s.userId == userId);
+
+//   res.json(userSamples);
+// });
 // GET SAMPLES
 app.get('/api/samples', (req, res) => {
   res.json(samples);

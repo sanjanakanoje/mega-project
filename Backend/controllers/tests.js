@@ -9,6 +9,7 @@ exports.createTestRequest = async (req, res) => {
   try {
 
     const {
+      customerId,
       companyName,
       submittedBy,
       merchantName,
@@ -41,6 +42,7 @@ exports.createTestRequest = async (req, res) => {
       `
       INSERT INTO test_requests
       (
+        customer_id,
         company_name,
         submitted_by,
         merchant_name,
@@ -74,12 +76,13 @@ exports.createTestRequest = async (req, res) => {
         $1,$2,$3,$4,$5,$6,$7,
         $8,$9,$10,$11,$12,$13,$14,$15,$16,
         $17,$18,$19,
-        $20,$21,$22,$23
+        $20,$21,$22,$23,$24
       )
 
       RETURNING *
       `,
       [
+        customerId,
         companyName,
         submittedBy,
         merchantName,
@@ -115,7 +118,8 @@ exports.createTestRequest = async (req, res) => {
       data: result.rows[0]
     });
 
-  } catch (error) {
+  } 
+  catch (error) {
 
     console.log(error);
 
@@ -133,25 +137,75 @@ exports.createTestRequest = async (req, res) => {
    GET ALL TEST REQUESTS
 ========================================= */
 
+// exports.getAllTests = async (req, res) => {
+//   try {
+//     const userId = req.query.userId;
+
+//     const result = await pool.query(
+//       `
+//       SELECT
+//         id,
+//         company_name,
+//         finish_type,
+//         tests_required,
+//         fiber_content,
+//         fabric_weight,
+//         created_at
+//       FROM test_requests
+//       WHERE customer_id = $1
+//       ORDER BY id DESC
+//       `,
+//       [userId]
+//     );
+
+//     res.status(200).json(result.rows);
+
+//   } 
+
+//     catch (error) {
+//       console.error('Create Test Request Error:', error);
+
+//       res.status(500).json({
+//         message: error.message
+//       });
+//     }
+
+
+// };
+
+
+
+
+
+
 exports.getAllTests = async (req, res) => {
   try {
+    const userId = req.query.userId;
 
     const result = await pool.query(
-      `SELECT * FROM test_requests ORDER BY id DESC`
+      `
+      SELECT
+        id,
+        company_name,
+        fiber_content,
+        fabric_weight,
+        finish_type,
+        tests_required,
+        created_at
+      FROM test_requests
+      WHERE customer_id = $1
+      ORDER BY id DESC
+      `,
+      [userId]
     );
 
-    res.status(200).json({
-      success: true,
-      data: result.rows
-    });
+    res.status(200).json(result.rows);
 
   } catch (error) {
-
+    console.error('Get All Tests Error:', error);
     res.status(500).json({
-      success: false,
       message: error.message
     });
-
   }
 };
 
@@ -167,7 +221,7 @@ exports.getSingleTest = async (req, res) => {
     const { id } = req.params;
 
     const result = await pool.query(
-      `SELECT * FROM test_requests WHERE id = $1`,
+      `SELECT * FROM test_requests WHERE customer_id = $1`,
       [id]
     );
 
@@ -198,7 +252,7 @@ exports.deleteTest = async (req, res) => {
     const { id } = req.params;
 
     await pool.query(
-      `DELETE FROM test_requests WHERE id = $1`,
+      `DELETE FROM test_requests WHERE customer_id = $1`,
       [id]
     );
 
