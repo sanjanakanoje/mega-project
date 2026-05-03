@@ -1,0 +1,40 @@
+
+<div class="main-container">
+
+  <h2>My Sample History</h2>
+
+
+<div *ngIf="tests.length === 0" class="no-data">
+  No samples found
+</div>
+
+<div *ngIf="tests.length > 0" class="card-container">
+  <div class="test-card" *ngFor="let test of tests">
+    <h3>{{ test.company_name }}</h3>
+
+    <p>
+      <strong>Finish Type:</strong>
+      {{ parseArray(test.finish_type) }}
+    </p>
+
+    <p>
+      <strong>Tests Required:</strong>
+      {{ parseArray(test.tests_required) }}
+    </p>
+
+    <p><strong>Fabric:</strong> {{ test.fiber_content }}</p>
+    <p><strong>Weight:</strong> {{ test.fabric_weight }}</p>
+
+    <p class="date">
+      {{ test.created_at | date:'dd MMM yyyy' }}
+    </p>
+
+    <button (click)="trackSample(test.id)">Track</button>
+  </div>
+</div>
+
+
+
+
+</div>
+

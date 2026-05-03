@@ -119,17 +119,19 @@ export class CreateTestRequestComponent implements OnInit {
     return;
   }
 
+
   const value = this.form.value;
 
   const payload = {
     ...value,
+    customerId: Number(localStorage.getItem('userId')),
     finishTypes: this.getSelected(this.finishTypes, value.finishTypes),
     divisions: this.getSelected(this.divisions, value.divisions),
     packageTypes: this.getSelected(this.packageTypes, value.packageTypes),
     testsRequired: this.getSelected(this.tests, value.testsRequired)
   };
 
-  console.log(payload);
+  console.log('Submitting Payload:',payload);
 
   this.testService.createRequest(payload).subscribe({
 
@@ -148,3 +150,7 @@ export class CreateTestRequestComponent implements OnInit {
 }
 
 }
+
+
+
+

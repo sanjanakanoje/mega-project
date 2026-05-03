@@ -57,19 +57,38 @@ exports.addSample = async (req, res) => {
 
     console.log("BODY:", req.body); // debug
 
+    // const result = await pool.query(
+    //   `INSERT INTO samples
+    //   (userid, sampletype, barcode, status, predictedcompletiontime, datereceived)
+    //   VALUES ($1,$2,$3,$4,$5,NOW())
+    //   RETURNING *`,
+    //   [
+    //     userid,
+    //     sampletype,
+    //     barcode,
+    //     'Pending',
+    //     predictedcompletiontime
+    //   ]
+    // );
+
     const result = await pool.query(
       `INSERT INTO samples
-      (userid, sampletype, barcode, status, predictedcompletiontime, datereceived)
-      VALUES ($1,$2,$3,$4,$5,NOW())
+      (companyName, styleNo, color, submittedBy, fiberContent, fabricWeight, finishTypes, divisions, testsRequired, status, datereceived)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW())
       RETURNING *`,
       [
-        userid,
-        sampletype,
-        barcode,
-        'Pending',
-        predictedcompletiontime
+        companyName,
+        styleNo,
+        color,
+        submittedBy,
+        fiberContent,
+        fabricWeight,
+        JSON.stringify(finishTypes),
+        JSON.stringify(divisions),
+        JSON.stringify(testsRequired),
+        'Pending'
       ]
-    );
+      );
 
     res.status(201).json({
       success: true,
@@ -85,13 +104,54 @@ exports.addSample = async (req, res) => {
     });
   }
 };
+// exports.getAllSamples = async (req, res) => {
+//   try {
+//     const result = await pool.query(
+//       'SELECT * FROM samples ORDER BY sampleid DESC'
+//     );
+
+//     res.json(result.rows);
+
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message
+//     });
+//   }
+// };
+
+
+// exports.getAllSamples = async (req, res) => {
+//   try {
+//     const result = await pool.query(
+//       'SELECT * FROM samples ORDER BY sampleid DESC'
+//     );
+
+//     res.json({
+//       success: true,
+//       data: result.rows
+//     });
+
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message
+//     });
+//   }
+// };
+
+
+
 exports.getAllSamples = async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT * FROM samples ORDER BY sampleid DESC'
+      'SELECT * FROM samples ORDER BY id DESC'
     );
 
-    res.json(result.rows);
+    res.json({
+      success: true,
+      data: result.rows
+    });
 
   } catch (error) {
     res.status(500).json({
@@ -100,6 +160,33 @@ exports.getAllSamples = async (req, res) => {
     });
   }
 };
+
+
+
+
+
+
+
+
+exports.getAllTests = async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM test_requests ORDER BY id DESC'
+    );
+
+    res.json({
+      success: true,
+      data: result.rows
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 
 exports.getSampleById = async (req, res) => {
   try {
@@ -118,4 +205,17 @@ exports.getSampleById = async (req, res) => {
       message:error.message
     });
   }
+};
+
+exports.getSamplesByUser = (req, res) => {
+  const userId = req.params.userId;
+
+  const query = "SELECT id, type, collection_date FROM samples WHERE user_id = ?";
+
+  db.query(query, [userId], (err, result) => {
+    if (err) {
+      return res.status(500).json(err);
+    }
+    res.json(result);
+  });
 };

@@ -62,4 +62,10 @@ export class SampleService {
     return this.http.get<any>('http://localhost:5000/api/sample/' + id);
   }
 
+
+  getSamplesByUser(userId: number) {
+  return this.http.get<any[]>(`http://localhost:5000/api/samples/${userId}`);
+  }
+
+
 }

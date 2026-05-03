@@ -22,4 +22,6 @@ router.get('/:id', sampleController.getSampleById);
 
 router.post('/add', sampleController.addSample);
 
+router.get('/user/:userId', sampleController.getSamplesByUser);
+
 module.exports = router;

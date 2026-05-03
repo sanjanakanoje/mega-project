@@ -47,6 +47,7 @@ require('dotenv').config();
 
 const app = express();
 
+
 app.use(cors());
 app.use(express.json());
 
@@ -62,7 +63,7 @@ const testRoutes = require('./routes/tests');
    API ROUTES
 ================================= */
 app.use('/api/auth', authRoutes);
-app.use('/api/sample', sampleRoutes);
+app.use('/api/samples', sampleRoutes);
 app.use('/api/tests', testRoutes);
 
 
@@ -77,26 +78,31 @@ app.get('/', (req, res) => {
 /* ===============================
    TEMP SAMPLE MEMORY API
 ================================= */
-let samples = [];
+// let samples = [];
 
-app.post('/api/samples', (req, res) => {
+// app.post('/api/samples', (req, res) => {
 
-  const sample = {
-    id: Date.now().toString(),
-    ...req.body,
-    createdAt: new Date()
-  };
+//   const sample = {
+//     id: Date.now().toString(),
+//     ...req.body,
+//     createdAt: new Date()
+//   };
 
-  samples.push(sample);
+//   samples.push(sample);
 
-  console.log('Saved Data:', samples);
+//   console.log('Saved Data:', samples);
 
-  res.json(sample);
-});
+//   res.json(sample);
+// });
 
-app.get('/api/samples', (req, res) => {
-  res.json(samples);
-});
+// app.get('/api/samples/:userId', (req, res) => {
+
+//   const userId = req.params.userId;
+
+//   const userSamples = samples.filter(s => s.userId == userId);
+
+//   res.json(userSamples);
+// });
 
 
 /* ===============================

@@ -17,6 +17,6 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterModule],
   templateUrl: './welcome.html',
-  styleUrls: ['./welcome.css'],   // <-- fix here also
+  styleUrls: ['./welcome.css'],   
 })
 export class WelcomeComponent {}
