@@ -1,91 +1,72 @@
-<!-- src/app/modules/auth/pages/register/register.html -->
+<!-- register.html -->
 
 <div class="register-page">
 
   <div class="register-card">
 
-    <div class="left-panel">
+    <h2>Create Account</h2>
 
-      <h1>Create Account</h1>
+    <p class="sub-text">
+      Fill details to create your account
+    </p>
 
-      <p>
-        Join the Textile Testing Lab Portal and
-        manage samples, reports, tracking and
-        customer requests easily.
-      </p>
+    <form (ngSubmit)="registerUser()" #registerForm="ngForm">
 
-      <ul>
-        <li>✔ Smart Sample Registration</li>
-        <li>✔ Barcode Based Tracking</li>
-        <li>✔ Live Report Access</li>
-        <li>✔ Secure User Management</li>
-      </ul>
+      <div class="input-box">
+        <label>Full Name</label>
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="formData.name"
+          placeholder="Enter full name"
+          required>
+      </div>
 
-    </div>
+      <div class="input-box">
+        <label>Email</label>
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="formData.email"
+          placeholder="Enter email"
+          required>
+      </div>
 
-    <div class="right-panel">
+      <div class="input-box">
+        <label>Password</label>
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="formData.password"
+          placeholder="Enter password"
+          required>
+      </div>
 
-      <h2>Register</h2>
+      <div class="input-box">
+        <label>Select Role</label>
 
-      <p class="sub-text">
-        Fill details to create your account
-      </p>
+        <select
+          name="role"
+          [(ngModel)]="formData.role"
+          required>
 
-      <form (ngSubmit)="registerUser()">
+          <option value="Customer">Customer</option>
+          <option value="LabStaff">Lab Staff</option>
+          <option value="Admin">Admin</option>
 
-        <div class="input-box">
-          <label>Full Name</label>
-          <input
-            type="text"
-            name="name"
-            [(ngModel)]="formData.name"
-            placeholder="Enter full name">
-        </div>
+        </select>
+      </div>
 
-        <div class="input-box">
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            [(ngModel)]="formData.email"
-            placeholder="Enter email">
-        </div>
+      <button type="submit">
+        Create Account
+      </button>
 
-        <div class="input-box">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            [(ngModel)]="formData.password"
-            placeholder="Enter password">
-        </div>
+    </form>
 
-        <div class="input-box">
-          <label>Select Role</label>
-
-          <select
-            name="role"
-            [(ngModel)]="formData.role">
-
-            <option value="Customer">Customer</option>
-            <option value="Lab Staff">Lab Staff</option>
-            <option value="Admin">Admin</option>
-
-          </select>
-        </div>
-
-        <button type="submit">
-          Create Account
-        </button>
-
-      </form>
-
-      <p class="bottom-text">
-        Already have account?
-        <a routerLink="/login">Login</a>
-      </p>
-
-    </div>
+    <p class="bottom-text">
+      Already have account?
+      <a routerLink="/auth/login">Login</a>
+    </p>
 
   </div>
 

@@ -1,0 +1,103 @@
+<!-- <div class="page">
+
+  <div class="table-card">
+
+    <h1>Test Requests</h1>
+
+    <p>Total Requests: {{ requests.length }}</p>
+
+    <div class="table-wrapper" *ngIf="requests.length > 0; else noData">
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Company Name</th>
+            <th>Submitted By</th>
+            <th>Priority</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of requests">
+            <td>{{ item.id }}</td>
+            <td>{{ item.company_name }}</td>
+            <td>{{ item.submitted_by }}</td>
+            <td>{{ item.priority }}</td>
+            <td>{{ item.created_at | date:'short' }}</td>
+            <td>
+              <button (click)="viewTest(item.id)">View</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <ng-template #noData>
+      <p class="no-data">No test requests found</p>
+    </ng-template>
+
+  </div>
+
+</div> -->
+
+<div class="page">
+
+  <div class="table-card">
+
+    <h1>Test Requests</h1>
+
+    <!-- Loading -->
+    <p *ngIf="loading">Loading data...</p>
+
+    <!-- Error -->
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+    <!-- Total -->
+    <p *ngIf="!loading">
+      Total Requests: {{ requests?.length || 0 }}
+    </p>
+
+    <!-- Table -->
+    <div class="table-wrapper" *ngIf="!loading && requests && requests.length > 0; else noData">
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Company Name</th>
+            <th>Submitted By</th>
+            <th>Priority</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of requests">
+            <td>{{ item.id }}</td>
+            <td>{{ item.company_name }}</td>
+            <td>{{ item.submitted_by }}</td>
+            <td>{{ item.priority }}</td>
+            <td>{{ item.created_at | date:'short' }}</td>
+            <td>
+              <button (click)="viewTest(item.id)">View</button>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <!-- No Data -->
+    <ng-template #noData>
+      <p *ngIf="!loading">No test requests found</p>
+    </ng-template>
+
+  </div>
+
+</div>

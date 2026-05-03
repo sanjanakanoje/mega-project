@@ -1,0 +1,60 @@
+.page {
+  min-height: 100vh;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.card {
+  width: 90%;
+  max-width: 600px;
+  background: #111;
+  padding: 30px;
+  border-radius: 15px;
+  color: white;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.details p {
+  margin: 8px 0;
+}
+
+.barcode-section {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+button {
+  background: #ff8800;
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+.back-btn {
+  margin-bottom: 10px;
+}
+
+.error {
+  color: red;
+  text-align: center;
+}
+
+div:hover {
+  transform: scale(1.02);
+  transition: 0.2s;
+}

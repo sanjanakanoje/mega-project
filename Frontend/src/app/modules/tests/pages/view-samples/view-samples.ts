@@ -1,7 +1,7 @@
 
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TestService } from '../../services/test';
+import { TestService } from '../../services/test.service';
 
 @Component({
   selector: 'app-view-samples',

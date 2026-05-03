@@ -1,0 +1,60 @@
+<div class="container">
+
+  <!-- 🔹 LOADING -->
+  <div *ngIf="loading" class="loading">
+    <p>Loading sample data...</p>
+  </div>
+
+  <!-- 🔹 MAIN UI -->
+  <div *ngIf="!loading" class="content">
+
+    <h1>Lab Test Screen</h1>
+
+    <!-- SAMPLE INFO -->
+    <div class="card">
+      <p><strong>Sample ID:</strong> {{ sample?.sampleid }}</p>
+      <p><strong>Company:</strong> {{ test?.company_name || 'N/A' }}</p>
+      <p><strong>Fabric:</strong> {{ test?.fiber_content || 'N/A' }}</p>
+      <p><strong>Color:</strong> {{ test?.color || 'N/A' }}</p>
+      <p><strong>Priority:</strong> {{ test?.priority || 'Normal' }}</p>
+    </div>
+
+    <!-- TESTS REQUIRED -->
+    <div class="section">
+      <h3>Tests Required</h3>
+
+      <div *ngIf="testsRequired.length > 0; else noTests">
+        <label *ngFor="let t of testsRequired" class="item">
+          <input type="checkbox" (change)="markTestDone(t)">
+          {{ t }}
+        </label>
+      </div>
+
+      <ng-template #noTests>
+        <p>No tests available</p>
+      </ng-template>
+    </div>
+
+    <!-- FINISH TYPE -->
+    <div class="section">
+      <h3>Finish Type</h3>
+
+      <div *ngIf="finishTypes.length > 0; else noFinish">
+        <label *ngFor="let f of finishTypes" class="item">
+          <input
+            type="radio"
+            name="finish"
+            [(ngModel)]="selectedFinish"
+            [value]="f">
+          {{ f }}
+        </label>
+      </div>
+
+      <ng-template #noFinish>
+        <p>No finish type available</p>
+      </ng-template>
+    </div>
+
+  </div>
+
+</div>

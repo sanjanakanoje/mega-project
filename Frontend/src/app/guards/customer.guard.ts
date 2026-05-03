@@ -9,13 +9,14 @@ export class CustomerGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(): boolean {
+  const token = localStorage.getItem('token');
   const role = localStorage.getItem('role')?.trim().toLowerCase();
 
-  if (role === 'customer') {
+  if (token && role === 'customer') {
     return true;
   }
 
-  this.router.navigate(['/home']);
+  this.router.navigate(['/welcome']);
   return false;
 }
 }

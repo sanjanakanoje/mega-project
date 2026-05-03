@@ -1,1 +1,26 @@
-<p>tracking-page works!</p>
+<h2>Scan Sample Barcode</h2>
+
+<!-- 📷 CAMERA SCANNER -->
+<zxing-scanner
+  (scanSuccess)="onScanSuccess($event)">
+</zxing-scanner>
+
+<hr>
+
+<!-- RESULT -->
+<div *ngIf="testList.length > 0">
+
+  <h3>Test Requirements</h3>
+
+  <ul>
+    <li *ngFor="let test of testList">
+      {{ test }}
+    </li>
+  </ul>
+
+</div>
+
+<!-- EMPTY -->
+<p *ngIf="testList.length === 0">
+  Scan barcode to view tests
+</p>
