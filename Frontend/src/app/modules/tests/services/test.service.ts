@@ -43,24 +43,24 @@ export class TestService {
 
   constructor(private http: HttpClient) {}
 
-  // =========================
+
   // CREATE TEST REQUEST
-  // =========================
+
   createRequest(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/create`, data);
   }
 
-  // =========================
+
   // GET ALL TEST REQUESTS
-  // =========================
+
   getAllRequests(): Observable<any> {
     return this.http.get(`${this.apiUrl}`);
   }
 
-  // =========================
+
   // GET SINGLE TEST BY ID
   // (USED IN TEST-SCREEN)
-  // =========================
+
   getSingleTest(id: string | number): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
@@ -70,15 +70,22 @@ export class TestService {
     return this.getSingleTest(id);
   }
 
-  // =========================
+
   // GET TEST REQUIREMENTS
-  // =========================
+
   getTestRequirements(id: string | number): Observable<any> {
     return this.http.get(`${this.trackingUrl}/test/${id}`);
   }
 
   getAllTests(userId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}?userId=${userId}`);
+  }
+
+  updateCompletedTests(id: number, completedTests: string[]) {
+  return this.http.put(
+    `http://localhost:5000/tests/${id}/completed`,
+    { completedTests }
+  );
   }
 
 }

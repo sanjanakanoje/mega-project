@@ -55,7 +55,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   declarations: [
     // LoginComponent,
     // RegisterComponent,
-    // WelcomeComponent   // ✅ HERE
+    // WelcomeComponent   
   ],
 
   imports: [

@@ -39,7 +39,7 @@ export class RegisterComponent {
 
       error: () => {
 
-        alert('Registration Failed');
+        alert('Invalid Credentials');
       }
 
     });

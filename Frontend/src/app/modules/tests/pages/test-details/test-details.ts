@@ -146,9 +146,9 @@ export class TestDetailsComponent implements OnInit {
     });
   }
 
-  /* =========================
-     LOAD TEST DATA
-  ========================= */
+ 
+    //  LOAD TEST DATA
+
   loadTest(id: string) {
     this.loading = true;
     this.errorMessage = '';
@@ -182,17 +182,17 @@ export class TestDetailsComponent implements OnInit {
     });
   }
 
-  /* =========================
-     CLICK BARCODE → RELOAD
-  ========================= */
+
+    //  CLICK BARCODE → RELOAD
+
   onBarcodeClick(id: number) {
     if (!id) return;
     this.loadTest(String(id));
   }
 
-  /* =========================
-     GENERATE BARCODE
-  ========================= */
+ 
+    //  GENERATE BARCODE
+
   generateBarcode() {
     if (!this.test?.id || !this.barcodeElement) return;
 
@@ -204,9 +204,9 @@ export class TestDetailsComponent implements OnInit {
     });
   }
 
-  /* =========================
-     PRINT BARCODE
-  ========================= */
+  
+    //  PRINT BARCODE
+  
   printBarcode() {
     const printContent = document.getElementById('print-area')?.innerHTML;
 

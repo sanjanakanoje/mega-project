@@ -19,7 +19,6 @@ const routes = [
     CommonModule,
     RouterModule.forChild(routes),
 
-    // ✅ IMPORT instead of DECLARE
     SampleListComponent,
     SampleDetailsComponent
   ],

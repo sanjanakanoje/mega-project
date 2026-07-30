@@ -1,0 +1,41 @@
+.page {
+  padding: 20px;
+  background: #0f0f0f;
+  min-height: 100vh;
+  color: #fff;
+  font-family: Arial;
+}
+
+.card {
+  max-width: 900px;
+  margin: auto;
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #2a2a2a;
+}
+
+h1 {
+  color: #ff7a00;
+}
+
+.test-card {
+  background: #141414;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #222;
+}
+
+button {
+  background: #ff7a00;
+  border: none;
+  padding: 6px 12px;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #e26500;
+}

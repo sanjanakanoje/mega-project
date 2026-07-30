@@ -47,10 +47,12 @@
 // }
 
 
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TestService } from '../../services/test.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-test-list',
@@ -62,21 +64,21 @@ import { TestService } from '../../services/test.service';
 export class TestListComponent implements OnInit {
 
   requests: any[] = [];
-  loading: boolean = true;
+  loading: boolean = false;
   errorMessage: string = '';
 
   constructor(
-    private testService: TestService,
-    private router: Router,
-    private cdr: ChangeDetectorRef
+  private testService: TestService,
+  private router: Router,
+  private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     console.log('✅ COMPONENT LOADED');
     this.loadTests();
   }
-
-  loadTests() {
+    
+  loadTests(): void {
     console.log('📡 CALLING API...');
     this.loading = true;
 
@@ -84,13 +86,13 @@ export class TestListComponent implements OnInit {
       next: (res: any) => {
         console.log('✅ API RESPONSE:', res);
 
-        this.requests = res?.data || [];
+        this.requests = Array.isArray(res) ? res : res?.data || [];
 
         console.log('📦 FINAL DATA:', this.requests);
 
         this.loading = false;
 
-        // ✅ force UI update fix
+        //  IMPORTANT FIX
         this.cdr.detectChanges();
       },
 
@@ -98,12 +100,17 @@ export class TestListComponent implements OnInit {
         console.error('❌ API ERROR:', err);
         this.errorMessage = 'Failed to load test requests';
         this.loading = false;
+        this.cdr.detectChanges(); // also here
       }
     });
   }
 
-  viewTest(id: number) {
+  viewTest(id: number): void {
     console.log('➡️ Navigating to:', id);
     this.router.navigate(['/tests', id]);
   }
+  trackById(index: number, item: any): number {
+    return item.id;
+  }
 }
+  
