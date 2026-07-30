@@ -117,7 +117,7 @@ SELECT * FROM test_requests;
 
 SELECT *
 FROM test_requests
-WHERE email = ram@gmail.co;
+WHERE email = 'ram@gmail.co';
 
 UPDATE test_requests
 SET tests_required = '[]'
@@ -127,3 +127,5 @@ ALTER TABLE test_requests
 ADD COLUMN completed_tests JSON;
 
 SELECT completed_tests FROM test_requests WHERE id = 4;
+
+
