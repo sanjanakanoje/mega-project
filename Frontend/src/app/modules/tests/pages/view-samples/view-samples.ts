@@ -2,6 +2,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TestService } from '../../services/test.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-view-samples',
@@ -16,6 +17,7 @@ export class ViewSamplesComponent implements OnInit {
 
   constructor(
     private testService: TestService,
+    private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -71,5 +73,9 @@ export class ViewSamplesComponent implements OnInit {
         return value.toString();
       }
     }
+
+  registerSample() {
+      this.router.navigate(['/tests/create-request']);
+  }
     
 }

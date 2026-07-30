@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import {
   FormBuilder,
   FormGroup,
@@ -66,7 +67,8 @@ export class CreateTestRequestComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private testService: TestService
+    private testService: TestService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -138,6 +140,8 @@ export class CreateTestRequestComponent implements OnInit {
     next: (res: any) => {
       console.log('SUCCESS', res);
       alert('Saved Successfully');
+
+      this.router.navigate(['/view-samples']);
     },
 
     error: (err: any) => {
