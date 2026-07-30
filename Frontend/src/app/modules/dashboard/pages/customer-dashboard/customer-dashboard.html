@@ -1,0 +1,29 @@
+<div class="page">
+
+  <div class="card">
+
+    <h1>My Test Requests</h1>
+
+    <p *ngIf="loading">Loading...</p>
+
+    <div *ngIf="tests.length === 0 && !loading">
+      No test requests found
+    </div>
+
+    <div class="test-card" *ngFor="let t of tests">
+
+      <h3>{{ t.company_name }}</h3>
+
+      <p><b>Sample:</b> {{ t.sample_description }}</p>
+      <p><b>Style No:</b> {{ t.style_no }}</p>
+      <p><b>Status:</b> {{ t.priority }}</p>
+
+      <button (click)="trackTest(t.id)">
+        Track Test
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

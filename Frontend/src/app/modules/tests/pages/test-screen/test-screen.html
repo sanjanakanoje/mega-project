@@ -28,10 +28,7 @@
 
       <div class="test-list">
 
-        <div
-          class="test-item"
-          *ngFor="let t of testsRequired"
-        >
+        <div class="test-item" *ngFor="let t of testsRequired">
 
           <label>
             <input
@@ -50,10 +47,10 @@
 
       </div>
 
-      <!-- SELECTED -->
       <hr>
 
-      <h3>Selected Tests</h3>
+      <!-- SELECTED -->
+      <h3>Completed Tests</h3>
 
       <ul>
         <li *ngFor="let s of selectedTests">

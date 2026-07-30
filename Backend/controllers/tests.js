@@ -176,28 +176,32 @@ exports.createTestRequest = async (req, res) => {
 
 
 
-
-
 exports.getAllTests = async (req, res) => {
   try {
     const userId = req.query.userId;
 
-    const result = await pool.query(
-      `
-      SELECT
-        id,
-        company_name,
-        fiber_content,
-        fabric_weight,
-        finish_type,
-        tests_required,
-        created_at
-      FROM test_requests
-      WHERE customer_id = $1
-      ORDER BY id DESC
-      `,
-      [userId]
-    );
+    let result;
+
+    if (userId) {
+      result = await pool.query(
+        `
+        SELECT *
+        FROM test_requests
+        WHERE customer_id = $1
+        ORDER BY id DESC
+        `,
+        [userId]
+      );
+    } else {
+      // 🔥 fallback (for testing)
+      result = await pool.query(
+        `
+        SELECT *
+        FROM test_requests
+        ORDER BY id DESC
+        `
+      );
+    }
 
     res.status(200).json(result.rows);
 
@@ -210,37 +214,42 @@ exports.getAllTests = async (req, res) => {
 };
 
 
-
 /* =========================================
    GET SINGLE TEST REQUEST
 ========================================= */
+// exports.getSingleTest = async (req, res) => {
+//   try {
 
-exports.getSingleTest = async (req, res) => {
-  try {
+//     const { id } = req.params;
 
-    const { id } = req.params;
+//     const result = await pool.query(
+//       `SELECT * FROM test_requests WHERE id = $1`,
+//       [id]
+//     );
 
-    const result = await pool.query(
-      `SELECT * FROM test_requests WHERE customer_id = $1`,
-      [id]
-    );
+//     if (result.rows.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Test not found"
+//       });
+//     }
 
-    res.status(200).json({
-      success: true,
-      data: result.rows[0]
-    });
+//     res.status(200).json({
+//       success: true,
+//       data: result.rows[0]
+//     });
 
-  } catch (error) {
+//   } catch (error) {
 
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+//     console.log(error);
 
-  }
-};
+//     res.status(500).json({
+//       success: false,
+//       message: error.message
+//     });
 
-
+//   }
+// };
 
 /* =========================================
    DELETE TEST REQUEST
@@ -268,5 +277,56 @@ exports.deleteTest = async (req, res) => {
       message: error.message
     });
 
+  }
+};
+
+
+// GET SINGLE TEST
+exports.getSingleTest = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query(
+      `SELECT * FROM test_requests WHERE id = $1`,
+      [id]
+    );
+
+    res.json({
+      success: true,
+      data: result.rows[0]
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
+// UPDATE COMPLETED TESTS
+exports.updateCompletedTests = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { completedTests } = req.body;
+
+    const result = await pool.query(
+      `UPDATE test_requests 
+       SET completed_tests = $1
+       WHERE id = $2
+       RETURNING *`,
+      [completedTests, id]
+    );
+
+    res.json({
+      success: true,
+      data: result.rows[0]
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 };

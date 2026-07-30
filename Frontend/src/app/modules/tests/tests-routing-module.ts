@@ -96,25 +96,25 @@ import { TestDetailsComponent } from './pages/test-details/test-details';
 
 const routes: Routes = [
 
-  // =========================
+
   // LIST PAGE
-  // =========================
+  
   {
     path: '',
     component: TestListComponent
   },
 
-  // =========================
+
   // CREATE REQUEST
-  // =========================
+
   {
     path: 'create-request',
     component: CreateTestRequestComponent
   },
 
-  // =========================
+
   // TEST DETAILS PAGE
-  // =========================
+
   {
     path: ':id',
     loadComponent: () =>
@@ -122,9 +122,9 @@ const routes: Routes = [
         .then(m => m.TestDetailsComponent)
   },
 
-  // =========================
+
   // TEST SCREEN PAGE (MAIN FIX)
-  // =========================
+
   {
     path: 'test-screen/:id',
     component: TestScreenComponent

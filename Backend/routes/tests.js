@@ -25,4 +25,7 @@ router.delete(
   testController.deleteTest
 );
 
+router.put('/:id/completed', testController.updateCompletedTests);
+
+
 module.exports = router;
