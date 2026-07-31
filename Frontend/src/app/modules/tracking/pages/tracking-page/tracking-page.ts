@@ -1,34 +1,105 @@
-import { Component } from '@angular/core';
-import { TrackingService } from '../../services/tracking';
-import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { TestService } from '../../../tests/services/test.service';
 
 @Component({
-  selector: 'app-tracking',
+  selector: 'app-tracking-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ZXingScannerModule],
-  templateUrl: './tracking-page.html'
+  imports: [CommonModule],
+  templateUrl: './tracking-page.html',
+  styleUrls: ['./tracking-page.css']
 })
-export class TrackingPage {
+export class TrackingComponent implements OnInit {
 
-  scannedId: string = '';
-  testList: any[] = [];
+  sample: any = null;
 
-  constructor(private service: TrackingService) {}
+  requiredTests: string[] = [];
+  completedTests: string[] = [];
+  pendingTests: string[] = [];
 
-  // 📷 CAMERA SCAN EVENT
-  onScanSuccess(result: string) {
-    this.scannedId = result;
+  progressPercentage = 0;
+  loading = true;
 
-    this.service.getTestsBySample(result)
+  constructor(
+    private route: ActivatedRoute,
+    private testService: TestService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+
+    const id = Number(
+      this.route.snapshot.paramMap.get('id')
+    );
+
+    console.log('Tracking ID:', id);
+
+    if (!id) {
+      this.loading = false;
+      return;
+    }
+
+    this.loadTracking(id);
+  }
+
+  loadTracking(id: number): void {
+
+    this.loading = true;
+
+    this.testService.getTrackingDetails(id)
       .subscribe({
+
         next: (res: any) => {
-          this.testList = res.data.tests_required;
+
+          console.log('API Response:', res);
+
+          if (!res || !res.success) {
+            this.loading = false;
+            return;
+          }
+
+          this.sample = res.data;
+
+          this.requiredTests =
+            res.data.testsRequired || [];
+
+          this.completedTests =
+            res.data.completedTests || [];
+
+          this.pendingTests =
+            res.data.pendingTests || [];
+
+          this.progressPercentage =
+            this.requiredTests.length > 0
+              ? Math.round(
+                  (this.completedTests.length /
+                    this.requiredTests.length) * 100
+                )
+              : 0;
+
+          this.loading = false;
+
+          console.log('Sample:', this.sample);
+          console.log('Required:', this.requiredTests);
+          console.log('Completed:', this.completedTests);
+          console.log('Pending:', this.pendingTests);
+
+          this.cdr.detectChanges();
         },
-        error: () => {
-          this.testList = [];
-          alert("No tests found for this sample");
+
+        error: (err) => {
+
+          console.error(err);
+
+          this.loading = false;
+
+          this.cdr.detectChanges();
         }
       });
   }

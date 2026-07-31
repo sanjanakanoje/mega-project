@@ -89,7 +89,10 @@
             <td>{{ item.priority }}</td>
             <td>{{ item.created_at | date:'short' }}</td>
             <td>
-              <button (click)="viewTest(item.id)">View</button>
+              <!-- <button (click)="viewTest(item.id)">View</button> -->
+              <button class="track-btn" (click)="viewTest(item.id)">
+                  View
+              </button>
             </td>
           </tr>
         </tbody>
@@ -107,3 +110,6 @@
   </div>
 
 </div>
+
+
+

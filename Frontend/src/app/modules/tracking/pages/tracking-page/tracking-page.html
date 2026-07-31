@@ -1,26 +1,85 @@
-<h2>Scan Sample Barcode</h2>
+<div class="tracking-container">
 
-<!-- 📷 CAMERA SCANNER -->
-<zxing-scanner
-  (scanSuccess)="onScanSuccess($event)">
-</zxing-scanner>
+  <div *ngIf="loading" class="loading-box">
+    Loading Tracking Data...
+  </div>
 
-<hr>
+  <div *ngIf="!loading && sample">
 
-<!-- RESULT -->
-<div *ngIf="testList.length > 0">
+    <h2>Sample Tracking</h2>
 
-  <h3>Test Requirements</h3>
+    <div class="sample-card">
 
-  <ul>
-    <li *ngFor="let test of testList">
-      {{ test }}
-    </li>
-  </ul>
+      <h3>{{ sample.company_name }}</h3>
+
+      <p>
+        <strong>Sample ID:</strong>
+        {{ sample.id }}
+      </p>
+
+      <p>
+        <strong>Priority:</strong>
+        {{ sample.priority }}
+      </p>
+
+      <p>
+        <strong>Progress:</strong>
+        {{ progressPercentage }}%
+      </p>
+
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          [style.width.%]="progressPercentage">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="tracking-section">
+
+      <!-- Completed -->
+
+      <div class="completed-box">
+
+        <h3>Completed Tests</h3>
+
+        <ul *ngIf="completedTests.length > 0">
+          <li *ngFor="let test of completedTests">
+            ✅ {{ test }}
+          </li>
+        </ul>
+
+        <p *ngIf="completedTests.length === 0">
+          No completed tests yet
+        </p>
+
+      </div>
+
+      <!-- Pending -->
+
+      <div class="pending-box">
+
+        <h3>Pending Tests</h3>
+
+        <ul *ngIf="pendingTests.length > 0">
+          <li *ngFor="let test of pendingTests">
+            ⏳ {{ test }}
+          </li>
+        </ul>
+
+        <p *ngIf="pendingTests.length === 0">
+          No pending tests
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div *ngIf="!loading && !sample" class="loading-box">
+    No Tracking Data Found
+  </div>
 
 </div>
-
-<!-- EMPTY -->
-<p *ngIf="testList.length === 0">
-  Scan barcode to view tests
-</p>

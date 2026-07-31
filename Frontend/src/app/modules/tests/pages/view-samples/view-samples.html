@@ -39,32 +39,30 @@
 </div>
  -->
 
+
+ 
 <div class="main-container">
 
   <div class="page-header">
-
     <div class="left-section">
       <h2>My Sample History</h2>
       <p>View and track all your registered samples.</p>
     </div>
 
-    <button
-      class="register-btn"
-      (click)="registerSample()">
-      + Register Sample
-    </button>
-
+    <div class="right-section">
+      <button class="register-btn" (click)="registerSample()">
+        Register Sample
+      </button>
+    </div>
   </div>
 
   <div *ngIf="tests.length === 0" class="no-data">
     No samples found
   </div>
 
+  <!-- Sample Cards -->
   <div *ngIf="tests.length > 0" class="card-container">
-
-    <div
-      class="test-card"
-      *ngFor="let test of tests">
+    <div class="test-card" *ngFor="let test of tests">
 
       <h3>{{ test.company_name }}</h3>
 
@@ -92,14 +90,11 @@
         {{ test.created_at | date:'dd MMM yyyy' }}
       </p>
 
-      <button
-        class="track-btn"
-        (click)="trackSample(test.id)">
+      <button class="track-btn" (click)="trackSample(test.id)">
         Track Sample
       </button>
 
     </div>
-
   </div>
 
 </div>

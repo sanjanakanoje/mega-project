@@ -1,71 +1,3 @@
-// import { Component, OnInit } from '@angular/core';
-// import { ActivatedRoute } from '@angular/router';
-// import { TestService } from '../../services/test.service';
-
-// @Component({
-//   selector: 'app-test-screen',
-//   templateUrl: './test-screen.html',
-//   styleUrls: ['./test-screen.css']
-// })
-// export class TestScreenComponent implements OnInit {
-
-//   testId: string | null = null;
-
-//   loading = false;
-//   errorMessage = '';
-
-//   companyName = '';
-//   testsRequired: string[] = [];
-
-//   test: any = null;
-
-//   constructor(
-//     private route: ActivatedRoute,
-//     private testService: TestService
-//   ) {}
-
-//   ngOnInit(): void {
-//     this.route.paramMap.subscribe(params => {
-//       this.testId = params.get('id');
-
-//       if (this.testId) {
-//         this.loadTest(this.testId);
-//       } else {
-//         this.errorMessage = 'Invalid Test ID';
-//       }
-//     });
-//   }
-
-//   /* =========================
-//      LOAD TEST DETAILS
-//   ========================= */
-//   loadTest(id: string) {
-//     this.loading = true;
-//     this.errorMessage = '';
-
-//     this.testService.getTestById(id).subscribe({
-//       next: (res: any) => {
-//         console.log('TEST SCREEN API:', res);
-
-//         if (res?.success) {
-//           this.test = res.data;
-
-//           this.companyName = res.data.company_name;
-//           this.testsRequired = res.data.tests_required || [];
-//         } else {
-//           this.errorMessage = 'No data found';
-//         }
-
-//         this.loading = false;
-//       },
-//       error: (err) => {
-//         console.error(err);
-//         this.errorMessage = 'Failed to load test details';
-//         this.loading = false;
-//       }
-//     });
-//   }
-// }
 
 
 
@@ -113,9 +45,9 @@
 //     this.loadTest(this.testId);
 //   }
 
-//   /* =========================
-//      LOAD TEST DATA
-//   ========================= */
+
+//     //  LOAD TEST DATA
+
 //   loadTest(id: number) {
 //     this.loading = true;
 
@@ -142,24 +74,44 @@
 //     });
 //   }
 
-//   /* =========================
-//      SELECT / UNSELECT TEST
-//   ========================= */
-//   toggleTest(test: string) {
-//     if (this.selectedTests.includes(test)) {
-//       this.selectedTests = this.selectedTests.filter(t => t !== test);
-//     } else {
-//       this.selectedTests.push(test);
-//     }
 
+//     //  TOGGLE TEST (FIXED)
+ 
+//   toggleTest(test: string) {
+//     const exists = this.selectedTests.includes(test);
+
+//     this.selectedTests = exists
+//       ? this.selectedTests.filter(t => t !== test)
+//       : [...this.selectedTests, test]; 
 //     console.log('Selected Tests:', this.selectedTests);
 //   }
 
-//   /* =========================
-//      MARK DONE (FUTURE API)
-//   ========================= */
+
+//       //  MARK DONE (OPTIONAL FUTURE API)
 //   markDone(test: string) {
-//     console.log('Completed:', test);
+
+//     if (!this.testId) {
+//       console.error('Test ID missing');
+//       return;
+//     }
+
+//     // Add only if not already completed
+//     if (!this.selectedTests.includes(test)) {
+//       this.selectedTests.push(test);
+//     }
+
+//     console.log('Completed Tests:', this.selectedTests);
+
+//     this.testService
+//       .updateCompletedTests(this.testId, this.selectedTests)
+//       .subscribe({
+//         next: (res) => {
+//           console.log('Saved successfully', res);
+//         },
+//         error: (err) => {
+//           console.error('Save failed', err);
+//         }
+//       });
 //   }
 // }
 
@@ -182,6 +134,7 @@ export class TestScreenComponent implements OnInit {
   testId: number | null = null;
 
   test: any = null;
+
   testsRequired: string[] = [];
   selectedTests: string[] = [];
 
@@ -195,85 +148,115 @@ export class TestScreenComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.testId = Number(this.route.snapshot.paramMap.get('id'));
 
-    console.log('🔥 Test Screen ID:', this.testId);
+    this.testId = Number(
+      this.route.snapshot.paramMap.get('id')
+    );
 
     if (!this.testId) {
-      this.loading = false;
       this.errorMessage = 'Invalid Test ID';
+      this.loading = false;
       return;
     }
 
     this.loadTest(this.testId);
   }
 
+  loadTest(id: number): void {
 
-    //  LOAD TEST DATA
-
-  loadTest(id: number) {
     this.loading = true;
 
-    this.testService.getTestById(id).subscribe({
-      next: (res: any) => {
-        console.log('API RESPONSE:', res);
+    this.testService.getTestById(id)
+      .subscribe({
 
-        if (res?.success) {
-          this.test = res.data;
-          this.testsRequired = res.data?.tests_required || [];
-        } else {
-          this.errorMessage = 'No data found';
+        next: (res: any) => {
+
+          console.log('API Response:', res);
+
+          if (res.success) {
+
+            this.test = res.data;
+
+            this.testsRequired =
+              res.data.tests_required || [];
+
+            this.selectedTests =
+              res.data.completed_tests || [];
+
+            console.log(
+              'Already Completed:',
+              this.selectedTests
+            );
+
+          } else {
+
+            this.errorMessage =
+              'No test data found';
+          }
+
+          this.loading = false;
+          this.cdr.detectChanges();
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+          this.errorMessage =
+            'Failed to load test';
+
+          this.loading = false;
         }
-
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-
-      error: (err) => {
-        console.error(err);
-        this.errorMessage = 'Failed to load test data';
-        this.loading = false;
-      }
-    });
+      });
   }
 
+  toggleTest(test: string): void {
 
-    //  TOGGLE TEST (FIXED)
- 
-  toggleTest(test: string) {
-    const exists = this.selectedTests.includes(test);
+    if (this.selectedTests.includes(test)) {
 
-    this.selectedTests = exists
-      ? this.selectedTests.filter(t => t !== test)
-      : [...this.selectedTests, test]; 
-    console.log('Selected Tests:', this.selectedTests);
-  }
+      this.selectedTests =
+        this.selectedTests.filter(
+          t => t !== test
+        );
 
+    } else {
 
-    //  MARK DONE (OPTIONAL FUTURE API)
-
-  markDone(test: string) {
-
-    if (!this.selectedTests.includes(test)) {
-      this.selectedTests = [...this.selectedTests, test];
+      this.selectedTests.push(test);
     }
+  }
 
-    console.log('Completed:', test);
+  markDone(test: string): void {
 
-    //  Prevent null crash
-    if (this.testId === null || this.testId === undefined) {
-      console.error('testId is missing');
+    if (!this.testId) {
       return;
     }
 
-    //  SEND FULL ARRAY TO BACKEND
-    this.testService.updateCompletedTests(this.testId, this.selectedTests)
+    if (!this.selectedTests.includes(test)) {
+
+      this.selectedTests.push(test);
+    }
+
+    this.testService
+      .updateCompletedTests(
+        this.testId,
+        this.selectedTests
+      )
       .subscribe({
+
         next: (res) => {
-          console.log('Saved successfully:', res);
+
+          console.log(
+            'Saved Successfully',
+            res
+          );
         },
+
         error: (err) => {
-          console.error('Save failed:', err);
+
+          console.error(
+            'Save Failed',
+            err
+          );
         }
       });
   }

@@ -133,9 +133,9 @@ export class TestDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('🔥 Test Details Loaded');
-
     this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
+
+      const id = Number(params.get('id'));
 
       if (id) {
         this.loadTest(id);
@@ -143,13 +143,14 @@ export class TestDetailsComponent implements OnInit {
         this.errorMessage = 'Invalid ID';
         this.loading = false;
       }
+
     });
   }
 
  
     //  LOAD TEST DATA
 
-  loadTest(id: string) {
+  loadTest(id: number) {
     this.loading = true;
     this.errorMessage = '';
 
@@ -184,10 +185,9 @@ export class TestDetailsComponent implements OnInit {
 
 
     //  CLICK BARCODE → RELOAD
-
   onBarcodeClick(id: number) {
     if (!id) return;
-    this.loadTest(String(id));
+    this.loadTest(id);
   }
 
  

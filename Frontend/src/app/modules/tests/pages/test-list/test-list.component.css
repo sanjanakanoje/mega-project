@@ -67,3 +67,26 @@ td {
   text-align: center;
   color: #888;
 }
+
+
+.track-btn {
+  width: 100%;
+
+  margin-top: 15px;
+
+  background: orange;
+  color: black;
+
+  border: none;
+  border-radius: 8px;
+
+  padding: 10px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.track-btn:hover {
+  background: #ffb733;
+}

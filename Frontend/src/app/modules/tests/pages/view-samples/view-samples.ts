@@ -55,10 +55,9 @@ export class ViewSamplesComponent implements OnInit {
   }
 
 
-
-  trackSample(id: number): void {
-      alert('Tracking Sample ID: ' + id);
-    }
+  // trackSample(id: number): void {
+  //   this.router.navigate(['/tracking', id]);
+  // }
 
     parseArray(value: any): string {
       if (!value) return 'N/A';
@@ -77,5 +76,10 @@ export class ViewSamplesComponent implements OnInit {
   registerSample() {
       this.router.navigate(['/tests/create-request']);
   }
+
+  trackSample(id: number): void {
+    this.router.navigate(['/customer-tracking', id]);
+  }
+  
     
 }
