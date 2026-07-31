@@ -1,5 +1,265 @@
-const pool = require('../config/db');
+// const pool = require('../config/db');
 
+
+// /* =========================================
+//    CREATE TEST REQUEST
+// ========================================= */
+
+// exports.createTestRequest = async (req, res) => {
+//   try {
+
+//     const {
+//       customerId,
+//       companyName,
+//       submittedBy,
+//       merchantName,
+//       brandLabelName,
+//       vendorCode,
+//       email,
+//       phoneNo,
+
+//       sampleDescription,
+//       styleNo,
+//       season,
+//       fiberContent,
+//       fabricWeight,
+//       countNo,
+//       color,
+//       construction,
+//       endUse,
+
+//       washInstruction,
+//       washCode,
+//       priority,
+
+//       finishTypes,
+//       divisions,
+//       packageTypes,
+//       testsRequired
+//     } = req.body;
+
+//     const result = await pool.query(
+//       `
+//       INSERT INTO test_requests
+//       (
+//         customer_id,
+//         company_name,
+//         submitted_by,
+//         merchant_name,
+//         brand_label_name,
+//         vendor_code,
+//         email,
+//         phone_no,
+
+//         sample_description,
+//         style_no,
+//         season,
+//         fiber_content,
+//         fabric_weight,
+//         count_no,
+//         color,
+//         construction,
+//         end_use,
+
+//         wash_instruction,
+//         wash_code,
+//         priority,
+
+//         finish_type,
+//         division,
+//         package_type,
+//         tests_required
+//       )
+
+//       VALUES
+//       (
+//         $1,$2,$3,$4,$5,$6,$7,
+//         $8,$9,$10,$11,$12,$13,$14,$15,$16,
+//         $17,$18,$19,
+//         $20,$21,$22,$23,$24
+//       )
+
+//       RETURNING *
+//       `,
+//       [
+//         customerId,
+//         companyName,
+//         submittedBy,
+//         merchantName,
+//         brandLabelName,
+//         vendorCode,
+//         email,
+//         phoneNo,
+
+//         sampleDescription,
+//         styleNo,
+//         season,
+//         fiberContent,
+//         fabricWeight,
+//         countNo,
+//         color,
+//         construction,
+//         endUse,
+
+//         washInstruction,
+//         washCode,
+//         priority,
+
+//         JSON.stringify(finishTypes || []),
+//         JSON.stringify(divisions || []),
+//         JSON.stringify(packageTypes || []),
+//         JSON.stringify(testsRequired || [])
+//       ]
+//     );
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Test Request Created",
+//       data: result.rows[0]
+//     });
+
+//   } 
+//   catch (error) {
+
+//     console.log(error);
+
+//     res.status(500).json({
+//       success: false,
+//       message: error.message
+//     });
+
+//   }
+// };
+
+
+
+
+
+
+
+// exports.getAllTests = async (req, res) => {
+//   try {
+//     const userId = req.query.userId;
+
+//     let result;
+
+//     if (userId) {
+//       result = await pool.query(
+//         `
+//         SELECT *
+//         FROM test_requests
+//         WHERE customer_id = $1
+//         ORDER BY id DESC
+//         `,
+//         [userId]
+//       );
+//     } else {
+//       // 🔥 fallback (for testing)
+//       result = await pool.query(
+//         `
+//         SELECT *
+//         FROM test_requests
+//         ORDER BY id DESC
+//         `
+//       );
+//     }
+
+//     res.status(200).json(result.rows);
+
+//   } catch (error) {
+//     console.error('Get All Tests Error:', error);
+//     res.status(500).json({
+//       message: error.message
+//     });
+//   }
+// };
+
+
+
+
+// /* =========================================
+//    DELETE TEST REQUEST
+// ========================================= */
+
+// exports.deleteTest = async (req, res) => {
+//   try {
+
+//     const { id } = req.params;
+
+//     await pool.query(
+//       `DELETE FROM test_requests WHERE customer_id = $1`,
+//       [id]
+//     );
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Deleted Successfully"
+//     });
+
+//   } catch (error) {
+
+//     res.status(500).json({
+//       success: false,
+//       message: error.message
+//     });
+
+//   }
+// };
+
+
+// // GET SINGLE TEST
+// exports.getSingleTest = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const result = await pool.query(
+//       `SELECT * FROM test_requests WHERE id = $1`,
+//       [id]
+//     );
+
+//     res.json({
+//       success: true,
+//       data: result.rows[0]
+//     });
+
+//   } catch (err) {
+//     res.status(500).json({
+//       success: false,
+//       message: err.message
+//     });
+//   }
+// };
+
+// // UPDATE COMPLETED TESTS
+// exports.updateCompletedTests = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { completedTests } = req.body;
+
+//     const result = await pool.query(
+//       `UPDATE test_requests 
+//        SET completed_tests = $1
+//        WHERE id = $2
+//        RETURNING *`,
+//       [completedTests, id]
+//     );
+
+//     res.json({
+//       success: true,
+//       data: result.rows[0]
+//     });
+
+//   } catch (err) {
+//     res.status(500).json({
+//       success: false,
+//       message: err.message
+//     });
+//   }
+// };
+
+
+
+const pool = require('../config/db');
 
 /* =========================================
    CREATE TEST REQUEST
@@ -68,7 +328,9 @@ exports.createTestRequest = async (req, res) => {
         finish_type,
         division,
         package_type,
-        tests_required
+        tests_required,
+
+        completed_tests
       )
 
       VALUES
@@ -76,7 +338,7 @@ exports.createTestRequest = async (req, res) => {
         $1,$2,$3,$4,$5,$6,$7,
         $8,$9,$10,$11,$12,$13,$14,$15,$16,
         $17,$18,$19,
-        $20,$21,$22,$23,$24
+        $20,$21,$22,$23,$24,$25
       )
 
       RETURNING *
@@ -108,81 +370,42 @@ exports.createTestRequest = async (req, res) => {
         JSON.stringify(finishTypes || []),
         JSON.stringify(divisions || []),
         JSON.stringify(packageTypes || []),
-        JSON.stringify(testsRequired || [])
+        JSON.stringify(testsRequired || []),
+
+        JSON.stringify([]) // completed_tests initially empty
       ]
     );
 
     res.status(201).json({
       success: true,
-      message: "Test Request Created",
+      message: 'Test Request Created Successfully',
       data: result.rows[0]
     });
 
-  } 
-  catch (error) {
+  } catch (error) {
 
-    console.log(error);
+    console.error(error);
 
     res.status(500).json({
       success: false,
       message: error.message
     });
-
   }
 };
-
-
 
 /* =========================================
    GET ALL TEST REQUESTS
 ========================================= */
 
-// exports.getAllTests = async (req, res) => {
-//   try {
-//     const userId = req.query.userId;
-
-//     const result = await pool.query(
-//       `
-//       SELECT
-//         id,
-//         company_name,
-//         finish_type,
-//         tests_required,
-//         fiber_content,
-//         fabric_weight,
-//         created_at
-//       FROM test_requests
-//       WHERE customer_id = $1
-//       ORDER BY id DESC
-//       `,
-//       [userId]
-//     );
-
-//     res.status(200).json(result.rows);
-
-//   } 
-
-//     catch (error) {
-//       console.error('Create Test Request Error:', error);
-
-//       res.status(500).json({
-//         message: error.message
-//       });
-//     }
-
-
-// };
-
-
-
-
 exports.getAllTests = async (req, res) => {
   try {
+
     const userId = req.query.userId;
 
     let result;
 
     if (userId) {
+
       result = await pool.query(
         `
         SELECT *
@@ -192,8 +415,9 @@ exports.getAllTests = async (req, res) => {
         `,
         [userId]
       );
+
     } else {
-      // 🔥 fallback (for testing)
+
       result = await pool.query(
         `
         SELECT *
@@ -203,53 +427,131 @@ exports.getAllTests = async (req, res) => {
       );
     }
 
-    res.status(200).json(result.rows);
+    res.status(200).json({
+      success: true,
+      data: result.rows
+    });
 
   } catch (error) {
-    console.error('Get All Tests Error:', error);
+
+    console.error(error);
+
     res.status(500).json({
+      success: false,
       message: error.message
     });
   }
 };
 
+/* =========================================
+   GET SINGLE TEST
+========================================= */
+
+exports.getSingleTest = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        customer_id,
+        company_name,
+        priority,
+        tests_required,
+        completed_tests,
+        created_at
+      FROM test_requests
+      WHERE id = $1
+      `,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Test Request Not Found'
+      });
+    }
+
+    const row = result.rows[0];
+
+    console.log('GET SINGLE TEST:', row);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ...row,
+
+        tests_required:
+          row.tests_required || [],
+
+        completed_tests:
+          row.completed_tests || []
+      }
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
 
 /* =========================================
-   GET SINGLE TEST REQUEST
+   UPDATE COMPLETED TESTS
 ========================================= */
-// exports.getSingleTest = async (req, res) => {
-//   try {
 
-//     const { id } = req.params;
+exports.updateCompletedTests = async (req, res) => {
+  try {
 
-//     const result = await pool.query(
-//       `SELECT * FROM test_requests WHERE id = $1`,
-//       [id]
-//     );
+    const { id } = req.params;
+    const { completedTests } = req.body;
 
-//     if (result.rows.length === 0) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Test not found"
-//       });
-//     }
+    console.log('Updating Sample:', id);
+    console.log('Completed Tests:', completedTests);
 
-//     res.status(200).json({
-//       success: true,
-//       data: result.rows[0]
-//     });
+    const result = await pool.query(
+      `
+      UPDATE test_requests
+      SET completed_tests = $1::jsonb
+      WHERE id = $2
+      RETURNING *
+      `,
+      [
+        JSON.stringify(completedTests),
+        id
+      ]
+    );
 
-//   } catch (error) {
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Sample Not Found'
+      });
+    }
 
-//     console.log(error);
+    res.status(200).json({
+      success: true,
+      message: 'Completed Tests Updated Successfully',
+      data: result.rows[0]
+    });
 
-//     res.status(500).json({
-//       success: false,
-//       message: error.message
-//     });
+  } catch (error) {
 
-//   }
-// };
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
 
 /* =========================================
    DELETE TEST REQUEST
@@ -260,73 +562,34 @@ exports.deleteTest = async (req, res) => {
 
     const { id } = req.params;
 
-    await pool.query(
-      `DELETE FROM test_requests WHERE customer_id = $1`,
+    const result = await pool.query(
+      `
+      DELETE FROM test_requests
+      WHERE id = $1
+      RETURNING *
+      `,
       [id]
     );
 
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Record Not Found'
+      });
+    }
+
     res.status(200).json({
       success: true,
-      message: "Deleted Successfully"
+      message: 'Deleted Successfully'
     });
 
   } catch (error) {
 
+    console.error(error);
+
     res.status(500).json({
       success: false,
       message: error.message
-    });
-
-  }
-};
-
-
-// GET SINGLE TEST
-exports.getSingleTest = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const result = await pool.query(
-      `SELECT * FROM test_requests WHERE id = $1`,
-      [id]
-    );
-
-    res.json({
-      success: true,
-      data: result.rows[0]
-    });
-
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message
-    });
-  }
-};
-
-// UPDATE COMPLETED TESTS
-exports.updateCompletedTests = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { completedTests } = req.body;
-
-    const result = await pool.query(
-      `UPDATE test_requests 
-       SET completed_tests = $1
-       WHERE id = $2
-       RETURNING *`,
-      [completedTests, id]
-    );
-
-    res.json({
-      success: true,
-      data: result.rows[0]
-    });
-
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message
     });
   }
 };

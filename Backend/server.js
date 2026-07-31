@@ -94,7 +94,15 @@ app.use((req, res, next) => {
 const authRoutes = require('./routes/auth');
 const sampleRoutes = require('./routes/sample');
 const testRoutes = require('./routes/tests');
-const trackingRoutes = require('./routes/tracking'); // ✅ IMPORTANT FIX
+
+
+
+const trackingRoutes = require('./routes/tracking');
+const trackingControllerRoutes = require('./routes/trackingController');
+
+app.use('/api/tracking', trackingRoutes);
+
+app.use('/api/customer-tracking', trackingControllerRoutes);
 
 /* ===============================
    API ROUTES
@@ -102,7 +110,7 @@ const trackingRoutes = require('./routes/tracking'); // ✅ IMPORTANT FIX
 app.use('/api/auth', authRoutes);
 //app.use('/api/samples', sampleRoutes);
 app.use('/api/tests', testRoutes);
-app.use('/api/tracking', trackingRoutes); // ✅ FIXED
+//app.use('/api/tracking', trackingRoutes); // ✅ FIXED
 
 /* ===============================
    HOME ROUTE

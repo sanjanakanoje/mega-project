@@ -73,19 +73,49 @@ export class TestService {
 
   // GET TEST REQUIREMENTS
 
-  getTestRequirements(id: string | number): Observable<any> {
-    return this.http.get(`${this.trackingUrl}/test/${id}`);
-  }
+  // getTestRequirements(id: string | number): Observable<any> {
+  //   return this.http.get(`${this.trackingUrl}/test/${id}`);
+  // }
 
   getAllTests(userId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}?userId=${userId}`);
   }
 
-  updateCompletedTests(id: number, completedTests: string[]) {
-  return this.http.put(
-    `http://localhost:5000/tests/${id}/completed`,
-    { completedTests }
-  );
+  // updateCompletedTests(id: number, completedTests: string[]) {
+
+  //   return this.http.put(
+  //     `http://localhost:5000/api/tracking/${id}/completed`,
+  //     { completedTests }
+  //   );
+  // }
+
+  // LAB STAFF
+
+  getTestRequirements(id: number) {
+    return this.http.get(
+      `${this.trackingUrl}/test/${id}`
+    );
+  }
+
+
+  // CUSTOMER TRACKING PAGE
+
+  getTrackingDetails(id: number) {
+    return this.http.get(
+      `http://localhost:5000/api/customer-tracking/${id}`
+    );
+  }
+
+  // SAVE COMPLETED TESTS
+
+  updateCompletedTests(
+    id: number,
+    completedTests: string[]
+  ) {
+    return this.http.put(
+      `http://localhost:5000/api/customer-tracking/${id}/completed`,
+      { completedTests }
+    );
   }
 
 }

@@ -190,6 +190,19 @@ export const routes: Routes = [
       canActivate: [CustomerGuard]
   },
 
+  {
+    path: 'tracking',
+    loadChildren: () =>
+      import('./modules/tracking/tracking-module')
+        .then(m => m.TrackingModule)
+  },
+
+  {
+  path: 'customer-tracking',
+  loadChildren: () =>
+    import('./modules/tracking/tracking-module')
+      .then(m => m.TrackingModule)
+},
 
   // =========================
   // FALLBACK
