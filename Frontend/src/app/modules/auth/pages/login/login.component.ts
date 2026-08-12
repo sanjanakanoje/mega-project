@@ -62,7 +62,7 @@ export class LoginComponent {
         alert('Login Successful');
 
         if (role === 'labstaff') {
-          this.router.navigate(['/samples']);
+          this.router.navigate(['/tests']);
         } 
         else if (role === 'customer') {
           this.router.navigate(['/view-samples']);
@@ -97,6 +97,7 @@ export class LoginComponent {
       //   console.log(err);
       //   alert('Invalid Email or Password');
       // }
+      
 
     }
 
