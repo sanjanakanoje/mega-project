@@ -1,15 +1,17 @@
 <nav class="navbar">
 
-  <div class="logo">
-    Smart Textile
-  </div>
+  <div class="logo">Smart Textile</div>
 
   <div class="nav-links">
     <a routerLink="/home">Home</a>
     <a routerLink="/about">About Us</a>
+    <a routerLink="/profile">Profile</a>
   </div>
 
-  <button class="logout-btn" (click)="logout()">
+  <button
+    *ngIf="showLogout"
+    class="logout-btn"
+    (click)="logout()">
     Logout
   </button>
 
