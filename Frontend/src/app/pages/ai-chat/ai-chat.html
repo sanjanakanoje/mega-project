@@ -1,0 +1,804 @@
+<!-- 
+
+<div *ngIf="isLoggedIn">
+
+
+  <button
+    *ngIf="!isChatOpen"
+    type="button"
+    class="ai-floating-button"
+    (click)="toggleChat()"
+    aria-label="Open Textile Lab AI"
+  >
+    <span class="ai-icon">🤖</span>
+  </button>
+
+
+  <div
+    *ngIf="isChatOpen"
+    class="ai-chat-window"
+  >
+
+
+    <div class="chat-header">
+
+      <div class="header-left">
+
+        <div class="header-ai-icon">
+          🤖
+        </div>
+
+        <div class="header-text">
+
+          <h3>
+            Textile Lab AI
+          </h3>
+
+          <span>
+            AI Assistant
+          </span>
+
+        </div>
+
+      </div>
+
+
+
+      <button
+        type="button"
+        class="history-button"
+        (click)="showHistory = !showHistory"
+        aria-label="Chat history"
+      >
+        ☰
+      </button>
+
+
+
+      <button
+        type="button"
+        class="close-button"
+        (click)="closeChat()"
+        aria-label="Close chat"
+      >
+        ✕
+      </button>
+
+    </div>
+
+
+    <div
+      *ngIf="showHistory"
+      class="chat-history-panel"
+    >
+
+
+      <div class="history-header">
+
+        <h4>
+          Chat History
+        </h4>
+
+
+        <button
+          type="button"
+          class="new-chat-button"
+          (click)="startNewChat()"
+        >
+          + New Chat
+        </button>
+
+      </div>
+
+
+
+      <div
+        *ngIf="historyLoading"
+        class="history-loading"
+      >
+        Loading conversations...
+      </div>
+
+
+
+      <div
+        *ngIf="
+          !historyLoading &&
+          conversations.length === 0
+        "
+        class="no-history"
+      >
+
+        No previous conversations.
+
+      </div>
+
+
+
+      <div
+        *ngFor="let conversation of conversations"
+        class="history-item"
+        (click)="openConversation(conversation)"
+      >
+
+        <div class="history-title">
+
+          {{ conversation.title }}
+
+        </div>
+
+
+        <div
+          *ngIf="conversation.last_message"
+          class="history-last-message"
+        >
+
+          {{ conversation.last_message }}
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <div
+      #chatBody
+      class="chat-body"
+    >
+
+
+      <div
+        *ngIf="messages.length === 0"
+        class="welcome-section"
+      >
+
+        <div class="welcome-ai-icon">
+          🤖
+        </div>
+
+
+        <h3>
+          Hi! 👋
+        </h3>
+
+
+        <p>
+          I'm your Textile Lab AI Assistant.
+        </p>
+
+
+        <p class="welcome-subtitle">
+          Ask me about your samples, tests,
+          tracking or reports.
+        </p>
+
+
+
+        <div class="quick-question-section">
+
+          <span class="quick-title">
+            Quick questions
+          </span>
+
+
+          <button
+            *ngFor="let question of quickQuestions"
+            type="button"
+            class="quick-question"
+            (click)="askQuickQuestion(question)"
+            [disabled]="loading"
+          >
+
+            {{ question }}
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div
+        *ngFor="let chat of messages"
+        class="message-row"
+        [class.user-message]="chat.role === 'user'"
+        [class.ai-message]="chat.role === 'assistant'"
+      >
+
+        <div class="message-bubble">
+
+
+
+          <div
+            *ngIf="chat.role === 'assistant'"
+            class="message-avatar"
+          >
+            🤖
+          </div>
+
+
+          <div class="message-content">
+
+
+            <div class="message-role">
+
+              <span
+                *ngIf="chat.role === 'user'"
+              >
+                You
+              </span>
+
+
+              <span
+                *ngIf="chat.role === 'assistant'"
+              >
+                Textile AI
+              </span>
+
+            </div>
+
+
+            <div class="message-text">
+
+              {{ chat.message }}
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div
+        *ngIf="loading"
+        class="message-row ai-message"
+      >
+
+        <div class="message-bubble typing-bubble">
+
+          <div class="message-avatar">
+            🤖
+          </div>
+
+
+          <div class="typing-content">
+
+            <div class="message-role">
+              Textile AI
+            </div>
+
+
+            <div class="typing-indicator">
+
+              <span></span>
+              <span></span>
+              <span></span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="chat-input-area">
+
+      <textarea
+        [(ngModel)]="message"
+        placeholder="Ask about your sample..."
+        rows="1"
+        [disabled]="loading"
+        (keydown)="handleKeydown($event)"
+      ></textarea>
+
+
+      <button
+        type="button"
+        class="send-button"
+        (click)="sendMessage()"
+        [disabled]="
+          loading ||
+          !message.trim()
+        "
+        aria-label="Send message"
+      >
+
+        <span *ngIf="!loading">
+          ➤
+        </span>
+
+        <span *ngIf="loading">
+          ...
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div> -->
+
+
+
+
+
+
+
+
+
+
+<!-- =========================================================
+     AI CHAT - ONLY LOGGED-IN USERS
+========================================================= -->
+
+<div *ngIf="isLoggedIn">
+
+  <!-- =======================================================
+       FLOATING AI BUTTON
+  ======================================================== -->
+
+  <button
+    *ngIf="!isChatOpen"
+    type="button"
+    class="ai-floating-button"
+    (click)="toggleChat()"
+    aria-label="Open Textile Lab AI"
+  >
+    <span class="ai-chat-icon">
+
+      <span class="chat-icon-bubble">
+        💬
+      </span>
+
+      <span class="chat-icon-ai">
+        AI
+      </span>
+
+    </span>
+  </button>
+
+
+  <!-- =======================================================
+       CHAT WINDOW
+  ======================================================== -->
+
+  <div
+    *ngIf="isChatOpen"
+    class="ai-chat-window"
+  >
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="chat-header">
+
+      <div class="header-left">
+
+        <div class="header-ai-icon">
+
+          <span class="header-chat-icon">
+            💬
+          </span>
+
+          <span class="header-ai-badge">
+            AI
+          </span>
+
+        </div>
+
+        <div class="header-text">
+
+          <h3>
+            Textile Lab AI
+          </h3>
+
+          <span>
+            AI Assistant
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- HEADER ACTIONS -->
+
+      <div class="header-actions">
+
+        <!-- HISTORY BUTTON -->
+
+        <button
+          type="button"
+          class="history-button"
+          (click)="showHistory = !showHistory"
+          aria-label="Chat history"
+          [class.active]="showHistory"
+        >
+          ☰
+        </button>
+
+
+        <!-- CLOSE BUTTON -->
+
+        <button
+          type="button"
+          class="close-button"
+          (click)="closeChat()"
+          aria-label="Close chat"
+        >
+          ✕
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         HISTORY PANEL
+    ====================================================== -->
+
+    <div
+      *ngIf="showHistory"
+      class="chat-history-panel"
+    >
+
+      <!-- HISTORY HEADER -->
+
+      <div class="history-header">
+
+        <div class="history-heading">
+
+          <h4>
+            Chat History
+          </h4>
+
+          <span>
+            Your previous conversations
+          </span>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="new-chat-button"
+          (click)="startNewChat()"
+        >
+          <span class="new-chat-icon">+</span>
+          New Chat
+        </button>
+
+      </div>
+
+
+      <!-- LOADING -->
+
+      <div
+        *ngIf="historyLoading"
+        class="history-loading"
+      >
+
+        <div class="history-loading-spinner"></div>
+
+        <span>
+          Loading conversations...
+        </span>
+
+      </div>
+
+
+      <!-- NO HISTORY -->
+
+      <div
+        *ngIf="
+          !historyLoading &&
+          conversations.length === 0
+        "
+        class="no-history"
+      >
+
+        <div class="no-history-icon">
+          💬
+        </div>
+
+        <h5>
+          No conversations yet
+        </h5>
+
+        <p>
+          Start a new chat with Textile Lab AI.
+        </p>
+
+      </div>
+
+
+      <!-- CONVERSATIONS -->
+
+      <div
+        *ngIf="
+          !historyLoading &&
+          conversations.length > 0
+        "
+        class="history-list"
+      >
+
+        <div
+          *ngFor="let conversation of conversations"
+          class="history-item"
+          (click)="openConversation(conversation)"
+        >
+
+          <!-- CHAT ICON -->
+
+          <div class="history-item-icon">
+            💬
+          </div>
+
+
+          <!-- CHAT INFORMATION -->
+
+          <div class="history-item-content">
+
+            <div class="history-title">
+
+              {{ conversation.title }}
+
+            </div>
+
+
+            <div
+              *ngIf="conversation.last_message"
+              class="history-last-message"
+            >
+
+              {{ conversation.last_message }}
+
+            </div>
+
+          </div>
+
+
+          <!-- ARROW -->
+
+          <div class="history-arrow">
+            ›
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CHAT BODY
+    ====================================================== -->
+
+    <div
+      #chatBody
+      class="chat-body"
+    >
+
+      <!-- ===================================================
+           WELCOME
+      ==================================================== -->
+
+      <div
+        *ngIf="messages.length === 0"
+        class="welcome-section"
+      >
+
+        <div class="welcome-ai-icon">
+
+          <span class="welcome-chat-icon">
+            💬
+          </span>
+
+          <span class="welcome-ai-badge">
+            AI
+          </span>
+
+        </div>
+
+
+        <h3>
+          Hi! 👋
+        </h3>
+
+
+        <p>
+          I'm your Textile Lab AI Assistant.
+        </p>
+
+
+        <p class="welcome-subtitle">
+          Ask me about your samples, tests,
+          tracking or reports.
+        </p>
+
+
+        <!-- QUICK QUESTIONS -->
+
+        <div class="quick-question-section">
+
+          <span class="quick-title">
+            Quick questions
+          </span>
+
+
+          <button
+            *ngFor="let question of quickQuestions"
+            type="button"
+            class="quick-question"
+            (click)="askQuickQuestion(question)"
+            [disabled]="loading"
+          >
+
+            {{ question }}
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================
+           CHAT MESSAGES
+      ==================================================== -->
+
+      <div
+        *ngFor="let chat of messages"
+        class="message-row"
+        [class.user-message]="chat.role === 'user'"
+        [class.ai-message]="chat.role === 'assistant'"
+      >
+
+        <div class="message-bubble">
+
+
+          <!-- AI AVATAR -->
+
+          <div
+            *ngIf="chat.role === 'assistant'"
+            class="message-avatar"
+          >
+
+            💬
+
+          </div>
+
+
+          <!-- MESSAGE CONTENT -->
+
+          <div class="message-content">
+
+            <!-- ROLE -->
+
+            <div class="message-role">
+
+              <span
+                *ngIf="chat.role === 'user'"
+              >
+                You
+              </span>
+
+
+              <span
+                *ngIf="chat.role === 'assistant'"
+              >
+                Textile AI
+              </span>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div class="message-text">
+
+              {{ chat.message }}
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================
+           TYPING INDICATOR
+      ==================================================== -->
+
+      <div
+        *ngIf="loading"
+        class="message-row ai-message"
+      >
+
+        <div class="message-bubble typing-bubble">
+
+          <div class="message-avatar">
+            💬
+          </div>
+
+
+          <div class="typing-content">
+
+            <div class="message-role">
+              Textile AI
+            </div>
+
+
+            <div class="typing-indicator">
+
+              <span></span>
+              <span></span>
+              <span></span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         INPUT AREA
+    ====================================================== -->
+
+    <div class="chat-input-area">
+
+      <textarea
+        [(ngModel)]="message"
+        placeholder="Ask about your sample..."
+        rows="1"
+        [disabled]="loading"
+        (keydown)="handleKeydown($event)"
+      ></textarea>
+
+
+      <button
+        type="button"
+        class="send-button"
+        (click)="sendMessage()"
+        [disabled]="
+          loading ||
+          !message.trim()
+        "
+        aria-label="Send message"
+      >
+
+        <span *ngIf="!loading">
+          ➤
+        </span>
+
+        <span *ngIf="loading">
+          ...
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

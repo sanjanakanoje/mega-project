@@ -1,5 +1,118 @@
 
 
+// import { Component } from '@angular/core';
+// import { CommonModule } from '@angular/common';
+// import { FormsModule } from '@angular/forms';
+// import { Router, RouterModule } from '@angular/router';
+
+// import { Auth } from '../../../../core/services/auth';
+
+// @Component({
+//   selector: 'app-login',
+//   standalone: true,
+//   imports: [
+//     CommonModule,
+//     FormsModule,
+//     RouterModule
+//   ],
+//   templateUrl: './login.html',
+//   styleUrls: ['./login.css']
+// })
+// export class LoginComponent {
+
+//   formData = {
+//     email: '',
+//     password: ''
+//   };
+
+//   constructor(
+//     private auth: Auth,
+//     private router: Router
+//   ) {}
+
+//   loginUser() {
+
+//     if (!this.formData.email || !this.formData.password) {
+//       alert('Please enter email and password');
+//       return;
+//     }
+
+//     this.auth.login(this.formData).subscribe({
+
+//       next: (res: any) => {
+//         console.log('Login Response:', res);
+
+//         this.auth.saveToken(res.token);
+
+//         const user = res.user?.user || res.user;
+//         const role = user?.role?.trim().toLowerCase();
+
+//         if (!user || !role) {
+//           alert('Invalid response from server');
+//           console.error('User or role missing:', res);
+//           return;
+//         }
+
+//         localStorage.setItem('userId', user.id.toString());
+//         localStorage.setItem('role', role);
+
+//         console.log('User:', user);
+//         console.log('Role:', role);
+
+//         alert('Login Successful');
+
+//         if (role === 'labstaff') {
+//           this.router.navigate(['/tests']);
+//         } 
+//         else if (role === 'customer') {
+//           this.router.navigate(['/view-samples']);
+//         } 
+//         else if (role === 'admin') {
+//           this.router.navigate(['/home']);
+//         } 
+//         else {
+//           this.router.navigate(['/home']);
+//         // Save token
+//         this.auth.saveToken(res.token);
+
+//         // Save role
+//         localStorage.setItem('role', res.user.role);
+
+//         alert('Login Successful');
+
+//         // Role based redirect
+//         if (res.user.role === 'LabStaff') {
+//           this.router.navigate(['/samples']);
+//         } else {
+//           this.router.navigate(['/']);
+//         }
+//       }
+      
+//       error: (err: any) => {
+//         console.error('Login Error:', err);
+//         alert(err.error?.message || 'Invalid Email or Password');
+//       }
+
+//       // error: (err: any) => {
+//       //   console.log(err);
+//       //   alert('Invalid Email or Password');
+//       // }
+      
+
+//     }
+
+//     });
+//   }
+
+//   }
+
+
+
+
+
+
+
+
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,89 +133,200 @@ import { Auth } from '../../../../core/services/auth';
 })
 export class LoginComponent {
 
+  // =====================================================
+  // LOGIN FORM
+  // =====================================================
+
   formData = {
     email: '',
     password: ''
   };
+
+
+  // =====================================================
+  // CONSTRUCTOR
+  // =====================================================
 
   constructor(
     private auth: Auth,
     private router: Router
   ) {}
 
-  loginUser() {
 
-    if (!this.formData.email || !this.formData.password) {
-      alert('Please enter email and password');
+  // =====================================================
+  // LOGIN USER
+  // =====================================================
+
+  loginUser(): void {
+
+    // ---------------------------------------------------
+    // VALIDATE FORM
+    // ---------------------------------------------------
+
+    if (
+      !this.formData.email.trim() ||
+      !this.formData.password
+    ) {
+
+      alert(
+        'Please enter email and password'
+      );
+
       return;
     }
 
-    this.auth.login(this.formData).subscribe({
 
-      next: (res: any) => {
-        console.log('Login Response:', res);
+    // ---------------------------------------------------
+    // LOGIN API
+    // ---------------------------------------------------
 
-        this.auth.saveToken(res.token);
+    this.auth
+      .login(this.formData)
+      .subscribe({
 
-        const user = res.user?.user || res.user;
-        const role = user?.role?.trim().toLowerCase();
+        // ===============================================
+        // LOGIN SUCCESS
+        // ===============================================
 
-        if (!user || !role) {
-          alert('Invalid response from server');
-          console.error('User or role missing:', res);
-          return;
+        next: (res: any) => {
+
+          console.log(
+            'Login Response:',
+            res
+          );
+
+
+          // ---------------------------------------------
+          // GET USER
+          // ---------------------------------------------
+
+          const user =
+            res?.user?.user ||
+            res?.user;
+
+
+          // ---------------------------------------------
+          // GET ROLE
+          // ---------------------------------------------
+
+          const role =
+            user?.role
+              ?.trim()
+              .toLowerCase();
+
+
+          // ---------------------------------------------
+          // VALIDATE RESPONSE
+          // ---------------------------------------------
+
+          if (!user || !role) {
+
+            console.error(
+              'User or role missing:',
+              res
+            );
+
+            alert(
+              'Invalid response from server'
+            );
+
+            return;
+          }
+
+
+          // ---------------------------------------------
+          // LOG USER DETAILS
+          // ---------------------------------------------
+
+          console.log(
+            'Logged-in User:',
+            user
+          );
+
+          console.log(
+            'Role:',
+            role
+          );
+
+
+          // IMPORTANT:
+          // Token, user and role are already saved
+          // inside Auth.login().
+          //
+          // DO NOT call:
+          // this.auth.saveToken()
+          //
+          // DO NOT call:
+          // localStorage.setItem()
+          //
+          // here again.
+
+
+          alert(
+            'Login Successful'
+          );
+
+
+          // =============================================
+          // ROLE BASED REDIRECT
+          // =============================================
+
+          if (role === 'labstaff') {
+
+            this.router.navigate([
+              '/tests'
+            ]);
+
+          }
+
+          else if (role === 'customer') {
+
+            this.router.navigate([
+              '/view-samples'
+            ]);
+
+          }
+
+          else if (role === 'admin') {
+
+            this.router.navigate([
+              '/home'
+            ]);
+
+          }
+
+          else {
+
+            this.router.navigate([
+              '/home'
+            ]);
+
+          }
+
+        },
+
+
+        // ===============================================
+        // LOGIN ERROR
+        // ===============================================
+
+        error: (err: any) => {
+
+          console.error(
+            'Login Error:',
+            err
+          );
+
+
+          alert(
+            err?.error?.message ||
+            'Invalid Email or Password'
+          );
+
         }
 
-        localStorage.setItem('userId', user.id.toString());
-        localStorage.setItem('role', role);
-
-        console.log('User:', user);
-        console.log('Role:', role);
-
-        alert('Login Successful');
-
-        if (role === 'labstaff') {
-          this.router.navigate(['/tests']);
-        } 
-        else if (role === 'customer') {
-          this.router.navigate(['/view-samples']);
-        } 
-        else if (role === 'admin') {
-          this.router.navigate(['/home']);
-        } 
-        else {
-          this.router.navigate(['/home']);
-        // Save token
-        this.auth.saveToken(res.token);
-
-        // Save role
-        localStorage.setItem('role', res.user.role);
-
-        alert('Login Successful');
-
-        // Role based redirect
-        if (res.user.role === 'LabStaff') {
-          this.router.navigate(['/samples']);
-        } else {
-          this.router.navigate(['/']);
-        }
-      }
-      
-      error: (err: any) => {
-        console.error('Login Error:', err);
-        alert(err.error?.message || 'Invalid Email or Password');
-      }
-
-      // error: (err: any) => {
-      //   console.log(err);
-      //   alert('Invalid Email or Password');
-      // }
-      
-
-    }
-
-    });
-  }
+      });
 
   }
 
+}

@@ -1,72 +1,3 @@
-
-
-// const express = require('express');
-// const cors = require('cors');
-// require('dotenv').config();
-
-// const app = express();
-
-// app.use(cors());
-// app.use(express.json());
-
-// /* ===============================
-//    ROUTES IMPORT
-// ================================= */
-// const authRoutes = require('./routes/auth');
-// const sampleRoutes = require('./routes/sample');
-// const testRoutes = require('./routes/tests');
-
-
-// /* ===============================
-//    API ROUTES
-// ================================= */
-// app.use('/api/auth', authRoutes);
-// app.use('/api/sample', sampleRoutes);
-// app.use('/api/tests', testRoutes);
-
-
-// /* ===============================
-//    HOME ROUTE
-// ================================= */
-// app.get('/', (req, res) => {
-//   res.send('Backend Running...');
-// });
-
-
-// /* ===============================
-//    TEMP SAMPLE MEMORY API
-// ================================= */
-// let samples = [];
-
-// app.post('/api/samples', (req, res) => {
-
-//   const sample = {
-//     id: Date.now().toString(),
-//     ...req.body,
-//     createdAt: new Date()
-//   };
-
-//   samples.push(sample);
-
-//   console.log('Saved Data:', samples);
-
-//   res.json(sample);
-// });
-
-// app.get('/api/samples', (req, res) => {
-//   res.json(samples);
-// });
-
-
-// /* ===============================
-//    SERVER START
-// ================================= */
-// const PORT = process.env.PORT || 5000;
-
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
-
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -91,6 +22,7 @@ app.use((req, res, next) => {
 /* ===============================
    ROUTES IMPORT
 ================================= */
+const aiRoutes = require('./routes/ai');
 const authRoutes = require('./routes/auth');
 const sampleRoutes = require('./routes/sample');
 const testRoutes = require('./routes/tests');
@@ -107,10 +39,11 @@ app.use('/api/customer-tracking', trackingControllerRoutes);
 /* ===============================
    API ROUTES
 ================================= */
+app.use('/api/ai', aiRoutes);
 app.use('/api/auth', authRoutes);
 //app.use('/api/samples', sampleRoutes);
 app.use('/api/tests', testRoutes);
-//app.use('/api/tracking', trackingRoutes); // ✅ FIXED
+//app.use('/api/tracking', trackingRoutes);
 
 /* ===============================
    HOME ROUTE
