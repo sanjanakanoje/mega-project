@@ -16,6 +16,8 @@ import { Component } from '@angular/core';
 
 import { RouterOutlet } from '@angular/router';
 
+import { AiChat } from './pages/ai-chat/ai-chat';
+
 // @Component({
 //   selector: 'app-root',
 //   standalone: true,
@@ -32,7 +34,8 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [
     RouterOutlet,
-    NavbarComponent   // ✅ REQUIRED
+    NavbarComponent,
+    AiChat  // ✅ REQUIRED
   ],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
