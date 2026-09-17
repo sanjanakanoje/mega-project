@@ -1,1 +1,195 @@
-<p>report-list works!</p>
+<div class="report-page">
+
+  <div class="report-card">
+
+    <!-- PAGE TITLE -->
+    <h1>Test Report</h1>
+
+
+    <!-- SAMPLE INFORMATION -->
+    <div class="report-info">
+
+      <p>
+        <b>Sample ID:</b>
+        {{ sampleId }}
+      </p>
+
+      <p>
+        <b>Test Name:</b>
+        {{ testName }}
+      </p>
+
+    </div>
+
+
+    <hr>
+
+
+    <!-- REPORT DETAILS -->
+    <h2>Report Details</h2>
+
+
+    <!-- ================================================= -->
+    <!-- TEST METHOD / STANDARD -->
+    <!-- ================================================= -->
+
+    <div class="form-group">
+
+      <label for="testMethod">
+        Test Method / Standard
+      </label>
+
+      <input
+        id="testMethod"
+        type="text"
+        name="testMethod"
+        [(ngModel)]="report.testMethod"
+        placeholder="Enter Test Method / Standard"
+      >
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- TEST DATE -->
+    <!-- ================================================= -->
+
+    <div class="form-group">
+
+      <label for="testDate">
+        Test Date
+      </label>
+
+      <input
+        id="testDate"
+        type="date"
+        name="testDate"
+        [(ngModel)]="report.testDate"
+      >
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- OBSERVATION -->
+    <!-- ================================================= -->
+
+    <div class="form-group">
+
+      <label for="observation">
+        Observation
+      </label>
+
+      <textarea
+        id="observation"
+        name="observation"
+        [(ngModel)]="report.observation"
+        placeholder="Enter test observation..."
+        rows="5"
+      ></textarea>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- RESULT -->
+    <!-- ================================================= -->
+
+    <div class="form-group">
+
+      <label for="result">
+        Result
+      </label>
+
+      <input
+        id="result"
+        type="text"
+        name="result"
+        [(ngModel)]="report.result"
+        placeholder="Enter test result..."
+      >
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- REMARKS -->
+    <!-- ================================================= -->
+
+    <div class="form-group">
+
+      <label for="remarks">
+        Remarks
+      </label>
+
+      <textarea
+        id="remarks"
+        name="remarks"
+        [(ngModel)]="report.remarks"
+        placeholder="Enter remarks..."
+        rows="4"
+      ></textarea>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- NOTES -->
+    <!-- ================================================= -->
+
+    <div class="form-group">
+
+      <label for="notes">
+        Notes
+      </label>
+
+      <textarea
+        id="notes"
+        name="notes"
+        [(ngModel)]="report.notes"
+        placeholder="Enter additional notes..."
+        rows="4"
+      ></textarea>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- BUTTONS -->
+    <!-- ================================================= -->
+
+    <div class="button-row">
+
+        <button
+          type="button"
+          class="back-button"
+          (click)="goBack()"
+          [disabled]="saving"
+        >
+          Back
+        </button>
+
+        <button
+          type="button"
+          class="save-button"
+          (click)="saveReport()"
+          [disabled]="saving"
+        >
+          <span *ngIf="!saving">
+            {{
+              reportExists
+                ? 'Update Report'
+                : 'Save Report'
+            }}
+          </span>
+
+          <span *ngIf="saving">
+            Saving...
+          </span>
+        </button>
+
+    </div>
+
+  </div>
+
+</div>

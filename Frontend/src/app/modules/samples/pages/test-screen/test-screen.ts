@@ -68,6 +68,6 @@ export class TestScreenComponent implements OnInit {
   markTestDone(test: string) {
     console.log("Test completed:", test);
 
-    // 👉 future: call API to update DB
+    
   }
 }

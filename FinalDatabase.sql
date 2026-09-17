@@ -96,6 +96,27 @@ CREATE TABLE test_requests (
 );
 
 
+CREATE TABLE test_reports (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    sample_id BIGINT NOT NULL,
+    test_name VARCHAR(255) NOT NULL,
+    result VARCHAR(255),
+    observation TEXT,
+    remarks TEXT,
+    created_by BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE test_reports
+ADD COLUMN IF NOT EXISTS test_method VARCHAR(255),
+ADD COLUMN IF NOT EXISTS test_date DATE,
+ADD COLUMN IF NOT EXISTS notes TEXT;
+
+
+
+
+
 SELECT * FROM users;
 
 

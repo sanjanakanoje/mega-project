@@ -1,0 +1,542 @@
+/* ========================================= */
+/* MAIN PAGE */
+/* ========================================= */
+
+.report-view-page {
+
+  min-height: 100vh;
+
+  background: #000;
+
+  color: white;
+
+  padding: 35px;
+
+  box-sizing: border-box;
+}
+
+
+/* ========================================= */
+/* PAGE HEADER */
+/* ========================================= */
+
+.page-header {
+
+  max-width: 1100px;
+
+  margin: 0 auto 30px auto;
+
+  padding: 25px;
+
+  background: #111;
+
+  border: 2px solid orange;
+
+  border-radius: 12px;
+
+  box-sizing: border-box;
+}
+
+
+.page-header h1 {
+
+  margin: 0 0 15px 0;
+
+  color: orange;
+
+  font-size: 32px;
+
+  font-weight: bold;
+}
+
+
+.page-header p {
+
+  margin: 0;
+
+  color: white;
+
+  font-size: 18px;
+}
+
+
+.page-header strong {
+
+  color: orange;
+}
+
+
+/* ========================================= */
+/* REPORTS CONTAINER */
+/* ========================================= */
+
+.reports-container {
+
+  max-width: 1100px;
+
+  margin: 0 auto;
+
+  box-sizing: border-box;
+}
+
+
+/* ========================================= */
+/* REPORT CARD */
+/* ========================================= */
+
+.report-card {
+
+  background: #111;
+
+  border: 2px solid orange;
+
+  border-radius: 12px;
+
+  padding: 25px;
+
+  margin-bottom: 30px;
+
+  box-sizing: border-box;
+}
+
+
+.report-card h2 {
+
+  margin: 0;
+
+  color: orange;
+
+  font-size: 25px;
+
+  font-weight: bold;
+}
+
+
+/* ========================================= */
+/* LINE */
+/* ========================================= */
+
+.report-card hr {
+
+  border: none;
+
+  border-top: 1px solid #444;
+
+  margin: 20px 0;
+}
+
+
+/* ========================================= */
+/* REPORT ROW */
+/* ========================================= */
+
+.report-row {
+
+  display: grid;
+
+  grid-template-columns: 260px 1fr;
+
+  gap: 20px;
+
+  padding: 15px 0;
+
+  border-bottom: 1px solid #333;
+
+  box-sizing: border-box;
+}
+
+
+/* ========================================= */
+/* LAST ROW */
+/* ========================================= */
+
+.report-row:last-child {
+
+  border-bottom: none;
+}
+
+
+/* ========================================= */
+/* LABEL */
+/* ========================================= */
+
+.report-label {
+
+  color: orange;
+
+  font-size: 17px;
+
+  font-weight: bold;
+}
+
+
+/* ========================================= */
+/* VALUE */
+/* ========================================= */
+
+.report-value {
+
+  color: white;
+
+  font-size: 17px;
+
+  line-height: 1.6;
+
+  word-break: break-word;
+
+  white-space: pre-wrap;
+}
+
+
+/* ========================================= */
+/* LOADING / ERROR / NO REPORT */
+/* ========================================= */
+
+.no-report {
+
+  max-width: 1100px;
+
+  margin: 0 auto 30px auto;
+
+  padding: 40px;
+
+  text-align: center;
+
+  background: #111;
+
+  border: 2px solid orange;
+
+  border-radius: 12px;
+
+  box-sizing: border-box;
+}
+
+
+.no-report h2 {
+
+  margin: 0;
+
+  color: orange;
+
+  font-size: 24px;
+}
+
+
+/* ========================================= */
+/* ACTION SECTION */
+/* ========================================= */
+
+.action-section {
+
+  max-width: 1100px;
+
+  margin: 30px auto 40px auto;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 20px;
+
+  flex-wrap: wrap;
+}
+
+
+/* ========================================= */
+/* PRINT BUTTON */
+/* ========================================= */
+
+.print-button {
+
+  min-width: 180px;
+
+  padding: 14px 40px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: orange;
+
+  color: black;
+
+  font-size: 17px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+
+.print-button:hover {
+
+  background: #ffb52e;
+}
+
+
+/* ========================================= */
+/* BACK BUTTON */
+/* ========================================= */
+
+.back-button {
+
+  min-width: 140px;
+
+  padding: 14px 40px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: orange;
+
+  color: black;
+
+  font-size: 17px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+
+.back-button:hover {
+
+  background: #ffb52e;
+}
+
+
+/* ========================================= */
+/* PRINT */
+/* ========================================= */
+
+@media print {
+
+  /* Hide buttons */
+
+  .action-section {
+
+    display: none !important;
+  }
+
+
+  /* Main page */
+
+  .report-view-page {
+
+    min-height: auto !important;
+
+    background: white !important;
+
+    color: black !important;
+
+    padding: 20px !important;
+  }
+
+
+  /* Header */
+
+  .page-header {
+
+    max-width: none !important;
+
+    background: white !important;
+
+    color: black !important;
+
+    border: 1px solid black !important;
+
+    border-radius: 0 !important;
+
+    margin-bottom: 20px !important;
+  }
+
+
+  .page-header h1 {
+
+    color: black !important;
+  }
+
+
+  .page-header p {
+
+    color: black !important;
+  }
+
+
+  .page-header strong {
+
+    color: black !important;
+  }
+
+
+  /* Reports */
+
+  .reports-container {
+
+    max-width: none !important;
+  }
+
+
+  /* Report card */
+
+  .report-card {
+
+    background: white !important;
+
+    color: black !important;
+
+    border: 1px solid black !important;
+
+    border-radius: 0 !important;
+
+    page-break-inside: avoid;
+
+    break-inside: avoid;
+
+    margin-bottom: 25px !important;
+  }
+
+
+  .report-card h2 {
+
+    color: black !important;
+  }
+
+
+  .report-card hr {
+
+    border-top: 1px solid black !important;
+  }
+
+
+  /* Rows */
+
+  .report-row {
+
+    border-bottom: 1px solid #999 !important;
+  }
+
+
+  .report-label {
+
+    color: black !important;
+  }
+
+
+  .report-value {
+
+    color: black !important;
+  }
+
+
+  /* No report */
+
+  .no-report {
+
+    background: white !important;
+
+    color: black !important;
+
+    border: 1px solid black !important;
+  }
+
+
+  .no-report h2 {
+
+    color: black !important;
+  }
+
+}
+
+
+/* ========================================= */
+/* MOBILE */
+/* ========================================= */
+
+@media screen and (max-width: 768px) {
+
+  .report-view-page {
+
+    padding: 20px;
+  }
+
+
+  .page-header {
+
+    padding: 20px;
+  }
+
+
+  .page-header h1 {
+
+    font-size: 27px;
+  }
+
+
+  .page-header p {
+
+    font-size: 16px;
+  }
+
+
+  .report-card {
+
+    padding: 20px;
+  }
+
+
+  .report-card h2 {
+
+    font-size: 22px;
+  }
+
+
+  .report-row {
+
+    grid-template-columns: 1fr;
+
+    gap: 6px;
+
+    padding: 13px 0;
+  }
+
+
+  .report-label {
+
+    font-size: 16px;
+  }
+
+
+  .report-value {
+
+    font-size: 16px;
+  }
+
+
+  .action-section {
+
+    flex-direction: column;
+
+    gap: 12px;
+  }
+
+
+  .print-button {
+
+    width: 100%;
+
+    max-width: 300px;
+  }
+
+
+  .back-button {
+
+    width: 100%;
+
+    max-width: 200px;
+  }
+
+}

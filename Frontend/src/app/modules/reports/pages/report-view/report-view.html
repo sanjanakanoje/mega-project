@@ -1,1 +1,275 @@
-<p>report-view works!</p>
+
+<div class="report-view-page">
+
+
+  <!-- ========================================= -->
+  <!-- PAGE HEADER -->
+  <!-- ========================================= -->
+
+  <div class="page-header">
+
+    <h1>
+      Test Reports
+    </h1>
+
+
+    <p>
+      Sample ID:
+      <strong>
+        {{ sampleId }}
+      </strong>
+    </p>
+
+  </div>
+
+
+
+  <!-- ========================================= -->
+  <!-- LOADING -->
+  <!-- ========================================= -->
+
+  <div
+    class="no-report"
+    *ngIf="loading"
+  >
+
+    <h2>
+      Loading Reports...
+    </h2>
+
+  </div>
+
+
+
+  <!-- ========================================= -->
+  <!-- ERROR -->
+  <!-- ========================================= -->
+
+  <div
+    class="no-report"
+    *ngIf="!loading && errorMessage"
+  >
+
+    <h2>
+      {{ errorMessage }}
+    </h2>
+
+  </div>
+
+
+
+  <!-- ========================================= -->
+  <!-- REPORTS -->
+  <!-- ========================================= -->
+
+  <div
+    class="reports-container"
+    *ngIf="!loading && !errorMessage"
+  >
+
+
+    <!-- ======================================= -->
+    <!-- REPORT CARD -->
+    <!-- ======================================= -->
+
+    <div
+      class="report-card"
+      *ngFor="
+        let report of reports;
+        let i = index
+      "
+    >
+
+
+      <!-- REPORT TITLE -->
+
+      <h2>
+        Report {{ i + 1 }}
+      </h2>
+
+
+      <hr>
+
+
+      <!-- ===================================== -->
+      <!-- TEST NAME -->
+      <!-- ===================================== -->
+
+      <div class="report-row">
+
+        <div class="report-label">
+          Test Name
+        </div>
+
+        <div class="report-value">
+          {{ report.test_name || '-' }}
+        </div>
+
+      </div>
+
+
+      <!-- ===================================== -->
+      <!-- TEST METHOD -->
+      <!-- ===================================== -->
+
+      <div class="report-row">
+
+        <div class="report-label">
+          Test Method / Standard
+        </div>
+
+        <div class="report-value">
+          {{ report.test_method || '-' }}
+        </div>
+
+      </div>
+
+
+      <!-- ===================================== -->
+      <!-- TEST DATE -->
+      <!-- ===================================== -->
+
+      <div class="report-row">
+
+        <div class="report-label">
+          Test Date
+        </div>
+
+        <div class="report-value">
+          {{ getReportDate(report) }}
+        </div>
+
+      </div>
+
+
+      <!-- ===================================== -->
+      <!-- RESULT -->
+      <!-- ===================================== -->
+
+      <div class="report-row">
+
+        <div class="report-label">
+          Result
+        </div>
+
+        <div class="report-value">
+          {{ report.result || '-' }}
+        </div>
+
+      </div>
+
+
+      <!-- ===================================== -->
+      <!-- OBSERVATION -->
+      <!-- ===================================== -->
+
+      <div class="report-row">
+
+        <div class="report-label">
+          Observation
+        </div>
+
+        <div class="report-value">
+          {{ report.observation || '-' }}
+        </div>
+
+      </div>
+
+
+      <!-- ===================================== -->
+      <!-- REMARKS -->
+      <!-- ===================================== -->
+
+      <div class="report-row">
+
+        <div class="report-label">
+          Remarks
+        </div>
+
+        <div class="report-value">
+          {{ report.remarks || '-' }}
+        </div>
+
+      </div>
+
+
+      <!-- ===================================== -->
+      <!-- NOTES -->
+      <!-- ===================================== -->
+
+      <div class="report-row">
+
+        <div class="report-label">
+          Notes
+        </div>
+
+        <div class="report-value">
+          {{ report.notes || '-' }}
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- ======================================= -->
+    <!-- NO REPORTS -->
+    <!-- ======================================= -->
+
+    <div
+      class="no-report"
+      *ngIf="reports.length === 0"
+    >
+
+      <h2>
+        No Reports Found
+      </h2>
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- ========================================= -->
+  <!-- ACTION BUTTONS -->
+  <!-- ========================================= -->
+
+  <div
+    class="action-section"
+    *ngIf="!loading && reports.length > 0"
+  >
+
+
+    <!-- PRINT -->
+
+    <button
+      type="button"
+      class="print-button"
+      (click)="printReport()"
+    >
+
+      Print Report
+
+    </button>
+
+
+    <!-- BACK -->
+
+    <button
+      type="button"
+      class="back-button"
+      (click)="goBack()"
+    >
+
+      Back
+
+    </button>
+
+
+  </div>
+
+
+</div>
