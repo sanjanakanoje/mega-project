@@ -28,13 +28,15 @@ const sampleRoutes = require('./routes/sample');
 const testRoutes = require('./routes/tests');
 
 
-
 const trackingRoutes = require('./routes/tracking');
 const trackingControllerRoutes = require('./routes/trackingController');
+const reportRoutes = require('./routes/report');
 
 app.use('/api/tracking', trackingRoutes);
 
 app.use('/api/customer-tracking', trackingControllerRoutes);
+
+app.use('/api/reports', reportRoutes);
 
 /* ===============================
    API ROUTES
@@ -89,10 +91,13 @@ app.post('/api/samples', (req, res) => {
 
 //   res.json(userSamples);
 // });
+
+
+
 // GET SAMPLES
-app.get('/api/samples', (req, res) => {
-  res.json(samples);
-});
+// app.get('/api/samples', (req, res) => {
+//   res.json(samples);
+// });
 
 /* ===============================
    404 HANDLER
@@ -124,3 +129,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
+

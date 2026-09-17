@@ -171,6 +171,7 @@
 
 
           <!-- Done / Completed button -->
+          <div class = "test-actions">
 
           <button
             type="button"
@@ -185,6 +186,14 @@
             }}
 
           </button>
+
+          <button
+            type="button"
+            (click)="addReport(t)"
+          >
+            {{ hasReport(t) ? 'Update Note' : 'Add Note' }}
+          </button>
+          </div>
 
         </div>
 
@@ -227,6 +236,9 @@
         </p>
 
       </div>
+
+
+      
 
     </div>
 

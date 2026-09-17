@@ -120,6 +120,30 @@ export const routes: Routes = [
       .then(m => m.TrackingModule)
 },
 
+
+
+  {
+  path: 'report-list',
+
+  loadComponent: () =>
+    import(
+      './modules/reports/pages/report-list/report-list'
+    ).then(
+      m => m.ReportListComponent
+    )
+  },
+
+
+   {
+    path: 'report-view/:id',
+    loadComponent: () =>
+      import('./modules/reports/pages/report-view/report-view')
+        .then(m => m.ReportViewComponent)
+  },
+
+
+ 
+
   // =========================
   // FALLBACK
   // =========================
@@ -127,4 +151,6 @@ export const routes: Routes = [
     path: '**',
     redirectTo: ''
   }
+ 
+
 ];

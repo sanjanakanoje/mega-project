@@ -1,44 +1,4 @@
 <!-- 
-<div class="main-container">
-
-  <h2>My Sample History</h2>
-
-
-<div *ngIf="tests.length === 0" class="no-data">
-  No samples found
-</div>
-
-<div *ngIf="tests.length > 0" class="card-container">
-  <div class="test-card" *ngFor="let test of tests">
-    <h3>{{ test.company_name }}</h3>
-
-    <p>
-      <strong>Finish Type:</strong>
-      {{ parseArray(test.finish_type) }}
-    </p>
-
-    <p>
-      <strong>Tests Required:</strong>
-      {{ parseArray(test.tests_required) }}
-    </p>
-
-    <p><strong>Fabric:</strong> {{ test.fiber_content }}</p>
-    <p><strong>Weight:</strong> {{ test.fabric_weight }}</p>
-
-    <p class="date">
-      {{ test.created_at | date:'dd MMM yyyy' }}
-    </p>
-
-    <button (click)="trackSample(test.id)">Track</button>
-  </div>
-</div>
-
-
-
-
-</div>
- -->
-
 
  
 <div class="main-container">
@@ -60,7 +20,7 @@
     No samples found
   </div>
 
-  <!-- Sample Cards -->
+ 
   <div *ngIf="tests.length > 0" class="card-container">
     <div class="test-card" *ngFor="let test of tests">
 
@@ -95,6 +55,212 @@
       </button>
 
     </div>
+  </div>
+
+</div> -->
+
+
+<div class="main-container">
+
+  <!-- ============================= -->
+  <!-- PAGE HEADER -->
+  <!-- ============================= -->
+
+  <div class="page-header">
+
+    <div class="left-section">
+
+      <h2>
+        My Sample History
+      </h2>
+
+      <p>
+        View and track all your registered samples.
+      </p>
+
+    </div>
+
+
+    <!-- REGISTER SAMPLE BUTTON -->
+
+    <div class="right-section">
+
+      <button
+        type="button"
+        class="register-btn"
+        (click)="registerSample()">
+
+        Register Sample
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ============================= -->
+  <!-- LOADING -->
+  <!-- ============================= -->
+
+  <div
+    *ngIf="loading"
+    class="no-data">
+
+    Loading samples...
+
+  </div>
+
+
+  <!-- ============================= -->
+  <!-- NO SAMPLES -->
+  <!-- ============================= -->
+
+  <div
+    *ngIf="!loading && tests.length === 0"
+    class="no-data">
+
+    No samples found
+
+  </div>
+
+
+  <!-- ============================= -->
+  <!-- SAMPLE CARDS -->
+  <!-- ============================= -->
+
+  <div
+    *ngIf="!loading && tests.length > 0"
+    class="card-container">
+
+
+    <!-- ============================= -->
+    <!-- SINGLE SAMPLE CARD -->
+    <!-- ============================= -->
+
+    <div
+      class="test-card"
+      *ngFor="let test of tests">
+
+
+      <!-- COMPANY NAME -->
+
+      <h3>
+        {{ test.company_name || 'N/A' }}
+      </h3>
+
+
+      <!-- ============================= -->
+      <!-- SAMPLE ID -->
+      <!-- ============================= -->
+
+      <p>
+
+        <strong>
+          Sample ID:
+        </strong>
+
+        {{
+          test.id ||
+          test.sample_id ||
+          test.sampleId ||
+          'N/A'
+        }}
+
+      </p>
+
+
+      <!-- ============================= -->
+      <!-- FINISH TYPE -->
+      <!-- ============================= -->
+
+      <p>
+
+        <strong>
+          Finish Type:
+        </strong>
+
+        {{ parseArray(test.finish_type) }}
+
+      </p>
+
+
+      <!-- ============================= -->
+      <!-- TESTS REQUIRED -->
+      <!-- ============================= -->
+
+      <p>
+
+        <strong>
+          Tests Required:
+        </strong>
+
+        {{ parseArray(test.tests_required) }}
+
+      </p>
+
+
+      <!-- ============================= -->
+      <!-- FABRIC -->
+      <!-- ============================= -->
+
+      <p>
+
+        <strong>
+          Fabric:
+        </strong>
+
+        {{ test.fiber_content || 'N/A' }}
+
+      </p>
+
+
+      <!-- ============================= -->
+      <!-- WEIGHT -->
+      <!-- ============================= -->
+
+      <p>
+
+        <strong>
+          Weight:
+        </strong>
+
+        {{ test.fabric_weight || 'N/A' }}
+
+      </p>
+
+
+      <!-- ============================= -->
+      <!-- CREATED DATE -->
+      <!-- ============================= -->
+
+      <p class="date">
+
+        {{ test.created_at | date:'dd MMM yyyy' }}
+
+      </p>
+
+
+      <!-- ============================= -->
+      <!-- TRACK SAMPLE BUTTON -->
+      <!-- ============================= -->
+
+      <button
+        type="button"
+        class="track-btn"
+        (click)="trackSample(
+          test.id ||
+          test.sample_id ||
+          test.sampleId
+        )">
+
+        Track Sample
+
+      </button>
+
+
+    </div>
+
   </div>
 
 </div>

@@ -1,11 +1,10 @@
 
-
-
 // import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-// import { ActivatedRoute } from '@angular/router';
+// import { ActivatedRoute, Router} from '@angular/router';
 // import { CommonModule } from '@angular/common';
 // import { FormsModule } from '@angular/forms';
 // import { TestService } from '../../services/test.service';
+// import { ReportService } from '../../../reports/services/report';
 
 // @Component({
 //   selector: 'app-test-screen',
@@ -14,20 +13,44 @@
 //   templateUrl: './test-screen.html',
 //   styleUrls: ['./test-screen.css']
 // })
+
+
+
 // export class TestScreenComponent implements OnInit {
+
+
+
+//     hasReport(test: any): boolean {
+//     if (!test) {
+//       return false;
+//     }
+
+//     return !!(
+//       test.hasReport ||
+//       test.reportExists ||
+//       test.report_id ||
+//       test.reportId
+//     );
+//   }
+
+
 
 //   testId: number | null = null;
 
 //   test: any = null;
 
+//   // Tests requested for this sample
 //   testsRequired: string[] = [];
-//   selectedTests: string[] = [];
+
+//   // Tests already completed
+//   completedTests: string[] = [];
 
 //   loading = true;
 //   errorMessage = '';
 
 //   constructor(
 //     private route: ActivatedRoute,
+//     private router: Router,
 //     private testService: TestService,
 //     private cdr: ChangeDetectorRef
 //   ) {}
@@ -39,13 +62,21 @@
 //     );
 
 //     if (!this.testId) {
+
 //       this.errorMessage = 'Invalid Test ID';
+
 //       this.loading = false;
+
 //       return;
 //     }
 
 //     this.loadTest(this.testId);
 //   }
+
+
+//   // =====================================================
+//   // LOAD TEST
+//   // =====================================================
 
 //   loadTest(id: number): void {
 
@@ -62,15 +93,34 @@
 
 //             this.test = res.data;
 
-//             this.testsRequired =
-//               res.data.tests_required || [];
+//             // ---------------------------------------------
+//             // TESTS REQUIRED
+//             // ---------------------------------------------
 
-//             this.selectedTests =
-//               res.data.completed_tests || [];
+//             this.testsRequired =
+//               this.convertToArray(
+//                 res.data.tests_required
+//               );
+
+
+//             // ---------------------------------------------
+//             // COMPLETED TESTS
+//             // ---------------------------------------------
+
+//             this.completedTests =
+//               this.convertToArray(
+//                 res.data.completed_tests
+//               );
+
 
 //             console.log(
-//               'Already Completed:',
-//               this.selectedTests
+//               'Tests Required:',
+//               this.testsRequired
+//             );
+
+//             console.log(
+//               'Completed Tests:',
+//               this.completedTests
 //             );
 
 //           } else {
@@ -80,12 +130,16 @@
 //           }
 
 //           this.loading = false;
+
 //           this.cdr.detectChanges();
 //         },
 
 //         error: (err) => {
 
-//           console.error(err);
+//           console.error(
+//             'Load Test Error:',
+//             err
+//           );
 
 //           this.errorMessage =
 //             'Failed to load test';
@@ -95,56 +149,249 @@
 //       });
 //   }
 
+
+//   // =====================================================
+//   // CONVERT API DATA TO ARRAY
+//   // =====================================================
+
+//   private convertToArray(value: any): string[] {
+
+//     // Already an array
+//     if (Array.isArray(value)) {
+
+//       return value.map(
+//         item => String(item)
+//       );
+//     }
+
+
+//     // Empty / null / undefined
+//     if (
+//       value === null ||
+//       value === undefined ||
+//       value === ''
+//     ) {
+
+//       return [];
+//     }
+
+
+//     // JSON string
+//     if (typeof value === 'string') {
+
+//       try {
+
+//         const parsed = JSON.parse(value);
+
+//         if (Array.isArray(parsed)) {
+
+//           return parsed.map(
+//             item => String(item)
+//           );
+//         }
+
+//       } catch {
+
+//         // If it is a normal string,
+//         // treat it as one test
+//         return [value];
+//       }
+
+//     }
+
+
+//     // Object
+//     if (typeof value === 'object') {
+
+//       return Object.values(value).map(
+//         item => String(item)
+//       );
+//     }
+
+
+//     return [];
+//   }
+
+
+//   // =====================================================
+//   // CHECK WHETHER TEST IS COMPLETED
+//   // =====================================================
+
+//   isCompleted(test: string): boolean {
+
+//     return this.completedTests.includes(test);
+//   }
+
+
+//   // =====================================================
+//   // TOGGLE TEST
+//   // =====================================================
+
 //   toggleTest(test: string): void {
 
-//     if (this.selectedTests.includes(test)) {
+//     /*
+//       We do NOT remove completed tests here.
 
-//       this.selectedTests =
-//         this.selectedTests.filter(
-//           t => t !== test
-//         );
+//       Clicking the checkbox only changes the UI selection.
+//     */
 
-//     } else {
-
-//       this.selectedTests.push(test);
-//     }
+//     console.log(
+//       'Test selected:',
+//       test
+//     );
 //   }
+
+
+//   // =====================================================
+//   // MARK TEST AS COMPLETED
+//   // =====================================================
 
 //   markDone(test: string): void {
 
 //     if (!this.testId) {
+
+//       console.error(
+//         'Invalid Test ID'
+//       );
+
 //       return;
 //     }
 
-//     if (!this.selectedTests.includes(test)) {
 
-//       this.selectedTests.push(test);
+//     // Already completed
+//     if (
+//       this.completedTests.includes(test)
+//     ) {
+
+//       console.log(
+//         'Test already completed:',
+//         test
+//       );
+
+//       return;
 //     }
 
+
+//     // Add test to completed list
+//     this.completedTests = [
+//       ...this.completedTests,
+//       test
+//     ];
+
+
+//     console.log(
+//       'Completed Tests:',
+//       this.completedTests
+//     );
+
+
+//     // Save to backend
 //     this.testService
 //       .updateCompletedTests(
 //         this.testId,
-//         this.selectedTests
+//         this.completedTests
 //       )
 //       .subscribe({
 
 //         next: (res) => {
 
 //           console.log(
-//             'Saved Successfully',
+//             'Saved Successfully:',
 //             res
 //           );
+
+//           // Reload from backend to make sure
+//           // database and UI are synchronized
+//           this.loadTest(this.testId!);
 //         },
 
 //         error: (err) => {
 
 //           console.error(
-//             'Save Failed',
+//             'Save Failed:',
 //             err
 //           );
+
+//           // Rollback UI if backend failed
+//           this.completedTests =
+//             this.completedTests.filter(
+//               t => t !== test
+//             );
 //         }
 //       });
 //   }
+
+
+//   addReport(test: any): void {
+
+//   let testName = '';
+
+
+//   // If test is a string
+//   if (typeof test === 'string') {
+
+//     testName = test;
+
+//   }
+
+//   // If test is an object
+//   else {
+
+//     testName =
+//       test.test_name ||
+//       test.name ||
+//       test.testName ||
+//       '';
+
+//   }
+
+
+//   if (!testName) {
+
+//     alert(
+//       'Test name not found'
+//     );
+
+//     return;
+
+//   }
+
+//   // Check whether test is completed
+//   if (!this.isCompleted(testName)) {
+
+//     alert(
+//       'Your test is not completed. Please complete the test first.'
+//     );
+
+//     return;
+//   }
+
+
+//   console.log(
+//     'Opening report for:',
+//     this.testId,
+//     testName
+//   );
+
+
+//   this.router.navigate(
+//     ['/report-list'],
+//     {
+//       queryParams: {
+
+//         sampleId:
+//           this.testId,
+
+//         testName:
+//           testName
+
+//       }
+//     }
+//   );
+
+// }
+
+
 // }
 
 
@@ -154,11 +401,31 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TestService } from '../../services/test.service';
+import { ReportService } from '../../../reports/services/report';
 
 @Component({
   selector: 'app-test-screen',
@@ -169,8 +436,26 @@ import { TestService } from '../../services/test.service';
 })
 export class TestScreenComponent implements OnInit {
 
-  testId: number | null = null;
+  // =========================================================
+  // CHECK WHETHER REPORT EXISTS FOR A TEST
+  // =========================================================
+  hasReport(test: any): boolean {
+    const testName =
+      typeof test === 'string'
+        ? test
+        : test?.test_name ||
+          test?.name ||
+          test?.testName ||
+          '';
 
+    if (!testName) {
+      return false;
+    }
+
+    return !!this.reportStatus[testName];
+  }
+
+  testId: number | null = null;
   test: any = null;
 
   // Tests requested for this sample
@@ -179,72 +464,57 @@ export class TestScreenComponent implements OnInit {
   // Tests already completed
   completedTests: string[] = [];
 
+  // Reports already saved for each test
+  reportStatus: { [testName: string]: boolean } = {};
+
   loading = true;
   errorMessage = '';
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private testService: TestService,
+    private reportService: ReportService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-
     this.testId = Number(
       this.route.snapshot.paramMap.get('id')
     );
 
     if (!this.testId) {
-
       this.errorMessage = 'Invalid Test ID';
-
       this.loading = false;
-
       return;
     }
 
     this.loadTest(this.testId);
   }
 
-
-  // =====================================================
-  // LOAD TEST
-  // =====================================================
-
   loadTest(id: number): void {
-
     this.loading = true;
 
     this.testService.getTestById(id)
       .subscribe({
-
         next: (res: any) => {
-
           console.log('API Response:', res);
 
           if (res.success) {
-
             this.test = res.data;
-
-            // ---------------------------------------------
-            // TESTS REQUIRED
-            // ---------------------------------------------
 
             this.testsRequired =
               this.convertToArray(
                 res.data.tests_required
               );
 
-
-            // ---------------------------------------------
-            // COMPLETED TESTS
-            // ---------------------------------------------
-
             this.completedTests =
               this.convertToArray(
                 res.data.completed_tests
               );
 
+            // Check which tests already have reports
+            this.checkReports();
 
             console.log(
               'Tests Required:',
@@ -257,18 +527,15 @@ export class TestScreenComponent implements OnInit {
             );
 
           } else {
-
             this.errorMessage =
               'No test data found';
           }
 
           this.loading = false;
-
           this.cdr.detectChanges();
         },
 
         error: (err) => {
-
           console.error(
             'Load Test Error:',
             err
@@ -282,34 +549,95 @@ export class TestScreenComponent implements OnInit {
       });
   }
 
+  // =========================================================
+  // CHECK REPORTS FOR ALL TESTS
+  // =========================================================
+  checkReports(): void {
+    this.reportStatus = {};
 
-  // =====================================================
-  // CONVERT API DATA TO ARRAY
-  // =====================================================
+    if (!this.testId) {
+      return;
+    }
 
+    this.testsRequired.forEach((testName: string) => {
+
+      this.reportService
+        .getReportsByTest(
+          this.testId!,
+          testName
+        )
+        .subscribe({
+          next: (response: any) => {
+
+            let reports: any[] = [];
+
+            if (Array.isArray(response)) {
+              reports = response;
+
+            } else if (Array.isArray(response?.data)) {
+              reports = response.data;
+
+            } else if (Array.isArray(response?.reports)) {
+              reports = response.reports;
+
+            } else if (response?.report) {
+              reports = [response.report];
+            }
+
+            this.reportStatus[testName] =
+              reports.length > 0;
+
+            console.log(
+              'Report status:',
+              testName,
+              this.reportStatus[testName]
+            );
+
+            this.cdr.detectChanges();
+          },
+
+          error: (error) => {
+
+            if (error?.status === 404) {
+
+              this.reportStatus[testName] = false;
+
+            } else {
+
+              console.error(
+                'Report check failed:',
+                testName,
+                error
+              );
+
+              this.reportStatus[testName] = false;
+            }
+
+            this.cdr.detectChanges();
+          }
+        });
+    });
+  }
+
+  // =========================================================
+  // CONVERT VALUE TO ARRAY
+  // =========================================================
   private convertToArray(value: any): string[] {
 
-    // Already an array
     if (Array.isArray(value)) {
-
       return value.map(
         item => String(item)
       );
     }
 
-
-    // Empty / null / undefined
     if (
       value === null ||
       value === undefined ||
       value === ''
     ) {
-
       return [];
     }
 
-
-    // JSON string
     if (typeof value === 'string') {
 
       try {
@@ -317,7 +645,6 @@ export class TestScreenComponent implements OnInit {
         const parsed = JSON.parse(value);
 
         if (Array.isArray(parsed)) {
-
           return parsed.map(
             item => String(item)
           );
@@ -325,15 +652,11 @@ export class TestScreenComponent implements OnInit {
 
       } catch {
 
-        // If it is a normal string,
-        // treat it as one test
         return [value];
-      }
 
+      }
     }
 
-
-    // Object
     if (typeof value === 'object') {
 
       return Object.values(value).map(
@@ -341,32 +664,17 @@ export class TestScreenComponent implements OnInit {
       );
     }
 
-
     return [];
   }
 
-
-  // =====================================================
-  // CHECK WHETHER TEST IS COMPLETED
-  // =====================================================
-
+  // =========================================================
+  // CHECK TEST COMPLETED OR NOT
+  // =========================================================
   isCompleted(test: string): boolean {
-
     return this.completedTests.includes(test);
   }
 
-
-  // =====================================================
-  // TOGGLE TEST
-  // =====================================================
-
   toggleTest(test: string): void {
-
-    /*
-      We do NOT remove completed tests here.
-
-      Clicking the checkbox only changes the UI selection.
-    */
 
     console.log(
       'Test selected:',
@@ -374,11 +682,9 @@ export class TestScreenComponent implements OnInit {
     );
   }
 
-
-  // =====================================================
+  // =========================================================
   // MARK TEST AS COMPLETED
-  // =====================================================
-
+  // =========================================================
   markDone(test: string): void {
 
     if (!this.testId) {
@@ -390,8 +696,6 @@ export class TestScreenComponent implements OnInit {
       return;
     }
 
-
-    // Already completed
     if (
       this.completedTests.includes(test)
     ) {
@@ -404,21 +708,16 @@ export class TestScreenComponent implements OnInit {
       return;
     }
 
-
-    // Add test to completed list
     this.completedTests = [
       ...this.completedTests,
       test
     ];
-
 
     console.log(
       'Completed Tests:',
       this.completedTests
     );
 
-
-    // Save to backend
     this.testService
       .updateCompletedTests(
         this.testId,
@@ -433,8 +732,6 @@ export class TestScreenComponent implements OnInit {
             res
           );
 
-          // Reload from backend to make sure
-          // database and UI are synchronized
           this.loadTest(this.testId!);
         },
 
@@ -445,12 +742,70 @@ export class TestScreenComponent implements OnInit {
             err
           );
 
-          // Rollback UI if backend failed
           this.completedTests =
             this.completedTests.filter(
               t => t !== test
             );
         }
       });
+  }
+
+  // =========================================================
+  // OPEN REPORT
+  // =========================================================
+  addReport(test: any): void {
+
+    let testName = '';
+
+    if (typeof test === 'string') {
+
+      testName = test;
+
+    } else {
+
+      testName =
+        test.test_name ||
+        test.name ||
+        test.testName ||
+        '';
+    }
+
+    if (!testName) {
+
+      alert(
+        'Test name not found'
+      );
+
+      return;
+    }
+
+    // Test must be completed before adding/updating report
+    if (!this.isCompleted(testName)) {
+
+      alert(
+        'Your test is not completed. Please complete the test first.'
+      );
+
+      return;
+    }
+
+    console.log(
+      'Opening report for:',
+      this.testId,
+      testName
+    );
+
+    this.router.navigate(
+      ['/report-list'],
+      {
+        queryParams: {
+          sampleId:
+            this.testId,
+
+          testName:
+            testName
+        }
+      }
+    );
   }
 }
