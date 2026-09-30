@@ -1,4 +1,4 @@
-<nav class="navbar">
+<!-- <nav class="navbar">
 
   <div class="logo">Smart Textile</div>
 
@@ -14,5 +14,44 @@
     (click)="logout()">
     Logout
   </button>
+
+</nav> -->
+<nav class="navbar">
+
+<div class="logo" routerLink="/home"> 🧵 Smart Textile </div>
+
+<div class="nav-links">
+
+<a routerLink="/home"
+   routerLinkActive="active"
+   [routerLinkActiveOptions]="{ exact: true }">
+  Home
+</a>
+
+<a routerLink="/about"
+   routerLinkActive="active">
+  About Us
+</a>
+
+<a routerLink="/profile"
+   routerLinkActive="active">
+  Profile
+</a>
+
+</div>
+
+<button
+*ngIf="showLogout"
+class="logout-btn"
+(click)="logout()">
+Logout
+</button>
+
+<button
+*ngIf="!showLogout"
+class="login-btn"
+(click)="goToLogin()">
+Login
+</button>
 
 </nav>
