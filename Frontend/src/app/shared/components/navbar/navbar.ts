@@ -4,52 +4,60 @@ import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-navbar',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  templateUrl: './navbar.html',
-  styleUrls: ['./navbar.css']
+selector: 'app-navbar',
+standalone: true,
+imports: [CommonModule, RouterModule],
+templateUrl: './navbar.html',
+styleUrls: ['./navbar.css']
 })
 export class NavbarComponent implements OnInit {
 
-  showLogout = false;
+showLogout: boolean = false;
 
-  constructor(private router: Router) {}
+constructor(private router: Router) {}
 
-  ngOnInit(): void {
+ngOnInit(): void {
+this.checkNavbar();
 
+
+this.router.events
+  .pipe(
+    filter(event => event instanceof NavigationEnd)
+  )
+  .subscribe(() => {
     this.checkNavbar();
+  });
 
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.checkNavbar();
-      });
 
-  }
+}
 
-  checkNavbar() {
+checkNavbar(): void {
+const token = localStorage.getItem('token');
+const url = this.router.url;
 
-    const token = localStorage.getItem('token');
-    const url = this.router.url;
 
-    // Login page & Home page वर Logout नको
-    if (
-      !token ||
-      url === '/' ||
-      url === '/home' ||
-      url === '/auth/login' ||
-      url === '/auth/register'
-    ) {
-      this.showLogout = false;
-    } else {
-      this.showLogout = true;
-    }
-  }
+if (
+  !token ||
+  url === '/' ||
+  url === '/home' ||
+  url === '/auth/login' ||
+  url === '/auth/register'
+) {
+  this.showLogout = false;
+} else {
+  this.showLogout = true;
+}
 
-  logout() {
-    localStorage.clear();
-    this.showLogout = false;
-    this.router.navigate(['/auth/login']);
-  }
+
+}
+
+goToLogin(): void {
+this.router.navigate(['/auth/login']);
+}
+
+logout(): void {
+localStorage.clear();
+this.showLogout = false;
+this.router.navigate(['/auth/login']);
+}
 }
