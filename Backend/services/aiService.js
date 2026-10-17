@@ -317,9 +317,6 @@ TEST STATUS RULES
 
 23. If report records exist, mention that report data is available.
 
-=====================================================
-REPORT QUESTIONS
-=====================================================
 
 For questions like:
 
