@@ -77,160 +77,220 @@
 
 
 
+// const jwt = require('jsonwebtoken');
+
+
+// function authenticateToken(req, res, next) {
+
+//   try {
+
+//     // =====================================================
+//     // GET AUTHORIZATION HEADER
+//     // =====================================================
+
+//     const authHeader =
+//       req.headers.authorization;
+
+
+//     // =====================================================
+//     // CHECK TOKEN EXISTS
+//     // =====================================================
+
+//     if (!authHeader) {
+
+//       return res.status(401).json({
+
+//         success: false,
+
+//         message:
+//           'Authorization token missing'
+
+//       });
+
+//     }
+
+
+//     // =====================================================
+//     // CHECK BEARER FORMAT
+//     // Expected:
+//     // Authorization: Bearer <token>
+//     // =====================================================
+
+//     const parts =
+//       authHeader.split(' ');
+
+
+//     if (
+//       parts.length !== 2 ||
+//       parts[0] !== 'Bearer' ||
+//       !parts[1]
+//     ) {
+
+//       return res.status(401).json({
+
+//         success: false,
+
+//         message:
+//           'Invalid authorization format'
+
+//       });
+
+//     }
+
+
+//     // =====================================================
+//     // GET TOKEN
+//     // =====================================================
+
+//     const token =
+//       parts[1];
+
+
+//     // =====================================================
+//     // VERIFY JWT
+//     // =====================================================
+
+//     const decoded =
+//       jwt.verify(
+//         token,
+//         process.env.JWT_SECRET
+//       );
+
+
+//     // =====================================================
+//     // CHECK USER ID
+//     // =====================================================
+
+//     if (!decoded.id) {
+
+//       return res.status(401).json({
+
+//         success: false,
+
+//         message:
+//           'Invalid token: user ID missing'
+
+//       });
+
+//     }
+
+
+//     // =====================================================
+//     // SAVE AUTHENTICATED USER
+//     // =====================================================
+
+//     req.user = {
+
+//       id: decoded.id,
+
+//       role: decoded.role
+
+//     };
+
+
+//     // =====================================================
+//     // DEBUG LOG
+//     // =====================================================
+
+//     console.log(
+//       'Authenticated User:',
+//       req.user
+//     );
+
+
+//     // =====================================================
+//     // CONTINUE
+//     // =====================================================
+
+//     next();
+
+
+//   } catch (error) {
+
+//     console.error(
+//       'AUTH ERROR:',
+//       error.message
+//     );
+
+
+//     // =====================================================
+//     // INVALID / EXPIRED TOKEN
+//     // =====================================================
+
+//     return res.status(401).json({
+
+//       success: false,
+
+//       message:
+//         'Invalid or expired token'
+
+//     });
+
+//   }
+
+// }
+
+
+// module.exports = {
+//   authenticateToken
+// };
+
+
+// middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
 
-
-function authenticateToken(req, res, next) {
-
+exports.authenticateToken = (req, res, next) => {
   try {
-
-    // =====================================================
-    // GET AUTHORIZATION HEADER
-    // =====================================================
-
-    const authHeader =
-      req.headers.authorization;
-
-
-    // =====================================================
-    // CHECK TOKEN EXISTS
-    // =====================================================
-
-    if (!authHeader) {
-
-      return res.status(401).json({
-
-        success: false,
-
-        message:
-          'Authorization token missing'
-
-      });
-
-    }
-
-
-    // =====================================================
-    // CHECK BEARER FORMAT
-    // Expected:
-    // Authorization: Bearer <token>
-    // =====================================================
-
-    const parts =
-      authHeader.split(' ');
-
-
-    if (
-      parts.length !== 2 ||
-      parts[0] !== 'Bearer' ||
-      !parts[1]
-    ) {
-
-      return res.status(401).json({
-
-        success: false,
-
-        message:
-          'Invalid authorization format'
-
-      });
-
-    }
-
-
-    // =====================================================
-    // GET TOKEN
-    // =====================================================
-
-    const token =
-      parts[1];
-
-
-    // =====================================================
-    // VERIFY JWT
-    // =====================================================
-
-    const decoded =
-      jwt.verify(
-        token,
-        process.env.JWT_SECRET
-      );
-
-
-    // =====================================================
-    // CHECK USER ID
-    // =====================================================
-
-    if (!decoded.id) {
-
-      return res.status(401).json({
-
-        success: false,
-
-        message:
-          'Invalid token: user ID missing'
-
-      });
-
-    }
-
-
-    // =====================================================
-    // SAVE AUTHENTICATED USER
-    // =====================================================
-
-    req.user = {
-
-      id: decoded.id,
-
-      role: decoded.role
-
-    };
-
-
-    // =====================================================
-    // DEBUG LOG
-    // =====================================================
+    const authHeader = req.headers.authorization;
 
     console.log(
-      'Authenticated User:',
-      req.user
+      'AUTH HEADER:',
+      authHeader ? 'Received' : 'Missing'
     );
 
+    if (!authHeader) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authorization header missing'
+      });
+    }
 
-    // =====================================================
-    // CONTINUE
-    // =====================================================
+    if (!authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid authorization format'
+      });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: 'Token missing'
+      });
+    }
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    console.log('Decoded User:', decoded);
+
+    req.user = decoded;
 
     next();
 
-
   } catch (error) {
-
     console.error(
-      'AUTH ERROR:',
+      'AUTHENTICATION ERROR:',
       error.message
     );
 
-
-    // =====================================================
-    // INVALID / EXPIRED TOKEN
-    // =====================================================
-
     return res.status(401).json({
-
       success: false,
-
-      message:
-        'Invalid or expired token'
-
+      message: 'Invalid or expired token'
     });
-
   }
-
-}
-
-
-module.exports = {
-  authenticateToken
 };

@@ -150,3 +150,178 @@ ADD COLUMN completed_tests JSON;
 SELECT completed_tests FROM test_requests WHERE id = 4;
 
 
+SELECT * FROM test_reports;
+
+CREATE TABLE ai_conversations (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    user_id INT NOT NULL,
+
+    title VARCHAR(255),
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+        REFERENCES Users(UserID)
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE ai_messages (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    conversation_id BIGINT NOT NULL,
+
+    role VARCHAR(20) NOT NULL,
+
+    message TEXT NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (conversation_id)
+        REFERENCES ai_conversations(id)
+        ON DELETE CASCADE
+);
+
+
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = 'Tracking';
+
+
+SELECT table_name, column_name
+FROM information_schema.columns
+WHERE table_schema = 'public'
+ORDER BY table_name, ordinal_position;
+
+
+
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_schema = 'public'
+  AND table_name = 'tracking';
+
+
+  
+SELECT EXISTS (
+    SELECT 1
+    FROM test_reports
+    WHERE sample_id = 6
+) AS "reportGenerated";
+
+
+
+SELECT
+    tr.id,
+    tr.sample_id,
+    s.sampleid,
+    s.userid,
+    tr.test_name
+FROM test_reports tr
+LEFT JOIN samples s
+    ON s.sampleid = tr.sample_id
+WHERE tr.sample_id = 6;
+
+
+SELECT
+    s.sampleid,
+    s.userid,
+    tr.id AS report_id,
+    tr.sample_id
+FROM samples s
+LEFT JOIN test_reports tr
+    ON tr.sample_id = s.sampleid
+WHERE s.sampleid = 6;
+
+
+SELECT
+    userid,
+    name,
+    email,
+    role
+FROM users
+WHERE email = 'ram@gmail.com';
+
+
+SELECT sampleid, userid, sampletype, barcode
+FROM samples
+WHERE sampleid = 6;
+
+
+UPDATE samples
+SET userid = 5
+WHERE sampleid = 6;
+
+
+SELECT *
+FROM test_requests
+WHERE id = 12;
+
+
+SELECT
+  id,
+  company_name,
+  tests_required,
+  completed_tests
+FROM test_requests
+WHERE id = 12;
+
+ALTER TABLE reports
+ADD COLUMN IF NOT EXISTS notes TEXT;
+
+ALTER TABLE reports
+ADD COLUMN IF NOT EXISTS observation TEXT;
+
+
+ALTER TABLE reports
+ADD COLUMN IF NOT EXISTS remarks TEXT;
+
+ALTER TABLE reports
+ADD COLUMN IF NOT EXISTS created_by INTEGER;
+
+
+SELECT
+    column_name,
+    data_type
+FROM information_schema.columns
+WHERE table_name = 'reports'
+ORDER BY ordinal_position;
+
+
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = 'reports';
+
+ALTER TABLE reports
+ADD COLUMN IF NOT EXISTS test_name TEXT,
+ADD COLUMN IF NOT EXISTS test_method TEXT;
+
+
+SELECT *
+FROM samples
+WHERE sampleid = 12;
+
+SELECT * FROM samples ORDER BY sampleid;
+
+SELECT *
+FROM samples
+WHERE sampleid = 16;
+
+
+SELECT sampleid, userid, sampletype, barcode, status
+FROM samples
+ORDER BY sampleid;
+
+
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = 'reports'
+ORDER BY ordinal_position;
+
+SELECT id
+FROM test_requests
+WHERE id = 16;
+
+SELECT *
+FROM test_reports
+WHERE sample_id = 12;

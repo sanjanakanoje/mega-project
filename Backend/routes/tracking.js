@@ -15,14 +15,63 @@
 // module.exports = router;
 
 
-const express = require("express");
+// const express = require("express");
+// const router = express.Router();
+
+// const trackingController = require("../controllers/tracking");
+
+// router.get(
+//   "/test/:sampleId",
+//   trackingController.getTestRequirementsBySample
+// );
+
+// module.exports = router;
+
+
+const express = require('express');
+
 const router = express.Router();
 
-const trackingController = require("../controllers/tracking");
+const trackingController = require('../controllers/tracking');
+
+const {
+  authenticateToken
+} = require('../middleware/authMiddleware');
+
+/*
+==================================================
+GET TEST REQUIREMENTS
+==================================================
+*/
 
 router.get(
-  "/test/:sampleId",
+  '/test/:sampleId',
+  authenticateToken,
   trackingController.getTestRequirementsBySample
+);
+
+/*
+==================================================
+GET TRACKING DETAILS
+==================================================
+*/
+
+router.get(
+  '/:id',
+  authenticateToken,
+  trackingController.getTrackingDetails
+);
+
+/*
+==================================================
+UPDATE COMPLETED TESTS
+==================================================
+*/
+
+router.put(
+  '/:id/completed',
+  authenticateToken,
+  trackingController.updateCompletedTests
 );
 
 module.exports = router;

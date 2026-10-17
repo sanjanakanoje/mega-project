@@ -1,369 +1,4 @@
-// const pool = require('../config/db');
-
-// async function getUserAIContext(userId, role) {
-
-//   const context = {
-//     user: null,
-//     samples: [],
-//     tracking: [],
-//     tests: [],
-//     reports: [],
-//     testRequests: []
-//   };
-
-//   // =====================================================
-//   // USER INFORMATION
-//   // =====================================================
-
-//   const userResult = await pool.query(
-//     `
-//     SELECT
-//       userid,
-//       name,
-//       email,
-//       role
-//     FROM users
-//     WHERE userid = $1
-//     `,
-//     [userId]
-//   );
-
-//   if (userResult.rows.length > 0) {
-//     context.user = userResult.rows[0];
-//   }
-
-
-//   // =====================================================
-//   // CUSTOMER DATA
-//   // =====================================================
-
-//   if (role && role.toLowerCase() === 'customer') {
-
-//     // ===================================================
-//     // USER'S SAMPLES
-//     // ===================================================
-
-//     const samplesResult = await pool.query(
-//       `
-//       SELECT
-//         s.sampleid,
-//         s.userid,
-//         s.sampletype,
-//         s.barcode,
-//         s.status,
-//         s.predictedcompletiontime,
-//         s.datereceived
-//       FROM samples s
-//       WHERE s.userid = $1
-//       ORDER BY s.datereceived DESC
-//       LIMIT 20
-//       `,
-//       [userId]
-//     );
-
-//     context.samples = samplesResult.rows;
-
-
-//     // ===================================================
-//     // TRACKING
-//     // ===================================================
-
-//     const trackingResult = await pool.query(
-//       `
-//       SELECT
-//         t.trackingid,
-//         t.sampleid,
-//         t.stagename,
-//         t.timestamp,
-//         t.updatedby
-//       FROM tracking t
-//       INNER JOIN samples s
-//         ON s.sampleid = t.sampleid
-//       WHERE s.userid = $1
-//       ORDER BY t.timestamp DESC
-//       LIMIT 100
-//       `,
-//       [userId]
-//     );
-
-//     context.tracking = trackingResult.rows;
-
-
-//     // ===================================================
-//     // TESTS PERFORMED
-//     // ===================================================
-
-//     const testsResult = await pool.query(
-//       `
-//       SELECT
-//         tp.testperformedid,
-//         tp.sampleid,
-//         tp.testid,
-//         tests.testname,
-//         tp.result,
-//         tp.status
-//       FROM testperformed tp
-//       INNER JOIN samples s
-//         ON s.sampleid = tp.sampleid
-//       INNER JOIN tests
-//         ON tests.testid = tp.testid
-//       WHERE s.userid = $1
-//       ORDER BY tp.testperformedid DESC
-//       LIMIT 100
-//       `,
-//       [userId]
-//     );
-
-//     context.tests = testsResult.rows;
-
-
-//     // ===================================================
-//     // REPORTS
-//     // ===================================================
-
-//     const reportsResult = await pool.query(
-//       `
-//       SELECT
-//         r.reportid,
-//         r.sampleid,
-//         r.reportdate,
-//         r.finalresult
-//       FROM reports r
-//       INNER JOIN samples s
-//         ON s.sampleid = r.sampleid
-//       WHERE s.userid = $1
-//       ORDER BY r.reportdate DESC
-//       LIMIT 50
-//       `,
-//       [userId]
-//     );
-
-//     context.reports = reportsResult.rows;
-
-
-//     // ===================================================
-//     // TEST REQUESTS
-//     // ===================================================
-
-//     const requestsResult = await pool.query(
-//       `
-//       SELECT
-//         id,
-//         sample_id,
-//         customer_id,
-//         request_no,
-//         company_name,
-//         submitted_by,
-//         merchant_name,
-//         brand_label_name,
-//         vendor_code,
-//         email,
-//         phone_no,
-//         sample_description,
-//         style_no,
-//         season,
-//         fiber_content,
-//         fabric_weight,
-//         count_no,
-//         color,
-//         construction,
-//         end_use,
-//         fabric_report_no,
-//         trim_fabric_report_no,
-//         previous_test_report_no,
-//         bo_no,
-//         co_no,
-//         finish_type,
-//         division,
-//         package_type,
-//         tests_required,
-//         wash_instruction,
-//         wash_code,
-//         priority,
-//         created_at
-//       FROM test_requests
-//       WHERE customer_id = $1
-//       ORDER BY created_at DESC
-//       LIMIT 20
-//       `,
-//       [userId]
-//     );
-
-//     context.testRequests = requestsResult.rows;
-
-
-//     // ===================================================
-// // REQUESTED TEST SUMMARY
-// // ===================================================
-
-// let requestedTests = [];
-
-// for (const request of context.testRequests) {
-
-//   const testsRequired = request.tests_required;
-
-//   if (Array.isArray(testsRequired)) {
-//     requestedTests.push(...testsRequired);
-//   }
-
-// }
-
-// context.requestedTestSummary = {
-//   totalRequested: requestedTests.length,
-//   tests: requestedTests
-// };
-//   }
-
-
-//   // =====================================================
-//   // LAB STAFF DATA
-//   // =====================================================
-
-//   else if (
-//     role &&
-//     (
-//       role.toLowerCase() === 'labstaff' ||
-//       role.toLowerCase() === 'lab staff' ||
-//       role.toLowerCase() === 'lab_staff'
-//     )
-//   ) {
-
-//     // ===================================================
-//     // ALL SAMPLES
-//     // ===================================================
-
-//     const samplesResult = await pool.query(
-//       `
-//       SELECT
-//         s.sampleid,
-//         s.userid,
-//         u.name AS customername,
-//         s.sampletype,
-//         s.barcode,
-//         s.status,
-//         s.predictedcompletiontime,
-//         s.datereceived
-//       FROM samples s
-//       LEFT JOIN users u
-//         ON u.userid = s.userid
-//       ORDER BY s.datereceived DESC
-//       LIMIT 50
-//       `
-//     );
-
-//     context.samples = samplesResult.rows;
-
-
-//     // ===================================================
-//     // ALL TRACKING
-//     // ===================================================
-
-//     const trackingResult = await pool.query(
-//       `
-//       SELECT
-//         t.trackingid,
-//         t.sampleid,
-//         t.stagename,
-//         t.timestamp,
-//         t.updatedby
-//       FROM tracking t
-//       ORDER BY t.timestamp DESC
-//       LIMIT 200
-//       `
-//     );
-
-//     context.tracking = trackingResult.rows;
-
-
-//     // ===================================================
-//     // ALL TESTS
-//     // ===================================================
-
-//     const testsResult = await pool.query(
-//       `
-//       SELECT
-//         tp.testperformedid,
-//         tp.sampleid,
-//         tp.testid,
-//         tests.testname,
-//         tp.result,
-//         tp.status
-//       FROM testperformed tp
-//       INNER JOIN tests
-//         ON tests.testid = tp.testid
-//       ORDER BY tp.testperformedid DESC
-//       LIMIT 200
-//       `
-//     );
-
-//     context.tests = testsResult.rows;
-
-
-//     // ===================================================
-// // TEST SUMMARY
-// // ===================================================
-
-// const completedTests = context.tests.filter(test =>
-//   test.status &&
-//   test.status.toLowerCase() === 'completed'
-// );
-
-// const pendingTests = context.tests.filter(test =>
-//   test.status &&
-//   test.status.toLowerCase() === 'pending'
-// );
-
-// const inProgressTests = context.tests.filter(test =>
-//   test.status &&
-//   (
-//     test.status.toLowerCase() === 'in progress' ||
-//     test.status.toLowerCase() === 'in-progress' ||
-//     test.status.toLowerCase() === 'processing'
-//   )
-// );
-
-// context.testSummary = {
-//   totalPerformed: context.tests.length,
-//   completed: completedTests.length,
-//   pending: pendingTests.length,
-//   inProgress: inProgressTests.length
-// };
-
-
-//     // ===================================================
-//     // ALL REPORTS
-//     // ===================================================
-
-//     const reportsResult = await pool.query(
-//       `
-//       SELECT
-//         reportid,
-//         sampleid,
-//         reportdate,
-//         finalresult
-//       FROM reports
-//       ORDER BY reportdate DESC
-//       LIMIT 100
-//       `
-//     );
-
-//     context.reports = reportsResult.rows;
-//   }
-
-
-//   return context;
-// }
-
-
-// module.exports = {
-//   getUserAIContext
-// };
-
-
-
-
-
-
+// services/aiContextService.js
 
 const pool = require('../config/db');
 
@@ -373,7 +8,6 @@ const pool = require('../config/db');
 // =====================================================
 
 function normalizeRole(role) {
-
   if (!role) {
     return '';
   }
@@ -382,122 +16,456 @@ function normalizeRole(role) {
     .toString()
     .trim()
     .toLowerCase();
-
 }
 
 
 // =====================================================
-// HELPER: PARSE TEST ARRAY
-// Handles:
-// 1. PostgreSQL JSONB array
-// 2. JSON stored as TEXT
-// 3. PostgreSQL array-like strings
+// HELPER: PARSE ARRAY
 // =====================================================
 
 function parseTestArray(value) {
-
-  if (!value) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
     return [];
   }
 
-
-  // Already an array
   if (Array.isArray(value)) {
-    return value;
+    return value
+      .map(item => String(item).trim())
+      .filter(Boolean);
   }
 
+  if (typeof value !== 'string') {
+    return [];
+  }
 
-  // String value
-  if (typeof value === 'string') {
+  const trimmed = value.trim();
 
-    const trimmed = value.trim();
+  if (
+    !trimmed ||
+    trimmed === '[]'
+  ) {
+    return [];
+  }
 
-    if (!trimmed || trimmed === '[]') {
+  // JSON array format
+  try {
+    const parsed = JSON.parse(trimmed);
+
+    if (Array.isArray(parsed)) {
+      return parsed
+        .map(item => String(item).trim())
+        .filter(Boolean);
+    }
+  } catch (error) {
+    // Continue with other formats
+  }
+
+  // PostgreSQL array format
+  // {"Test 1","Test 2"}
+  if (
+    trimmed.startsWith('{') &&
+    trimmed.endsWith('}')
+  ) {
+    const inside = trimmed.substring(
+      1,
+      trimmed.length - 1
+    );
+
+    if (!inside.trim()) {
       return [];
     }
 
-
-    // -----------------------------------------------
-    // Try JSON
-    // -----------------------------------------------
-
-    try {
-
-      const parsed = JSON.parse(trimmed);
-
-      if (Array.isArray(parsed)) {
-        return parsed;
-      }
-
-    } catch (error) {
-
-      // Continue to PostgreSQL-style parsing
-    }
-
-
-    // -----------------------------------------------
-    // PostgreSQL array format
-    // Example:
-    // {"Test 1","Test 2"}
-    // -----------------------------------------------
-
-    if (
-      trimmed.startsWith('{') &&
-      trimmed.endsWith('}')
-    ) {
-
-      const inside = trimmed.substring(
-        1,
-        trimmed.length - 1
-      );
-
-      if (!inside) {
-        return [];
-      }
-
-      return inside
-        .split(',')
-        .map(item =>
-          item
-            .trim()
-            .replace(/^"(.*)"$/, '$1')
-        )
-        .filter(Boolean);
-    }
-
+    return inside
+      .split(',')
+      .map(item => {
+        return item
+          .trim()
+          .replace(/^"(.*)"$/, '$1')
+          .replace(/\\"/g, '"')
+          .trim();
+      })
+      .filter(Boolean);
   }
 
+  // Comma-separated string
+  if (trimmed.includes(',')) {
+    return trimmed
+      .split(',')
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
 
-  return [];
-
+  // Single test value
+  return [trimmed];
 }
 
 
 // =====================================================
-// GET AI CONTEXT FOR LOGGED-IN USER
+// HELPER: NORMALIZE TEST NAME
 // =====================================================
 
-async function getUserAIContext(userId, role) {
+function normalizeTestName(value) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
+    return '';
+  }
 
-  const normalizedRole = normalizeRole(role);
+  return value
+    .toString()
+    .trim()
+    .toLowerCase();
+}
 
+
+// =====================================================
+// HELPER: GET PENDING TESTS
+// =====================================================
+
+function getPendingTests(
+  requiredTests,
+  completedTests
+) {
+  return requiredTests.filter(requiredTest => {
+    return !completedTests.some(completedTest => {
+      return (
+        normalizeTestName(completedTest) ===
+        normalizeTestName(requiredTest)
+      );
+    });
+  });
+}
+
+
+// =====================================================
+// HELPER: NORMALIZE SAMPLE ID
+// =====================================================
+
+function normalizeSampleId(value) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ''
+  ) {
+    return null;
+  }
+
+  const numberValue = Number(value);
+
+  if (
+    !Number.isInteger(numberValue) ||
+    numberValue <= 0
+  ) {
+    return null;
+  }
+
+  return numberValue;
+}
+
+
+// =====================================================
+// HELPER: CREATE REPORT SUMMARY
+// =====================================================
+
+function createReportSummary(reports) {
+  const reportMap = new Map();
+
+  for (const report of reports) {
+    const sampleId = normalizeSampleId(
+      report.sample_id
+    );
+
+    if (!sampleId) {
+      continue;
+    }
+
+    if (!reportMap.has(sampleId)) {
+      reportMap.set(sampleId, []);
+    }
+
+    reportMap
+      .get(sampleId)
+      .push(report);
+  }
+
+  const summary = [];
+
+  for (const [
+    sampleId,
+    sampleReports
+  ] of reportMap.entries()) {
+    summary.push({
+      sampleId,
+      reportGenerated: sampleReports.length > 0,
+      reportCount: sampleReports.length,
+      reports: sampleReports.map(report => ({
+        reportId: report.report_id,
+        sampleId: report.sample_id,
+        testName: report.test_name,
+        testMethod: report.test_method,
+        testDate: report.test_date,
+        result: report.result,
+        observation: report.observation,
+        remarks: report.remarks,
+        notes: report.notes,
+        createdAt: report.created_at,
+        updatedAt: report.updated_at
+      }))
+    });
+  }
+
+  return summary;
+}
+
+
+// =====================================================
+// HELPER: GET REPORT STATUS FOR SAMPLE
+// =====================================================
+
+function getReportStatusForSample(
+  reports,
+  sampleId
+) {
+  const numericSampleId =
+    normalizeSampleId(sampleId);
+
+  if (!numericSampleId) {
+    return {
+      sampleId: null,
+      reportGenerated: false,
+      reportCount: 0,
+      reports: []
+    };
+  }
+
+  const sampleReports = reports.filter(report => {
+    return (
+      normalizeSampleId(report.sample_id) ===
+      numericSampleId
+    );
+  });
+
+  return {
+    sampleId: numericSampleId,
+    reportGenerated: sampleReports.length > 0,
+    reportCount: sampleReports.length,
+    reports: sampleReports
+  };
+}
+
+
+// =====================================================
+// HELPER: BUILD TEST COMPLETION SUMMARY
+// =====================================================
+
+function buildTestCompletionSummary(
+  testRequests
+) {
+  return testRequests.map(request => {
+    const requiredTests =
+      parseTestArray(
+        request.tests_required
+      );
+
+    const completedTests =
+      parseTestArray(
+        request.completed_tests
+      );
+
+    const pendingTests =
+      getPendingTests(
+        requiredTests,
+        completedTests
+      );
+
+    return {
+      requestId: request.id,
+
+      sampleId:
+        normalizeSampleId(
+          request.sample_id
+        ),
+
+      customerId: request.customer_id,
+
+      requestNo: request.request_no,
+
+      companyName: request.company_name,
+
+      sampleDescription:
+        request.sample_description,
+
+      totalTests: requiredTests.length,
+
+      completedCount: completedTests.length,
+
+      pendingCount: pendingTests.length,
+
+      requiredTests,
+
+      completedTests,
+
+      pendingTests
+    };
+  });
+}
+
+
+// =====================================================
+// HELPER: BUILD TESTING SUMMARY
+// =====================================================
+
+function buildTestingSummary(
+  testRequests
+) {
+  const summary = {
+    totalRequests: testRequests.length,
+    totalRequiredTests: 0,
+    totalCompletedTests: 0,
+    totalPendingTests: 0,
+    requests: []
+  };
+
+  for (const request of testRequests) {
+    const requiredTests =
+      parseTestArray(
+        request.tests_required
+      );
+
+    const completedTests =
+      parseTestArray(
+        request.completed_tests
+      );
+
+    const pendingTests =
+      getPendingTests(
+        requiredTests,
+        completedTests
+      );
+
+    summary.totalRequiredTests +=
+      requiredTests.length;
+
+    summary.totalCompletedTests +=
+      completedTests.length;
+
+    summary.totalPendingTests +=
+      pendingTests.length;
+
+    summary.requests.push({
+      requestId: request.id,
+
+      sampleId:
+        normalizeSampleId(
+          request.sample_id
+        ),
+
+      requestNo: request.request_no,
+
+      companyName: request.company_name,
+
+      sampleDescription:
+        request.sample_description,
+
+      styleNo: request.style_no,
+
+      season: request.season,
+
+      fiberContent: request.fiber_content,
+
+      fabricWeight: request.fabric_weight,
+
+      countNo: request.count_no,
+
+      color: request.color,
+
+      construction: request.construction,
+
+      endUse: request.end_use,
+
+      finishType: request.finish_type,
+
+      division: request.division,
+
+      packageType: request.package_type,
+
+      priority: request.priority,
+
+      testsRequired: requiredTests,
+
+      completedTests: completedTests,
+
+      pendingTests: pendingTests,
+
+      createdAt: request.created_at
+    });
+  }
+
+  return summary;
+}
+
+
+// =====================================================
+// GET USER AI CONTEXT
+// =====================================================
+
+async function getUserAIContext(
+  userId,
+  role
+) {
+  const normalizedRole =
+    normalizeRole(role);
 
   const context = {
     user: null,
+
     samples: [],
+
     tracking: [],
+
     tests: [],
+
     reports: [],
+
+    reportGenerated: false,
+
+    reportCount: 0,
+
+    reportSummary: [],
+
+    reportStatusBySample: [],
+
     testRequests: [],
+
+    testCompletionSummary: [],
+
     sampleSummary: {
       totalSamples: 0,
       totalTestRequests: 0,
       samples: []
+    },
+
+    testingSummary: {
+      totalRequests: 0,
+      totalRequiredTests: 0,
+      totalCompletedTests: 0,
+      totalPendingTests: 0,
+      requests: []
+    },
+
+    testSummary: {
+      totalPerformed: 0,
+      completed: 0,
+      pending: 0,
+      inProgress: 0
     }
   };
 
   try {
-
     console.log('====================================');
     console.log('GENERATING AI CONTEXT');
     console.log('USER ID:', userId);
@@ -506,9 +474,9 @@ async function getUserAIContext(userId, role) {
     console.log('====================================');
 
 
-    // =====================================================
+    // =================================================
     // 1. USER INFORMATION
-    // =====================================================
+    // =================================================
 
     const userResult = await pool.query(
       `
@@ -523,505 +491,478 @@ async function getUserAIContext(userId, role) {
       [userId]
     );
 
-
-    if (userResult.rows.length > 0) {
-
-      context.user = userResult.rows[0];
-
+    if (
+      userResult.rows.length > 0
+    ) {
+      context.user =
+        userResult.rows[0];
     }
 
 
-    // =====================================================
+    // =================================================
     // 2. CUSTOMER DATA
-    // =====================================================
+    // =================================================
 
-    if (normalizedRole === 'customer') {
+    if (
+      normalizedRole === 'customer'
+    ) {
 
-
-      // ===================================================
+      // ===============================================
       // CUSTOMER SAMPLES
-      // ===================================================
+      // ===============================================
 
-      const samplesResult = await pool.query(
-        `
-        SELECT
-          s.sampleid,
-          s.userid,
-          s.sampletype,
-          s.barcode,
-          s.status,
-          s.predictedcompletiontime,
-          s.datereceived
-        FROM samples s
-        WHERE s.userid = $1
-        ORDER BY s.datereceived DESC
-        LIMIT 100
-        `,
-        [userId]
-      );
+      const samplesResult =
+        await pool.query(
+          `
+          SELECT
+            s.sampleid,
+            s.userid,
+            s.sampletype,
+            s.barcode,
+            s.status,
+            s.predictedcompletiontime,
+            s.datereceived
+          FROM samples s
+          WHERE s.userid = $1
+          ORDER BY s.datereceived DESC NULLS LAST
+          LIMIT 100
+          `,
+          [userId]
+        );
+
+      context.samples =
+        samplesResult.rows;
 
 
-      context.samples = samplesResult.rows;
-
-
-      // ===================================================
+      // ===============================================
       // CUSTOMER TRACKING
-      // ===================================================
+      // ===============================================
+
+      const trackingResult =
+        await pool.query(
+          `
+          SELECT
+            t.trackingid,
+            t.sampleid,
+            t.stagename,
+            t.updatedat,
+            t.updatedby
+          FROM tracking t
+          INNER JOIN samples s
+            ON s.sampleid = t.sampleid
+          WHERE s.userid = $1
+          ORDER BY t.updatedat DESC NULLS LAST
+          LIMIT 500
+          `,
+          [userId]
+        );
+
+      context.tracking =
+        trackingResult.rows;
+
+
+      // ===============================================
+      // CUSTOMER TESTS
+      // ===============================================
+
+      const testsResult =
+        await pool.query(
+          `
+          SELECT
+            tp.testperformedid,
+            tp.sampleid,
+            tp.testid,
+            tests.testname,
+            tp.result,
+            tp.status
+          FROM testperformed tp
+          INNER JOIN samples s
+            ON s.sampleid = tp.sampleid
+          INNER JOIN tests
+            ON tests.testid = tp.testid
+          WHERE s.userid = $1
+          ORDER BY tp.testperformedid DESC
+          LIMIT 500
+          `,
+          [userId]
+        );
+
+      context.tests =
+        testsResult.rows;
+
+
+      // ===============================================
+      // CUSTOMER REPORTS
+      // ===============================================
+
+      const reportsResult =
+        await pool.query(
+          `
+          SELECT
+            tr.id AS report_id,
+            tr.sample_id,
+            tr.test_name,
+            tr.result,
+            tr.observation,
+            tr.remarks,
+            tr.test_method,
+            tr.test_date,
+            tr.notes,
+            tr.created_by,
+            tr.created_at,
+            tr.updated_at,
+
+            s.sampletype,
+            s.barcode,
+            s.status AS sample_status,
+            s.datereceived,
+
+            u.name AS customer_name,
+            u.email AS customer_email
+
+          FROM test_reports tr
+
+          INNER JOIN samples s
+            ON s.sampleid = tr.sample_id
+
+          LEFT JOIN users u
+            ON u.userid = s.userid
+
+          WHERE s.userid = $1
+
+          ORDER BY tr.created_at DESC NULLS LAST
+          LIMIT 500
+          `,
+          [userId]
+        );
+
+      context.reports =
+        reportsResult.rows;
 
-      const trackingResult = await pool.query(
-        `
-        SELECT
-          t.trackingid,
-          t.sampleid,
-          t.stagename,
-          t.timestamp,
-          t.updatedby
-        FROM tracking t
 
-        INNER JOIN samples s
-          ON s.sampleid = t.sampleid
+      // ===============================================
+      // REPORT STATUS
+      // ===============================================
 
-        WHERE s.userid = $1
+      context.reportCount =
+        context.reports.length;
 
-        ORDER BY t.timestamp DESC
+      context.reportGenerated =
+        context.reportCount > 0;
 
-        LIMIT 500
-        `,
-        [userId]
-      );
+      context.reportSummary =
+        createReportSummary(
+          context.reports
+        );
 
+      context.reportStatusBySample =
+        context.reportSummary;
 
-      context.tracking = trackingResult.rows;
 
+      // ===============================================
+      // CUSTOMER TEST REQUESTS
+      // ===============================================
 
-      // ===================================================
-      // TESTS PERFORMED
-      // ===================================================
+      const requestsResult =
+        await pool.query(
+          `
+          SELECT
+            id,
+            sample_id,
+            customer_id,
+            request_no,
 
-      const testsResult = await pool.query(
-        `
-        SELECT
-          tp.testperformedid,
-          tp.sampleid,
-          tp.testid,
-          tests.testname,
-          tp.result,
-          tp.status
+            company_name,
+            submitted_by,
+            merchant_name,
+            brand_label_name,
+            vendor_code,
 
-        FROM testperformed tp
+            email,
+            phone_no,
 
-        INNER JOIN samples s
-          ON s.sampleid = tp.sampleid
+            sample_description,
+            style_no,
+            season,
+            fiber_content,
+            fabric_weight,
+            count_no,
+            color,
+            construction,
+            end_use,
 
-        INNER JOIN tests
-          ON tests.testid = tp.testid
+            fabric_report_no,
+            trim_fabric_report_no,
+            previous_test_report_no,
 
-        WHERE s.userid = $1
+            bo_no,
+            co_no,
 
-        ORDER BY tp.testperformedid DESC
+            finish_type,
+            division,
+            package_type,
 
-        LIMIT 500
-        `,
-        [userId]
-      );
+            tests_required,
+            completed_tests,
 
+            wash_instruction,
+            wash_code,
+            priority,
 
-      context.tests = testsResult.rows;
+            created_at
 
+          FROM test_requests
 
-      // ===================================================
-      // REPORTS
-      // ===================================================
+          WHERE customer_id = $1
 
-      const reportsResult = await pool.query(
-        `
-        SELECT
-          r.reportid,
-          r.sampleid,
-          r.reportdate,
-          r.finalresult
+          ORDER BY created_at DESC NULLS LAST
+          LIMIT 100
+          `,
+          [userId]
+        );
 
-        FROM reports r
+      context.testRequests =
+        requestsResult.rows;
 
-        INNER JOIN samples s
-          ON s.sampleid = r.sampleid
 
-        WHERE s.userid = $1
-
-        ORDER BY r.reportdate DESC
-
-        LIMIT 200
-        `,
-        [userId]
-      );
-
-
-      context.reports = reportsResult.rows;
-
-
-      // ===================================================
-      // TEST REQUESTS
-      // ===================================================
-
-      const requestsResult = await pool.query(
-        `
-        SELECT
-
-          id,
-
-          sample_id,
-
-          customer_id,
-
-          request_no,
-
-          company_name,
-
-          submitted_by,
-
-          merchant_name,
-
-          brand_label_name,
-
-          vendor_code,
-
-          email,
-
-          phone_no,
-
-          sample_description,
-
-          style_no,
-
-          season,
-
-          fiber_content,
-
-          fabric_weight,
-
-          count_no,
-
-          color,
-
-          construction,
-
-          end_use,
-
-          fabric_report_no,
-
-          trim_fabric_report_no,
-
-          previous_test_report_no,
-
-          bo_no,
-
-          co_no,
-
-          finish_type,
-
-          division,
-
-          package_type,
-
-          tests_required,
-
-          completed_tests,
-
-          wash_instruction,
-
-          wash_code,
-
-          priority,
-
-          created_at
-
-        FROM test_requests
-
-        WHERE customer_id = $1
-
-        ORDER BY created_at DESC
-
-        LIMIT 50
-        `,
-        [userId]
-      );
-
-
-      context.testRequests = requestsResult.rows;
-
-      // =====================================================
-      // FALLBACK SAMPLE INFORMATION FROM TEST REQUESTS
-      // =====================================================
+      // ===============================================
+      // FALLBACK SAMPLE DATA FROM REQUESTS
+      // ===============================================
 
       if (
         context.samples.length === 0 &&
         context.testRequests.length > 0
       ) {
+        context.samples =
+          context.testRequests.map(request => {
+            const requiredTests =
+              parseTestArray(
+                request.tests_required
+              );
 
-        context.samples = context.testRequests.map(request => ({
-          SampleID: request.sample_id || null,
+            const completedTests =
+              parseTestArray(
+                request.completed_tests
+              );
 
-          // Test request ID can be used to identify the submitted request
-          TestRequestID: request.id,
+            const pendingTests =
+              getPendingTests(
+                requiredTests,
+                completedTests
+              );
 
-          UserID: request.customer_id,
+            const sampleId =
+              normalizeSampleId(
+                request.sample_id
+              );
 
-          SampleType: request.sample_description || null,
+            const reportStatus =
+              getReportStatusForSample(
+                context.reports,
+                sampleId
+              );
 
-          Barcode: null,
+            return {
+              sampleId,
 
-          Status:
-            request.completed_tests &&
-            request.tests_required &&
-            request.completed_tests.length === request.tests_required.length
-              ? 'Completed'
-              : 'In Progress',
+              testRequestId:
+                request.id,
 
-          DateReceived: request.created_at,
+              userId:
+                request.customer_id,
 
-          CompanyName: request.company_name,
+              sampleType:
+                request.sample_description || null,
 
-          BrandLabelName: request.brand_label_name,
+              barcode: null,
 
-          VendorCode: request.vendor_code,
+              status:
+                pendingTests.length === 0 &&
+                requiredTests.length > 0
+                  ? 'Completed'
+                  : 'In Progress',
 
-          StyleNo: request.style_no,
+              dateReceived:
+                request.created_at,
 
-          Season: request.season,
+              companyName:
+                request.company_name,
 
-          FiberContent: request.fiber_content,
+              submittedBy:
+                request.submitted_by,
 
-          FabricWeight: request.fabric_weight,
+              merchantName:
+                request.merchant_name,
 
-          Color: request.color,
+              brandLabelName:
+                request.brand_label_name,
 
-          Construction: request.construction,
+              vendorCode:
+                request.vendor_code,
 
-          FinishType: request.finish_type,
+              styleNo:
+                request.style_no,
 
-          TestsRequired: request.tests_required,
+              season:
+                request.season,
 
-          CompletedTests: request.completed_tests
+              fiberContent:
+                request.fiber_content,
 
-        }));
+              fabricWeight:
+                request.fabric_weight,
 
+              countNo:
+                request.count_no,
+
+              color:
+                request.color,
+
+              construction:
+                request.construction,
+
+              endUse:
+                request.end_use,
+
+              finishType:
+                request.finish_type,
+
+              division:
+                request.division,
+
+              packageType:
+                request.package_type,
+
+              testsRequired:
+                requiredTests,
+
+              completedTests:
+                completedTests,
+
+              pendingTests:
+                pendingTests,
+
+              reportGenerated:
+                reportStatus.reportGenerated,
+
+              reportCount:
+                reportStatus.reportCount
+            };
+          });
       }
 
 
-      // =====================================================
+      // ===============================================
       // SAMPLE SUMMARY
-      // =====================================================
+      // ===============================================
 
       context.sampleSummary = {
-        totalSamples: context.samples.length,
+        totalSamples:
+          context.samples.length,
 
-        totalTestRequests: context.testRequests.length,
+        totalTestRequests:
+          context.testRequests.length,
 
-        samples: context.samples.map(sample => ({
-          sampleId: sample.SampleID,
-          testRequestId: sample.TestRequestID,
-          status: sample.Status,
-          companyName: sample.CompanyName,
-          sampleType: sample.SampleType,
-          barcode: sample.Barcode,
-          dateReceived: sample.DateReceived,
+        samples:
+          context.samples.map(sample => {
+            const sampleId =
+              normalizeSampleId(
+                sample.sampleid ??
+                sample.sampleId ??
+                sample.SampleID
+              );
 
-          testsRequired: sample.TestsRequired || [],
-          completedTests: sample.CompletedTests || []
-        }))
+            const reportStatus =
+              getReportStatusForSample(
+                context.reports,
+                sampleId
+              );
+
+            return {
+              sampleId,
+
+              testRequestId:
+                sample.testRequestId ??
+                sample.TestRequestID ??
+                null,
+
+              status:
+                sample.status ??
+                sample.Status ??
+                null,
+
+              companyName:
+                sample.companyname ??
+                sample.companyName ??
+                sample.CompanyName ??
+                null,
+
+              sampleType:
+                sample.sampletype ??
+                sample.sampleType ??
+                sample.SampleType ??
+                null,
+
+              barcode:
+                sample.barcode ??
+                sample.Barcode ??
+                null,
+
+              dateReceived:
+                sample.datereceived ??
+                sample.dateReceived ??
+                sample.DateReceived ??
+                sample.created_at ??
+                null,
+
+              testsRequired:
+                parseTestArray(
+                  sample.testsrequired ??
+                  sample.testsRequired ??
+                  sample.TestsRequired
+                ),
+
+              completedTests:
+                parseTestArray(
+                  sample.completedtests ??
+                  sample.completedTests ??
+                  sample.CompletedTests
+                ),
+
+              reportGenerated:
+                reportStatus.reportGenerated,
+
+              reportCount:
+                reportStatus.reportCount
+            };
+          })
       };
 
 
-      // =====================================================
-      // DERIVED CUSTOMER TESTING SUMMARY
-      // =====================================================
-
-      context.testingSummary = {
-        totalRequests: context.testRequests.length,
-        totalRequiredTests: 0,
-        totalCompletedTests: 0,
-        totalPendingTests: 0,
-        requests: []
-      };
-
-      for (const request of context.testRequests) {
-
-        let requiredTests = request.tests_required || [];
-        let completedTests = request.completed_tests || [];
-
-        // PostgreSQL JSONB / text handling
-        if (typeof requiredTests === 'string') {
-          try {
-            requiredTests = JSON.parse(requiredTests);
-          } catch {
-            requiredTests = [];
-          }
-        }
-
-        if (typeof completedTests === 'string') {
-
-          try {
-            completedTests = JSON.parse(completedTests);
-          } catch {
-
-            // Handle PostgreSQL array-like text if required
-            completedTests = completedTests
-              .replace(/^\{|\}$/g, '')
-              .split(',')
-              .map(x => x.trim())
-              .filter(Boolean);
-          }
-        }
-
-        if (!Array.isArray(requiredTests)) {
-          requiredTests = [];
-        }
-
-        if (!Array.isArray(completedTests)) {
-          completedTests = [];
-        }
-
-        const pendingTests = requiredTests.filter(
-          test => !completedTests.includes(test)
-        );
-
-        context.testingSummary.totalRequiredTests +=
-          requiredTests.length;
-
-        context.testingSummary.totalCompletedTests +=
-          completedTests.length;
-
-        context.testingSummary.totalPendingTests +=
-          pendingTests.length;
-
-        context.testingSummary.requests.push({
-
-          requestId: request.id,
-
-          sampleId: request.sample_id,
-
-          companyName: request.company_name,
-
-          sampleDescription: request.sample_description,
-
-          styleNo: request.style_no,
-
-          season: request.season,
-
-          fiberContent: request.fiber_content,
-
-          fabricWeight: request.fabric_weight,
-
-          color: request.color,
-
-          construction: request.construction,
-
-          priority: request.priority,
-
-          testsRequired: requiredTests,
-
-          completedTests: completedTests,
-
-          pendingTests: pendingTests,
-
-          createdAt: request.created_at
-
-        });
-      }
-
-
-      // ===================================================
+      // ===============================================
       // TEST COMPLETION SUMMARY
-      // ===================================================
+      // ===============================================
 
-      context.testCompletionSummary = [];
-
-
-      for (const request of context.testRequests) {
-
-
-        // -----------------------------------------------
-        // REQUIRED TESTS
-        // -----------------------------------------------
-
-        const requiredTests =
-          parseTestArray(request.tests_required);
-
-
-        // -----------------------------------------------
-        // COMPLETED TESTS
-        // -----------------------------------------------
-
-        const completedTests =
-          parseTestArray(request.completed_tests);
-
-
-        // -----------------------------------------------
-        // FIND PENDING TESTS
-        // -----------------------------------------------
-
-        const pendingTests =
-          requiredTests.filter(requiredTest => {
-
-            return !completedTests.some(
-              completedTest =>
-                completedTest
-                  .toString()
-                  .trim()
-                  .toLowerCase() ===
-                requiredTest
-                  .toString()
-                  .trim()
-                  .toLowerCase()
-            );
-
-          });
-
-
-        // -----------------------------------------------
-        // SUMMARY
-        // -----------------------------------------------
-
-        const summary = {
-
-          requestId: request.id,
-
-          sampleId: request.sample_id,
-
-          companyName: request.company_name,
-
-          totalTests: requiredTests.length,
-
-          completedCount: completedTests.length,
-
-          pendingCount: pendingTests.length,
-
-          requiredTests: requiredTests,
-
-          completedTests: completedTests,
-
-          pendingTests: pendingTests
-
-        };
-
-
-        context.testCompletionSummary.push(summary);
-
-
-        console.log(
-          'TEST COMPLETION SUMMARY:',
-          JSON.stringify(summary, null, 2)
+      context.testCompletionSummary =
+        buildTestCompletionSummary(
+          context.testRequests
         );
 
-      }
 
+      // ===============================================
+      // TESTING SUMMARY
+      // ===============================================
 
+      context.testingSummary =
+        buildTestingSummary(
+          context.testRequests
+        );
     }
 
 
-    // =====================================================
+    // =================================================
     // 3. LAB STAFF DATA
-    // =====================================================
+    // =================================================
 
     else if (
       normalizedRole === 'labstaff' ||
@@ -1029,297 +970,235 @@ async function getUserAIContext(userId, role) {
       normalizedRole === 'lab_staff'
     ) {
 
-
-      // ===================================================
+      // ===============================================
       // ALL SAMPLES
-      // ===================================================
+      // ===============================================
 
-      const samplesResult = await pool.query(
-        `
-        SELECT
+      const samplesResult =
+        await pool.query(
+          `
+          SELECT
+            s.sampleid,
+            s.userid,
+            u.name AS customername,
+            u.email AS customeremail,
 
-          s.sampleid,
+            s.sampletype,
+            s.barcode,
+            s.status,
+            s.predictedcompletiontime,
+            s.datereceived
 
-          s.userid,
+          FROM samples s
 
-          u.name AS customername,
+          LEFT JOIN users u
+            ON u.userid = s.userid
 
-          s.sampletype,
+          ORDER BY s.datereceived DESC NULLS LAST
+          LIMIT 200
+          `
+        );
 
-          s.barcode,
-
-          s.status,
-
-          s.predictedcompletiontime,
-
-          s.datereceived
-
-        FROM samples s
-
-        LEFT JOIN users u
-          ON u.userid = s.userid
-
-        ORDER BY s.datereceived DESC
-
-        LIMIT 200
-        `
-      );
+      context.samples =
+        samplesResult.rows;
 
 
-      context.samples = samplesResult.rows;
-
-
-      // ===================================================
+      // ===============================================
       // ALL TRACKING
-      // ===================================================
+      // ===============================================
+
+      const trackingResult =
+        await pool.query(
+          `
+          SELECT
+            trackingid,
+            sampleid,
+            stagename,
+            updatedat,
+            updatedby
+          FROM tracking
+          ORDER BY updatedat DESC NULLS LAST
+          LIMIT 500
+          `
+        );
+
+      context.tracking =
+        trackingResult.rows;
+
+
+      // ===============================================
+      // ALL TESTS
+      // ===============================================
+
+      const testsResult =
+        await pool.query(
+          `
+          SELECT
+            tp.testperformedid,
+            tp.sampleid,
+            tp.testid,
+            tests.testname,
+            tp.result,
+            tp.status
+
+          FROM testperformed tp
+
+          INNER JOIN tests
+            ON tests.testid = tp.testid
+
+          ORDER BY tp.testperformedid DESC
+          LIMIT 500
+          `
+        );
+
+      context.tests =
+        testsResult.rows;
+
+
+      // ===============================================
+      // ALL TEST REQUESTS
+      // ===============================================
+
+      const requestsResult =
+        await pool.query(
+          `
+          SELECT
+            id,
+            sample_id,
+            customer_id,
+            request_no,
+
+            company_name,
+            submitted_by,
+            merchant_name,
+            brand_label_name,
+            vendor_code,
+
+            email,
+            phone_no,
+
+            sample_description,
+            style_no,
+            season,
+            fiber_content,
+            fabric_weight,
+            count_no,
+            color,
+            construction,
+            end_use,
+
+            fabric_report_no,
+            trim_fabric_report_no,
+            previous_test_report_no,
+
+            bo_no,
+            co_no,
+
+            finish_type,
+            division,
+            package_type,
+
+            tests_required,
+            completed_tests,
+
+            wash_instruction,
+            wash_code,
+            priority,
+
+            created_at
 
-      const trackingResult = await pool.query(
-        `
-        SELECT
+          FROM test_requests
 
-          trackingid,
+          ORDER BY created_at DESC NULLS LAST
+          LIMIT 200
+          `
+        );
 
-          sampleid,
+      context.testRequests =
+        requestsResult.rows;
 
-          stagename,
 
-          timestamp,
+      // ===============================================
+      // ALL REPORTS
+      // ===============================================
 
-          updatedby
+      const reportsResult =
+        await pool.query(
+          `
+          SELECT
+            tr.id AS report_id,
+            tr.sample_id,
+            tr.test_name,
+            tr.result,
+            tr.observation,
+            tr.remarks,
+            tr.test_method,
+            tr.test_date,
+            tr.notes,
+            tr.created_by,
+            tr.created_at,
+            tr.updated_at,
 
-        FROM tracking
+            s.sampletype,
+            s.barcode,
+            s.status AS sample_status,
+            s.userid,
 
-        ORDER BY timestamp DESC
+            u.name AS customer_name,
+            u.email AS customer_email
 
-        LIMIT 500
-        `
-      );
+          FROM test_reports tr
 
+          LEFT JOIN samples s
+            ON s.sampleid = tr.sample_id
 
-      context.tracking = trackingResult.rows;
+          LEFT JOIN users u
+            ON u.userid = s.userid
 
+          ORDER BY tr.created_at DESC NULLS LAST
+          LIMIT 500
+          `
+        );
 
-      // ===================================================
-      // ALL TESTS PERFORMED
-      // ===================================================
+      context.reports =
+        reportsResult.rows;
 
-      const testsResult = await pool.query(
-        `
-        SELECT
 
-          tp.testperformedid,
+      // ===============================================
+      // REPORT STATUS
+      // ===============================================
 
-          tp.sampleid,
+      context.reportCount =
+        context.reports.length;
 
-          tp.testid,
+      context.reportGenerated =
+        context.reportCount > 0;
 
-          tests.testname,
+      context.reportSummary =
+        createReportSummary(
+          context.reports
+        );
 
-          tp.result,
+      context.reportStatusBySample =
+        context.reportSummary;
 
-          tp.status
 
-        FROM testperformed tp
+      // ===============================================
+      // TEST COMPLETION SUMMARY
+      // ===============================================
 
-        INNER JOIN tests
-          ON tests.testid = tp.testid
+      context.testCompletionSummary =
+        buildTestCompletionSummary(
+          context.testRequests
+        );
 
-        ORDER BY tp.testperformedid DESC
 
-        LIMIT 500
-        `
-      );
-
-
-      context.tests = testsResult.rows;
-
-
-      // ===================================================
-      // TEST REQUESTS FOR LAB STAFF
-      // ===================================================
-
-      const requestsResult = await pool.query(
-        `
-        SELECT
-
-          id,
-
-          sample_id,
-
-          customer_id,
-
-          request_no,
-
-          company_name,
-
-          submitted_by,
-
-          merchant_name,
-
-          brand_label_name,
-
-          vendor_code,
-
-          email,
-
-          phone_no,
-
-          sample_description,
-
-          style_no,
-
-          season,
-
-          fiber_content,
-
-          fabric_weight,
-
-          count_no,
-
-          color,
-
-          construction,
-
-          end_use,
-
-          fabric_report_no,
-
-          trim_fabric_report_no,
-
-          previous_test_report_no,
-
-          bo_no,
-
-          co_no,
-
-          finish_type,
-
-          division,
-
-          package_type,
-
-          tests_required,
-
-          completed_tests,
-
-          wash_instruction,
-
-          wash_code,
-
-          priority,
-
-          created_at
-
-        FROM test_requests
-
-        ORDER BY created_at DESC
-
-        LIMIT 200
-        `
-      );
-
-
-      context.testRequests = requestsResult.rows;
-
-
-      // ===================================================
-      // LAB STAFF TEST COMPLETION SUMMARY
-      // ===================================================
-
-      context.testCompletionSummary = [];
-
-
-      for (const request of context.testRequests) {
-
-
-        const requiredTests =
-          parseTestArray(request.tests_required);
-
-
-        const completedTests =
-          parseTestArray(request.completed_tests);
-
-
-        const pendingTests =
-          requiredTests.filter(requiredTest => {
-
-            return !completedTests.some(
-              completedTest =>
-                completedTest
-                  .toString()
-                  .trim()
-                  .toLowerCase() ===
-                requiredTest
-                  .toString()
-                  .trim()
-                  .toLowerCase()
-            );
-
-          });
-
-
-        context.testCompletionSummary.push({
-
-          requestId: request.id,
-
-          sampleId: request.sample_id,
-
-          customerId: request.customer_id,
-
-          companyName: request.company_name,
-
-          totalTests: requiredTests.length,
-
-          completedCount: completedTests.length,
-
-          pendingCount: pendingTests.length,
-
-          requiredTests: requiredTests,
-
-          completedTests: completedTests,
-
-          pendingTests: pendingTests
-
-        });
-
-      }
-
-
-      // ===================================================
-      // REPORTS
-      // ===================================================
-
-      const reportsResult = await pool.query(
-        `
-        SELECT
-
-          reportid,
-
-          sampleid,
-
-          reportdate,
-
-          finalresult
-
-        FROM reports
-
-        ORDER BY reportdate DESC
-
-        LIMIT 200
-        `
-      );
-
-
-      context.reports = reportsResult.rows;
-
-
-      // ===================================================
-      // LAB STAFF TEST SUMMARY
-      // ===================================================
+      // ===============================================
+      // TEST SUMMARY
+      // ===============================================
 
       const completedPerformed =
         context.tests.filter(test => {
-
           return (
             test.status &&
             test.status
@@ -1327,13 +1206,10 @@ async function getUserAIContext(userId, role) {
               .trim()
               .toLowerCase() === 'completed'
           );
-
         });
-
 
       const pendingPerformed =
         context.tests.filter(test => {
-
           return (
             test.status &&
             test.status
@@ -1341,13 +1217,10 @@ async function getUserAIContext(userId, role) {
               .trim()
               .toLowerCase() === 'pending'
           );
-
         });
-
 
       const inProgressPerformed =
         context.tests.filter(test => {
-
           if (!test.status) {
             return false;
           }
@@ -1363,33 +1236,39 @@ async function getUserAIContext(userId, role) {
             status === 'in-progress' ||
             status === 'processing'
           );
-
         });
 
-
       context.testSummary = {
+        totalPerformed:
+          context.tests.length,
 
-        totalPerformed: context.tests.length,
+        completed:
+          completedPerformed.length,
 
-        completed: completedPerformed.length,
+        pending:
+          pendingPerformed.length,
 
-        pending: pendingPerformed.length,
-
-        inProgress: inProgressPerformed.length
-
+        inProgress:
+          inProgressPerformed.length
       };
 
+
+      // ===============================================
+      // TESTING SUMMARY
+      // ===============================================
+
+      context.testingSummary =
+        buildTestingSummary(
+          context.testRequests
+        );
     }
 
 
-    // =====================================================
-    // DEBUG INFORMATION
-    // =====================================================
+    // =================================================
+    // FINAL DEBUG LOGS
+    // =================================================
 
-    console.log(
-      '===================================='
-    );
-
+    console.log('====================================');
     console.log(
       'AI CONTEXT GENERATED SUCCESSFULLY'
     );
@@ -1400,18 +1279,42 @@ async function getUserAIContext(userId, role) {
     );
 
     console.log(
-      'SAMPLES:',
+      'SAMPLES COUNT:',
       context.samples.length
     );
 
     console.log(
-      'TEST PERFORMED:',
+      'TRACKING COUNT:',
+      context.tracking.length
+    );
+
+    console.log(
+      'TEST COUNT:',
       context.tests.length
     );
 
     console.log(
-      'TEST REQUESTS:',
+      'TEST REQUEST COUNT:',
       context.testRequests.length
+    );
+
+    console.log(
+      'REPORT COUNT:',
+      context.reportCount
+    );
+
+    console.log(
+      'REPORT GENERATED:',
+      context.reportGenerated
+    );
+
+    console.log(
+      'REPORT STATUS BY SAMPLE:',
+      JSON.stringify(
+        context.reportStatusBySample,
+        null,
+        2
+      )
     );
 
     console.log(
@@ -1423,27 +1326,21 @@ async function getUserAIContext(userId, role) {
       )
     );
 
-    console.log(
-      '===================================='
-    );
+    console.log('====================================');
 
 
     return context;
 
-
   } catch (error) {
-
-
-    console.error(
-      'AI CONTEXT ERROR:',
-      error
-    );
-
+    console.error('====================================');
+    console.error('AI CONTEXT ERROR');
+    console.error('MESSAGE:', error.message);
+    console.error('CODE:', error.code);
+    console.error('STACK:', error.stack);
+    console.error('====================================');
 
     throw error;
-
   }
-
 }
 
 

@@ -1,352 +1,13 @@
-
-// const pool = require('../config/db');
-
-
-// // ==========================================
-// // ADD / UPDATE REPORT
-// // ==========================================
-// exports.addReport = async (req, res) => {
-//     try {
-
-//         const {
-//             sample_id,
-//             test_name,
-//             test_method,
-//             test_date,
-//             result,
-//             observation,
-//             remarks,
-//             notes,
-//             created_by
-//         } = req.body;
-
-
-//         // ==========================================
-//         // VALIDATION
-//         // ==========================================
-
-//         if (!sample_id) {
-//             return res.status(400).json({
-//                 message: 'Sample ID is required'
-//             });
-//         }
-
-//         if (!test_name) {
-//             return res.status(400).json({
-//                 message: 'Test name is required'
-//             });
-//         }
-
-
-//         // ==========================================
-//         // CHECK EXISTING REPORT
-//         // ==========================================
-
-//         const existingReport = await pool.query(
-//             `
-//             SELECT id
-//             FROM test_reports
-//             WHERE sample_id = $1
-//             AND test_name = $2
-//             `,
-//             [
-//                 sample_id,
-//                 test_name
-//             ]
-//         );
-
-
-//         console.log('REPORT DATA RECEIVED:', {
-//             sample_id,
-//             test_name,
-//             test_method,
-//             test_date,
-//             result,
-//             observation,
-//             remarks,
-//             notes,
-//             created_by
-//         });
-
-
-//         console.log(
-//             'EXISTING REPORT:',
-//             existingReport.rows
-//         );
-
-
-//         let resultData;
-
-
-//         // ==========================================
-//         // UPDATE EXISTING REPORT
-//         // ==========================================
-
-//         if (existingReport.rows.length > 0) {
-
-//             resultData = await pool.query(
-//                 `
-//                 UPDATE test_reports
-//                 SET
-//                     test_method = $1,
-//                     test_date = $2,
-//                     result = $3,
-//                     observation = $4,
-//                     remarks = $5,
-//                     notes = $6,
-//                     created_by = $7,
-//                     updated_at = CURRENT_TIMESTAMP
-//                 WHERE sample_id = $8
-//                 AND test_name = $9
-//                 RETURNING *
-//                 `,
-//                 [
-//                     test_method || '',
-//                     test_date || null,
-//                     result || '',
-//                     observation || '',
-//                     remarks || '',
-//                     notes || '',
-//                     created_by || null,
-//                     sample_id,
-//                     test_name
-//                 ]
-//             );
-
-//         }
-
-
-//         // ==========================================
-//         // INSERT NEW REPORT
-//         // ==========================================
-
-//         else {
-
-//             resultData = await pool.query(
-//                 `
-//                 INSERT INTO test_reports
-//                 (
-//                     sample_id,
-//                     test_name,
-//                     test_method,
-//                     test_date,
-//                     result,
-//                     observation,
-//                     remarks,
-//                     notes,
-//                     created_by
-//                 )
-//                 VALUES
-//                 (
-//                     $1,
-//                     $2,
-//                     $3,
-//                     $4,
-//                     $5,
-//                     $6,
-//                     $7,
-//                     $8,
-//                     $9
-//                 )
-//                 RETURNING *
-//                 `,
-//                 [
-//                     sample_id,
-//                     test_name,
-//                     test_method || '',
-//                     test_date || null,
-//                     result || '',
-//                     observation || '',
-//                     remarks || '',
-//                     notes || '',
-//                     created_by || null
-//                 ]
-//             );
-
-//         }
-
-
-//         // ==========================================
-//         // SUCCESS RESPONSE
-//         // ==========================================
-
-//         res.status(200).json({
-//             message: existingReport.rows.length > 0
-//                 ? 'Report updated successfully'
-//                 : 'Report saved successfully',
-
-//             report: resultData.rows[0]
-//         });
-
-
-//     } catch (error) {
-
-//         console.error(
-//             'Add / Update Report Error:',
-//             error
-//         );
-
-//         res.status(500).json({
-//             message: 'Failed to save report',
-//             error: error.message
-//         });
-
-//     }
-// };
-
-
-
-// // ==========================================
-// // GET SINGLE REPORT
-// // ==========================================
-// exports.getReport = async (req, res) => {
-
-//     try {
-
-//         const {
-//             sampleId,
-//             testName
-//         } = req.params;
-
-
-//         // ==========================================
-//         // GET REPORT
-//         // ==========================================
-
-//         const result = await pool.query(
-//             `
-//             SELECT *
-//             FROM test_reports
-//             WHERE sample_id = $1
-//             AND test_name = $2
-//             `,
-//             [
-//                 sampleId,
-//                 testName
-//             ]
-//         );
-
-
-//         // ==========================================
-//         // REPORT NOT FOUND
-//         // ==========================================
-
-//         if (result.rows.length === 0) {
-
-//             return res.status(404).json({
-//                 message: 'Report not found'
-//             });
-
-//         }
-
-
-//         // ==========================================
-//         // REPORT FOUND
-//         // ==========================================
-
-//         res.status(200).json(
-//             result.rows[0]
-//         );
-
-
-//     } catch (error) {
-
-//         console.error(
-//             'Get Report Error:',
-//             error
-//         );
-
-//         res.status(500).json({
-//             message: 'Failed to get report',
-//             error: error.message
-//         });
-
-//     }
-
-// };
-
-
-
-// // ==========================================
-// // GET ALL REPORTS OF SAMPLE
-// // ==========================================
-// exports.getReportsBySample = async (req, res) => {
-
-//     try {
-
-//         const {
-//             sampleId
-//         } = req.params;
-
-
-//         // ==========================================
-//         // GET ALL REPORTS
-//         // ==========================================
-
-//         const result = await pool.query(
-//             `
-//             SELECT *
-//             FROM test_reports
-//             WHERE sample_id = $1
-//             ORDER BY created_at DESC
-//             `,
-//             [
-//                 sampleId
-//             ]
-//         );
-
-
-//         res.status(200).json(
-//             result.rows
-//         );
-
-
-//     } catch (error) {
-
-//         console.error(
-//             'Get Sample Reports Error:',
-//             error
-//         );
-
-//         res.status(500).json({
-//             message: 'Failed to get reports',
-//             error: error.message
-//         });
-
-//     }
-
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const pool = require('../config/db');
+
+
+// =====================================================
+// HELPER: GET LOGGED-IN USER ID
+// =====================================================
+
+const getLoggedInUserId = (req) => {
+  return req.user?.id || req.user?.userId || req.user?.UserID || null;
+};
 
 
 // =====================================================
@@ -354,215 +15,220 @@ const pool = require('../config/db');
 // =====================================================
 
 exports.addReport = async (req, res) => {
-
-    try {
-
-        const {
-            id,
-            sample_id,
-            test_name,
-            test_method,
-            test_date,
-            result,
-            observation,
-            remarks,
-            notes,
-            created_by
-        } = req.body;
-
-
-        // =============================================
-        // VALIDATION
-        // =============================================
-
-        if (!sample_id) {
-
-            return res.status(400).json({
-                message: 'Sample ID is required'
-            });
-
-        }
-
-
-        if (!test_name) {
-
-            return res.status(400).json({
-                message: 'Test name is required'
-            });
-
-        }
-
-
-        if (!test_method || !test_method.trim()) {
-
-            return res.status(400).json({
-                message: 'Test method / standard is required'
-            });
-
-        }
-
-
-        // =============================================
-        // UPDATE EXISTING REPORT
-        // =============================================
-
-        if (id) {
-
-            const updateResult = await pool.query(
-                `
-                UPDATE test_reports
-
-                SET
-                    test_method = $1,
-                    test_date = $2,
-                    result = $3,
-                    observation = $4,
-                    remarks = $5,
-                    notes = $6,
-                    created_by = $7,
-                    updated_at = CURRENT_TIMESTAMP
-
-                WHERE id = $8
-
-                RETURNING *
-                `,
-                [
-
-                    test_method.trim(),
-
-                    test_date || null,
-
-                    result || '',
-
-                    observation || '',
-
-                    remarks || '',
-
-                    notes || '',
-
-                    created_by || null,
-
-                    id
-
-                ]
-            );
-
-
-            if (
-                updateResult.rows.length === 0
-            ) {
-
-                return res.status(404).json({
-                    message: 'Report not found'
-                });
-
-            }
-
-
-            return res.status(200).json({
-
-                message:
-                    'Report updated successfully',
-
-                report:
-                    updateResult.rows[0]
-
-            });
-
-        }
-
-
-        // =============================================
-        // INSERT NEW REPORT
-        // =============================================
-
-        const insertResult = await pool.query(
-            `
-            INSERT INTO test_reports
-            (
-                sample_id,
-                test_name,
-                test_method,
-                test_date,
-                result,
-                observation,
-                remarks,
-                notes,
-                created_by
-            )
-
-            VALUES
-            (
-                $1,
-                $2,
-                $3,
-                $4,
-                $5,
-                $6,
-                $7,
-                $8,
-                $9
-            )
-
-            RETURNING *
-            `,
-            [
-
-                sample_id,
-
-                test_name,
-
-                test_method.trim(),
-
-                test_date || null,
-
-                result || '',
-
-                observation || '',
-
-                remarks || '',
-
-                notes || '',
-
-                created_by || null
-
-            ]
-        );
-
-
-        return res.status(200).json({
-
-            message:
-                'New report saved successfully',
-
-            report:
-                insertResult.rows[0]
-
-        });
-
-
-    } catch (error) {
-
-        console.error(
-            'Add / Update Report Error:',
-            error
-        );
-
-
-        return res.status(500).json({
-
-            message:
-                'Failed to save report',
-
-            error:
-                error.message
-
-        });
-
+  try {
+    const {
+      id,
+      sample_id,
+      test_name,
+      test_method,
+      test_date,
+      result,
+      observation,
+      remarks,
+      notes
+    } = req.body || {};
+
+    const userId = getLoggedInUserId(req);
+
+    console.log('ADD REPORT BODY:', req.body);
+    console.log('LOGGED-IN USER:', req.user);
+
+    // =================================================
+    // AUTHENTICATION VALIDATION
+    // =================================================
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'User authentication information is missing'
+      });
     }
 
-};
+    // =================================================
+    // BASIC VALIDATION
+    // =================================================
 
+    if (
+      sample_id === undefined ||
+      sample_id === null ||
+      sample_id === '' ||
+      Number.isNaN(Number(sample_id))
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'Sample ID is required'
+      });
+    }
+
+    if (!test_name || !String(test_name).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Test name is required'
+      });
+    }
+
+    if (!test_method || !String(test_method).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Test method / standard is required'
+      });
+    }
+
+    const sampleId = Number(sample_id);
+    const testName = String(test_name).trim();
+    const testMethod = String(test_method).trim();
+
+    // =================================================
+    // CHECK SAMPLE / TEST REQUEST ID
+    // =================================================
+    /*
+      Existing project uses test_reports.sample_id.
+
+      If your sample_id is actually coming from
+      test_requests.id, this check validates it there.
+
+      No database structure change is required.
+    */
+
+    const requestCheck = await pool.query(
+      `
+      SELECT id
+      FROM test_requests
+      WHERE id = $1
+      `,
+      [sampleId]
+    );
+
+    if (requestCheck.rows.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: `Sample/Test Request ID ${sampleId} does not exist`
+      });
+    }
+
+    // =================================================
+    // UPDATE EXISTING REPORT
+    // =================================================
+
+    if (id !== undefined && id !== null && id !== '') {
+      const reportId = Number(id);
+
+      if (!Number.isInteger(reportId) || reportId <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Valid report ID is required'
+        });
+      }
+
+      const updateResult = await pool.query(
+        `
+        UPDATE test_reports
+        SET
+          sample_id = $1,
+          test_name = $2,
+          test_method = $3,
+          test_date = $4,
+          result = $5,
+          observation = $6,
+          remarks = $7,
+          notes = $8,
+          created_by = $9,
+          updated_at = CURRENT_TIMESTAMP
+        WHERE id = $10
+        RETURNING *
+        `,
+        [
+          sampleId,
+          testName,
+          testMethod,
+          test_date || null,
+          result || '',
+          observation || '',
+          remarks || '',
+          notes || '',
+          userId,
+          reportId
+        ]
+      );
+
+      if (updateResult.rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'Report not found'
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Report updated successfully',
+        report: updateResult.rows[0]
+      });
+    }
+
+    // =================================================
+    // INSERT NEW REPORT
+    // =================================================
+
+    const insertResult = await pool.query(
+      `
+      INSERT INTO test_reports
+      (
+        sample_id,
+        test_name,
+        test_method,
+        test_date,
+        result,
+        observation,
+        remarks,
+        notes,
+        created_by
+      )
+      VALUES
+      (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9
+      )
+      RETURNING *
+      `,
+      [
+        sampleId,
+        testName,
+        testMethod,
+        test_date || null,
+        result || '',
+        observation || '',
+        remarks || '',
+        notes || '',
+        userId
+      ]
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: 'New report saved successfully',
+      report: insertResult.rows[0]
+    });
+
+  } catch (error) {
+    console.error('ADD / UPDATE REPORT ERROR:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to save report',
+      error:
+        process.env.NODE_ENV !== 'production'
+          ? error.message
+          : undefined
+    });
+  }
+};
 
 
 // =====================================================
@@ -570,60 +236,50 @@ exports.addReport = async (req, res) => {
 // =====================================================
 
 exports.getReportsByTest = async (req, res) => {
+  try {
+    const { sampleId, testName } = req.params;
 
-    try {
+    const decodedTestName = decodeURIComponent(testName || '').trim();
 
-        const {
-            sampleId,
-            testName
-        } = req.params;
-
-
-        const result = await pool.query(
-            `
-            SELECT *
-
-            FROM test_reports
-
-            WHERE sample_id = $1
-            AND test_name = $2
-
-            ORDER BY created_at ASC
-            `,
-            [
-                sampleId,
-                testName
-            ]
-        );
-
-
-        return res.status(200).json(
-            result.rows
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            'Get Reports By Test Error:',
-            error
-        );
-
-
-        return res.status(500).json({
-
-            message:
-                'Failed to get reports',
-
-            error:
-                error.message
-
-        });
-
+    if (!sampleId || !decodedTestName) {
+      return res.status(400).json({
+        success: false,
+        message: 'Sample ID and test name are required'
+      });
     }
 
-};
+    const result = await pool.query(
+      `
+      SELECT *
+      FROM test_reports
+      WHERE sample_id = $1
+        AND LOWER(TRIM(test_name)) = LOWER(TRIM($2))
+      ORDER BY created_at ASC
+      `,
+      [
+        Number(sampleId),
+        decodedTestName
+      ]
+    );
 
+    return res.status(200).json({
+      success: true,
+      reports: result.rows
+    });
+
+  } catch (error) {
+    console.error('GET REPORTS BY TEST ERROR:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get reports',
+      error:
+        process.env.NODE_ENV !== 'production'
+          ? error.message
+          : undefined
+    });
+  }
+};
 
 
 // =====================================================
@@ -631,69 +287,43 @@ exports.getReportsByTest = async (req, res) => {
 // =====================================================
 
 exports.getReportById = async (req, res) => {
+  try {
+    const { reportId } = req.params;
 
-    try {
+    const result = await pool.query(
+      `
+      SELECT *
+      FROM test_reports
+      WHERE id = $1
+      `,
+      [Number(reportId)]
+    );
 
-        const {
-            reportId
-        } = req.params;
-
-
-        const result = await pool.query(
-            `
-            SELECT *
-
-            FROM test_reports
-
-            WHERE id = $1
-            `,
-            [
-                reportId
-            ]
-        );
-
-
-        if (
-            result.rows.length === 0
-        ) {
-
-            return res.status(404).json({
-
-                message:
-                    'Report not found'
-
-            });
-
-        }
-
-
-        return res.status(200).json(
-            result.rows[0]
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            'Get Report By ID Error:',
-            error
-        );
-
-
-        return res.status(500).json({
-
-            message:
-                'Failed to get report',
-
-            error:
-                error.message
-
-        });
-
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Report not found'
+      });
     }
 
-};
+    return res.status(200).json({
+      success: true,
+      report: result.rows[0]
+    });
 
+  } catch (error) {
+    console.error('GET REPORT BY ID ERROR:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get report',
+      error:
+        process.env.NODE_ENV !== 'production'
+          ? error.message
+          : undefined
+    });
+  }
+};
 
 
 // =====================================================
@@ -701,130 +331,135 @@ exports.getReportById = async (req, res) => {
 // =====================================================
 
 exports.getReport = async (req, res) => {
+  try {
+    const {
+      sampleId,
+      testName
+    } = req.params;
 
-    try {
+    const decodedTestName = decodeURIComponent(testName || '').trim();
 
-        const {
-            sampleId,
-            testName
-        } = req.params;
+    const result = await pool.query(
+      `
+      SELECT *
+      FROM test_reports
+      WHERE sample_id = $1
+        AND LOWER(TRIM(test_name)) = LOWER(TRIM($2))
+      ORDER BY created_at DESC
+      LIMIT 1
+      `,
+      [
+        Number(sampleId),
+        decodedTestName
+      ]
+    );
 
-
-        const result = await pool.query(
-            `
-            SELECT *
-
-            FROM test_reports
-
-            WHERE sample_id = $1
-            AND test_name = $2
-
-            ORDER BY created_at DESC
-
-            LIMIT 1
-            `,
-            [
-                sampleId,
-                testName
-            ]
-        );
-
-
-        if (
-            result.rows.length === 0
-        ) {
-
-            return res.status(404).json({
-
-                message:
-                    'Report not found'
-
-            });
-
-        }
-
-
-        return res.status(200).json(
-            result.rows[0]
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            'Get Report Error:',
-            error
-        );
-
-
-        return res.status(500).json({
-
-            message:
-                'Failed to get report',
-
-            error:
-                error.message
-
-        });
-
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Report not found'
+      });
     }
 
-};
+    return res.status(200).json({
+      success: true,
+      report: result.rows[0]
+    });
 
+  } catch (error) {
+    console.error('GET REPORT ERROR:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get report',
+      error:
+        process.env.NODE_ENV !== 'production'
+          ? error.message
+          : undefined
+    });
+  }
+};
 
 
 // =====================================================
 // GET ALL REPORTS FOR SAMPLE
 // =====================================================
+// =====================================================
+// GET ALL REPORTS FOR SAMPLE
+// =====================================================
 
 exports.getReportsBySample = async (req, res) => {
+  try {
+    const { sampleId } = req.params;
 
-    try {
+    console.log('GET REPORTS BY SAMPLE ID:', sampleId);
 
-        const {
-            sampleId
-        } = req.params;
-
-
-        const result = await pool.query(
-            `
-            SELECT *
-
-            FROM test_reports
-
-            WHERE sample_id = $1
-
-            ORDER BY created_at DESC
-            `,
-            [
-                sampleId
-            ]
-        );
-
-
-        return res.status(200).json(
-            result.rows
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            'Get Sample Reports Error:',
-            error
-        );
-
-
-        return res.status(500).json({
-
-            message:
-                'Failed to get reports',
-
-            error:
-                error.message
-
-        });
-
+    // Validate sample ID
+    if (
+      sampleId === undefined ||
+      sampleId === null ||
+      sampleId === '' ||
+      !Number.isInteger(Number(sampleId)) ||
+      Number(sampleId) <= 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'Valid sample ID is required'
+      });
     }
 
+    const numericSampleId = Number(sampleId);
+
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        sample_id,
+        test_name,
+        test_method,
+        test_date,
+        result,
+        observation,
+        remarks,
+        notes,
+        created_by,
+        created_at,
+        updated_at
+      FROM test_reports
+      WHERE sample_id = $1
+      ORDER BY created_at DESC
+      `,
+      [numericSampleId]
+    );
+
+    console.log(
+      'REPORTS FOUND:',
+      result.rows.length
+    );
+
+    console.log(
+      'REPORT DATA:',
+      result.rows
+    );
+
+    return res.status(200).json({
+      success: true,
+      reports: result.rows
+    });
+
+  } catch (error) {
+    console.error(
+      'GET SAMPLE REPORTS ERROR:',
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get reports',
+      error:
+        process.env.NODE_ENV !== 'production'
+          ? error.message
+          : undefined
+    });
+  }
 };

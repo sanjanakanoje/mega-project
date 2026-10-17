@@ -193,16 +193,43 @@ export class TestDetailsComponent implements OnInit {
  
     //  GENERATE BARCODE
 
-  generateBarcode() {
-    if (!this.test?.id || !this.barcodeElement) return;
+  // generateBarcode() {
+  //   if (!this.test?.id || !this.barcodeElement) return;
 
-    JsBarcode(this.barcodeElement.nativeElement, String(this.test.id), {
+  //   JsBarcode(this.barcodeElement.nativeElement, String(this.test.id), {
+  //     format: 'CODE128',
+  //     width: 2,
+  //     height: 60,
+  //     displayValue: true
+  //   });
+  // }
+
+  generateBarcode(): void {
+  if (!this.test?.id || !this.barcodeElement) {
+    return;
+  }
+
+  const testId = this.test.id;
+  const laptopIp = '10.183.188.139';
+
+  const testScreenUrl =
+    `http://${laptopIp}:4200/tests/test-screen/${this.test.id}`;
+
+  console.log('Barcode URL:', testScreenUrl);
+
+  JsBarcode(
+    this.barcodeElement.nativeElement,
+    testScreenUrl,
+    {
       format: 'CODE128',
       width: 2,
-      height: 60,
-      displayValue: true
-    });
-  }
+      height: 80,
+      displayValue: true,
+      fontSize: 14,
+      margin: 10
+    }
+  );
+}
 
   
     //  PRINT BARCODE

@@ -1,21 +1,13 @@
-
-
-
-import {
-  Component,
-  OnInit,
-  ChangeDetectorRef
-} from '@angular/core';
-
 import { CommonModule } from '@angular/common';
-
 import {
-  ActivatedRoute,
-  Router
-} from '@angular/router';
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 
-import { HttpClient } from '@angular/common/http';
-
+import { ReportService } from '../../services/report';
 
 @Component({
   selector: 'app-report-view',
@@ -26,437 +18,167 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ReportViewComponent implements OnInit {
 
-  // =========================================
-  // VARIABLES
-  // =========================================
-
   sampleId: number = 0;
-
   reports: any[] = [];
-
-  loading: boolean = true;
-
+  loading: boolean = false;
   errorMessage: string = '';
-
-
-  // =========================================
-  // CONSTRUCTOR
-  // =========================================
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
+    private reportService: ReportService,
     private cdr: ChangeDetectorRef
   ) {}
 
-
-  // =========================================
-  // INIT
-  // =========================================
-
   ngOnInit(): void {
-
-    const id =
-      this.route.snapshot.paramMap.get('id');
-
-    console.log(
-      'Report View Sample ID:',
-      id
-    );
-
-
-    // -----------------------------------------
-    // CHECK ID
-    // -----------------------------------------
-
-    if (!id) {
-
-      this.errorMessage =
-        'Sample ID not found';
-
-      this.loading = false;
-
-      this.cdr.detectChanges();
-
-      return;
-    }
-
-
-    this.sampleId = Number(id);
-
-
-    if (
-      !this.sampleId ||
-      isNaN(this.sampleId)
-    ) {
-
-      this.errorMessage =
-        'Invalid Sample ID';
-
-      this.loading = false;
-
-      this.cdr.detectChanges();
-
-      return;
-    }
-
-
-    // -----------------------------------------
-    // LOAD REPORTS
-    // -----------------------------------------
-
-    this.loadReports();
+    this.getSampleId();
   }
 
+  private getSampleId(): void {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
 
-  // =========================================
-  // LOAD ALL REPORTS
-  // =========================================
+      console.log('Report View Route ID:', id);
 
-  loadReports(): void {
-
-    this.loading = true;
-
-    this.errorMessage = '';
-
-    this.reports = [];
-
-
-    const url =
-      `http://localhost:5000/api/reports/sample/${this.sampleId}`;
-
-
-    console.log(
-      'Getting reports from:',
-      url
-    );
-
-
-    this.http.get<any>(url).subscribe({
-
-      // =======================================
-      // SUCCESS
-      // =======================================
-
-      next: (response: any) => {
-
-        console.log(
-          'ALL REPORTS RESPONSE:',
-          response
-        );
-
-
-        // ---------------------------------------
-        // HANDLE ARRAY RESPONSE
-        // ---------------------------------------
-
-        if (Array.isArray(response)) {
-
-          this.reports = response;
-        }
-
-
-        // ---------------------------------------
-        // HANDLE { data: [] }
-        // ---------------------------------------
-
-        else if (
-          Array.isArray(response?.data)
-        ) {
-
-          this.reports = response.data;
-        }
-
-
-        // ---------------------------------------
-        // HANDLE { reports: [] }
-        // ---------------------------------------
-
-        else if (
-          Array.isArray(response?.reports)
-        ) {
-
-          this.reports = response.reports;
-        }
-
-
-        // ---------------------------------------
-        // HANDLE { report: {} }
-        // ---------------------------------------
-
-        else if (response?.report) {
-
-          this.reports = [
-            response.report
-          ];
-        }
-
-
-        // ---------------------------------------
-        // NO DATA
-        // ---------------------------------------
-
-        else {
-
-          this.reports = [];
-        }
-
-
-        // ---------------------------------------
-        // REMOVE NULL / INVALID VALUES
-        // ---------------------------------------
-
-        this.reports =
-          this.reports.filter(
-            report => report != null
-          );
-
-
-        console.log(
-          'Reports loaded:',
-          this.reports
-        );
-
-        console.log(
-          'Total reports:',
-          this.reports.length
-        );
-
-
-        // ---------------------------------------
-        // DEBUG FIRST REPORT
-        // ---------------------------------------
-
-        if (this.reports.length > 0) {
-
-          const firstReport =
-            this.reports[0];
-
-
-          console.log(
-            'FIRST REPORT:',
-            firstReport
-          );
-
-
-          console.log(
-            'Test Name:',
-            firstReport.test_name
-          );
-
-
-          console.log(
-            'Test Method:',
-            firstReport.test_method
-          );
-
-
-          console.log(
-            'Test Date:',
-            firstReport.test_date
-          );
-
-
-          console.log(
-            'Result:',
-            firstReport.result
-          );
-
-
-          console.log(
-            'Observation:',
-            firstReport.observation
-          );
-
-
-          console.log(
-            'Remarks:',
-            firstReport.remarks
-          );
-
-
-          console.log(
-            'Notes:',
-            firstReport.notes
-          );
-        }
-
-
+      if (
+        id === null ||
+        id === '' ||
+        !Number.isInteger(Number(id)) ||
+        Number(id) <= 0
+      ) {
+        this.errorMessage = 'Invalid sample ID.';
         this.loading = false;
 
         this.cdr.detectChanges();
-      },
-
-
-      // =======================================
-      // ERROR
-      // =======================================
-
-      error: (error: any) => {
-
-        console.error(
-          'REPORT API ERROR:',
-          error
-        );
-
-
-        this.reports = [];
-
-        this.loading = false;
-
-
-        this.errorMessage =
-          'Failed to load reports';
-
-
-        this.cdr.detectChanges();
+        return;
       }
 
+      this.sampleId = Number(id);
+
+      console.log('Report View Sample ID:', this.sampleId);
+
+      this.loadReports();
     });
   }
 
+  private loadReports(): void {
+    this.loading = true;
+    this.errorMessage = '';
+    this.reports = [];
 
-  // =========================================
-  // FORMAT DATE
-  // =========================================
+    this.cdr.detectChanges();
 
-  formatDate(date: any): string {
+    console.log('Loading reports for sample:', this.sampleId);
 
-    // -----------------------------------------
-    // If no test_date, use "-"
-    // -----------------------------------------
+    this.reportService
+      .getReportsBySample(this.sampleId)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
 
-    if (!date) {
+          console.log(
+            'API completed. Loading:',
+            this.loading
+          );
 
-      return '-';
-    }
-
-
-    const value =
-      String(date);
-
-
-    // -----------------------------------------
-    // PostgreSQL DATE
-    // YYYY-MM-DD
-    // -----------------------------------------
-
-    if (
-      /^\d{4}-\d{2}-\d{2}$/.test(value)
-    ) {
-
-      const parts =
-        value.split('-');
-
-
-      return (
-        `${parts[2]}-${parts[1]}-${parts[0]}`
-      );
-    }
-
-
-    // -----------------------------------------
-    // FULL DATE / TIME
-    // -----------------------------------------
-
-    const parsedDate =
-      new Date(value);
-
-
-    if (
-      isNaN(
-        parsedDate.getTime()
+          this.cdr.detectChanges();
+        })
       )
-    ) {
+      .subscribe({
+        next: (response: any) => {
+          console.log('REPORT API RESPONSE:', response);
 
-      return value;
-    }
+          if (response && Array.isArray(response.reports)) {
+            this.reports = response.reports;
+          } else {
+            this.reports = [];
+          }
 
+          console.log('Reports:', this.reports);
+          console.log('Reports count:', this.reports.length);
 
-    const day =
-      String(
-        parsedDate.getDate()
-      ).padStart(2, '0');
+          this.cdr.detectChanges();
+        },
 
+        error: (error: any) => {
+          console.error('REPORT API ERROR:', error);
 
-    const month =
-      String(
-        parsedDate.getMonth() + 1
-      ).padStart(2, '0');
+          this.reports = [];
 
+          this.errorMessage =
+            error?.error?.message ||
+            error?.message ||
+            'Unable to load reports.';
 
-    const year =
-      parsedDate.getFullYear();
+          this.loading = false;
 
+          this.cdr.detectChanges();
+        }
+      });
+  }
 
+  getTestName(report: any): string {
     return (
-      `${day}-${month}-${year}`
+      report?.test_name ||
+      report?.testName ||
+      report?.test ||
+      'N/A'
     );
   }
 
-
-  // =========================================
-  // GET DISPLAY DATE
-  // =========================================
+  getTestMethod(report: any): string {
+    return (
+      report?.test_method ||
+      report?.testMethod ||
+      'N/A'
+    );
+  }
 
   getReportDate(report: any): string {
+    const date =
+      report?.test_date ||
+      report?.testDate ||
+      report?.created_at ||
+      report?.createdAt;
 
-    // First preference = test_date
-    if (report?.test_date) {
-
-      return this.formatDate(
-        report.test_date
-      );
+    if (!date) {
+      return 'N/A';
     }
 
+    const parsedDate = new Date(date);
 
-    // If old report has no test_date,
-    // use created_at
-
-    if (report?.created_at) {
-
-      return this.formatDate(
-        report.created_at
-      );
+    if (isNaN(parsedDate.getTime())) {
+      return String(date);
     }
 
-
-    return '-';
+    return parsedDate.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
   }
 
+  getResult(report: any): string {
+    return report?.result || 'N/A';
+  }
 
-  // =========================================
-  // PRINT REPORT
-  // =========================================
+  getObservation(report: any): string {
+    return report?.observation || 'N/A';
+  }
+
+  getRemarks(report: any): string {
+    return report?.remarks || 'N/A';
+  }
+
+  getNotes(report: any): string {
+    return report?.notes || 'N/A';
+  }
 
   printReport(): void {
-
-    console.log(
-      'Printing Report...'
-    );
-
-
     window.print();
   }
 
-
-  // =========================================
-  // BACK
-  // =========================================
-
   goBack(): void {
-
-    console.log(
-      'Going back to tracking:',
-      this.sampleId
-    );
-
-
-    this.router.navigate([
-      '/customer-tracking',
-      this.sampleId
-    ]);
+    this.router.navigate(['/customer-tracking', this.sampleId]);
   }
-
 }

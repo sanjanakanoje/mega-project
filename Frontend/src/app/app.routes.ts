@@ -7,6 +7,7 @@ import { WelcomeComponent } from './modules/auth/pages/welcome/welcome.component
 import { AddSampleComponent } from './modules/samples/pages/add-sample/add-sample';
 import { ProfileComponent } from './pages/profile/profile';
 import { CustomerGuard } from './guards/customer.guard';
+// import { TestScreenComponent } from './modules/tests/pages/test-screen/test-screen';
 
 
 

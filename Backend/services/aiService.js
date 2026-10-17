@@ -1,1644 +1,66 @@
-// // const OpenAI = require('openai');
-// // const pool = require('../config/db');
+// services/aiService.js
 
-
-// // const groq = new OpenAI({
-// //   apiKey: process.env.GROQ_API_KEY,
-// //   baseURL: 'https://api.groq.com/openai/v1'
-// // });
-
-
-// // const MODEL = 'llama-3.3-70b-versatile';
-
-
-// // async function generateAIResponse(
-// //   userId,
-// //   role,
-// //   conversationId,
-// //   userMessage,
-// //   context
-// // ) {
-
-// //   try {
-
-// //     // =====================================================
-// //     // GET PREVIOUS CHAT HISTORY
-// //     // =====================================================
-
-// //     let history = [];
-
-// //     if (conversationId) {
-
-// //       const historyResult = await pool.query(
-// //         `
-// //         SELECT
-// //           role,
-// //           message
-// //         FROM ai_messages
-// //         WHERE conversation_id = $1
-// //         ORDER BY created_at ASC
-// //         LIMIT 20
-// //         `,
-// //         [conversationId]
-// //       );
-
-// //       history = historyResult.rows;
-
-// //     }
-
-
-// //     // =====================================================
-// //     // SYSTEM INSTRUCTION
-// //     // =====================================================
-
-// //     const systemPrompt = `
-// // You are the AI Assistant for a Smart Textile Lab Management System.
-
-// // You help customers and laboratory staff.
-
-// // CURRENT USER:
-// // ${JSON.stringify(context.user, null, 2)}
-
-// // USER ROLE:
-// // ${role}
-
-// // IMPORTANT RULES:
-
-// // 1. Never ask the user for their UserID.
-// // 2. Never ask the user for their SampleID if the required information can be identified from the provided database context.
-// // 3. Automatically use the current logged-in user's data.
-// // 4. Understand natural language such as:
-// //    - my sample
-// //    - my latest sample
-// //    - my report
-// //    - my tests
-// //    - my request
-// //    - where is my sample
-// //    - what is the status
-// //    - what happened to my sample
-// // 5. If multiple records exist, use the most recent or most relevant record whenever the question allows it.
-// // 6. Use previous conversation history to understand references such as:
-// //    - it
-// //    - that sample
-// //    - that report
-// //    - the latest one
-// // 7. Never invent database information.
-// // 8. Only claim a sample status, test result, report status, tracking stage, or request detail when it is supported by the provided database context.
-// // 9. If the requested information is genuinely not available in the context, clearly say that the information is not available.
-// // 10. Do not expose SQL queries, database credentials, JWT tokens, or internal implementation details.
-// // 11. Answer naturally and clearly.
-// // 12. For general textile questions, answer using your general knowledge.
-// // 13. For user-specific project questions, prioritize the provided database context over general knowledge.
-// // 14. If the user asks something unrelated to textile testing or this application, politely answer if it is a normal general question, but do not pretend it is project data.
-// // 15. Never reveal another customer's private information.
-// // 16. Keep answers concise but useful.
-
-// // DATABASE CONTEXT:
-
-// // SAMPLES:
-// // ${JSON.stringify(context.samples, null, 2)}
-
-// // TRACKING:
-// // ${JSON.stringify(context.tracking, null, 2)}
-
-// // TESTS PERFORMED:
-// // ${JSON.stringify(context.tests, null, 2)}
-
-// // REPORTS:
-// // ${JSON.stringify(context.reports, null, 2)}
-
-// // TEST REQUESTS:
-// // ${JSON.stringify(context.testRequests, null, 2)}
-// // `;
-
-
-// //     // =====================================================
-// //     // GROQ MESSAGES
-// //     // =====================================================
-
-// //     const messages = [
-
-// //       {
-// //         role: 'system',
-// //         content: systemPrompt
-// //       },
-
-// //       ...history.map(item => ({
-// //         role:
-// //           item.role === 'assistant'
-// //             ? 'assistant'
-// //             : 'user',
-
-// //         content: item.message
-// //       })),
-
-// //       {
-// //         role: 'user',
-// //         content: userMessage
-// //       }
-
-// //     ];
-
-
-// //     // =====================================================
-// //     // CALL GROQ
-// //     // =====================================================
-
-// //     const completion =
-// //       await groq.chat.completions.create({
-
-// //         model: MODEL,
-
-// //         messages: messages,
-
-// //         temperature: 0.2,
-
-// //         max_tokens: 1000
-
-// //       });
-
-
-// //     const response =
-// //       completion.choices?.[0]?.message?.content;
-
-
-// //     if (!response) {
-
-// //       throw new Error(
-// //         'AI returned an empty response'
-// //       );
-
-// //     }
-
-
-// //     return response;
-
-// //   }
-
-// //   catch (error) {
-
-// //     console.error(
-// //       'AI SERVICE ERROR:',
-// //       error
-// //     );
-
-// //     throw error;
-
-// //   }
-
-// // }
-
-
-// // module.exports = {
-// //   generateAIResponse
-// // };
-
-
-
-
-
-
-// // const Groq = require('groq-sdk');
-
-// // const groq = new Groq({
-// //   apiKey: process.env.GROQ_API_KEY
-// // });
-
-
-// // // =====================================================
-// // // GENERATE AI RESPONSE
-// // // =====================================================
-
-// // async function generateAIResponse(userMessage, context, history = []) {
-
-// //   try {
-
-// //     // ===================================================
-// //     // SYSTEM PROMPT
-// //     // ===================================================
-
-// //     const systemPrompt = `
-// // You are the AI Assistant for Smart Textile Laboratory.
-
-// // You are a database-aware assistant.
-
-// // You have access to the logged-in user's information and
-// // their textile testing information.
-
-// // IMPORTANT RULES:
-
-// // 1. Always use the provided database context before answering.
-
-// // 2. Never ask the user for information that can already be
-// //    determined from the database context.
-
-// // 3. Never invent, guess, or hallucinate database values.
-
-// // 4. For test progress, calculate the answer from:
-// //    testsRequired, completedTests and pendingTests.
-
-// // 5. If testsRequired contains 3 tests and completedTests
-// //    contains 2 tests, answer:
-// //    - 3 total
-// //    - 2 completed
-// //    - 1 pending
-
-// // 6. When answering sample-related questions, use both:
-// //    - samples
-// //    - testRequests
-// //    if either contains relevant information.
-
-// // 7. A test request can represent the user's submitted sample
-// //    request even when sample_id is NULL.
-
-// // 8. If sample_id is NULL, do NOT say:
-// //    "There is no sample information."
-
-// //    Instead say:
-// //    "Your test request is recorded in the system, but a sample
-// //    ID has not yet been assigned."
-
-// // 9. If barcode is missing, say:
-// //    "A barcode has not been assigned yet."
-
-// // 10. If DateReceived is missing, say:
-// //     "The sample received date is not available yet."
-
-// // 11. Do not expose internal database terminology such as:
-// //     "database context", "context object", "SQL query",
-// //     "JSONB", etc.
-
-// // 12. Never tell the user that the AI cannot access the database
-// //     when relevant information exists in the provided context.
-
-// // 13. Answer naturally and directly.
-
-// // 14. If information genuinely does not exist, explain what is
-// //     missing in a user-friendly way.
-
-// // 15. Never invent:
-// //     - sample IDs
-// //     - barcodes
-// //     - test results
-// //     - report results
-// //     - tracking updates
-// //     - dates
-// //     - completion times
-
-// // 16. For general textile questions, answer using your general
-// //     knowledge.
-
-// // 17. For user-specific questions, prioritize the provided
-// //     database information.
-
-// // 18. Keep answers concise but informative.
-
-// // IMPORTANT DATABASE RULES:
-
-// // 1. The logged-in user's test_requests represent submitted sample/test requests.
-
-// // 2. If the Samples array is empty but testRequests contains records,
-// //    DO NOT say that the user has no samples.
-
-// // 3. Use testRequests as the source for submitted sample information.
-
-// // 4. The number of submitted samples can be determined from testRequests
-// //    when Samples is empty.
-
-// // 5. Do not say "the samples field is empty" to the user.
-
-// // 6. Do not expose internal database/context terminology such as:
-// //    "database context", "samples field", "testRequests field", etc.
-
-// // 7. Never invent a SampleID.
-// //    If sample_id is null, clearly say that the system has not assigned
-// //    a sample ID yet.
-
-// // 8. If sample_id is null, the test request ID may be mentioned as a
-// //    test request identifier, but DO NOT call it a SampleID.
-
-// // 9. For completed and pending tests, use tests_required and completed_tests
-// //    from the test request.
-
-// // 10. Always answer using the logged-in user's data only.
-
-// // USER DATABASE CONTEXT:
-
-// // ${JSON.stringify(context, null, 2)}
-// // `;
-
-
-// //     // ===================================================
-// //     // PREVIOUS CONVERSATION
-// //     // ===================================================
-
-// //     const messages = [
-
-// //       {
-// //         role: 'system',
-// //         content: systemPrompt
-// //       }
-
-// //     ];
-
-
-// //     // Add previous messages
-
-// //     if (Array.isArray(history)) {
-
-// //       for (const item of history) {
-
-// //         if (
-// //           item.role &&
-// //           item.message
-// //         ) {
-
-// //           messages.push({
-// //             role:
-// //               item.role === 'assistant'
-// //                 ? 'assistant'
-// //                 : 'user',
-
-// //             content: item.message
-// //           });
-
-// //         }
-
-// //       }
-
-// //     }
-
-
-// //     // ===================================================
-// //     // CURRENT USER MESSAGE
-// //     // ===================================================
-
-// //     messages.push({
-// //       role: 'user',
-// //       content: userMessage
-// //     });
-
-
-// //     // ===================================================
-// //     // GROQ
-// //     // ===================================================
-
-// //     const completion =
-// //       await groq.chat.completions.create({
-
-// //         model: 'llama-3.3-70b-versatile',
-
-// //         messages,
-
-// //         temperature: 0.2,
-
-// //         max_tokens: 1000
-
-// //       });
-
-
-// //     const response =
-// //       completion.choices[0]?.message?.content;
-
-
-// //     if (!response) {
-
-// //       throw new Error(
-// //         'AI returned an empty response'
-// //       );
-
-// //     }
-
-
-// //     return response.trim();
-
-// //   } catch (error) {
-
-// //     console.error(
-// //       "AI SERVICE ERROR:",
-// //       error
-// //     );
-
-// //     throw error;
-// //   }
-// // }
-
-
-// // module.exports = {
-// //   generateAIResponse
-// // };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const Groq = require('groq-sdk');
-
-// const groq = new Groq({
-//   apiKey: process.env.GROQ_API_KEY
-// });
-
-
-// // =====================================================
-// // GENERATE AI RESPONSE
-// // =====================================================
-
-// async function generateAIResponse(
-//   userMessage,
-//   context,
-//   history = []
-// ) {
-
-//   try {
-
-//     console.log('================ AI SERVICE ================');
-
-//     console.log(
-//       'User Message:',
-//       userMessage
-//     );
-
-//     console.log(
-//       'History Length:',
-//       history.length
-//     );
-
-
-//     // ===================================================
-//     // SYSTEM PROMPT
-//     // ===================================================
-
-//     const systemPrompt = `
-// You are the AI Assistant for Smart Textile Laboratory.
-
-// You help logged-in customers and laboratory staff.
-
-// IMPORTANT RULES:
-
-// 1. Always use the provided user database information.
-
-// 2. Never invent database information.
-
-// 3. Never ask for UserID.
-
-// 4. Never ask for SampleID when the information can be
-//    identified from the provided context.
-
-// 5. Always use the currently logged-in user's data.
-
-// 6. For sample questions, use samples and testRequests.
-
-// 7. If samples is empty but testRequests contains data,
-//    treat the test request as a submitted request.
-
-// 8. If sample_id is null, say that a sample ID has not
-//    yet been assigned.
-
-// 9. Never invent sample IDs, barcodes, reports, test results,
-//    tracking stages, or dates.
-
-// 10. For test questions, use testsRequired, completedTests,
-//     and pendingTests when available.
-
-// 11. For "my sample", "my report", "my tests", "my status",
-//     or similar questions, use the current user's data.
-
-// 12. If the requested information is not available,
-//     clearly say so.
-
-// 13. Never reveal another user's information.
-
-// 14. Do not expose SQL, database context, JSON, JWT,
-//     credentials, or internal implementation details.
-
-// 15. For general textile questions, use general knowledge.
-
-// 16. Keep answers short and clear.
-
-// IMPORTANT READ-ONLY RULES:
-
-// 19. You are a READ-ONLY AI Assistant.
-
-// 20. You must NEVER modify, update, insert, delete, or
-//     change any database record.
-
-// 21. You must NEVER claim that you have updated:
-//     - test status
-//     - test results
-//     - sample status
-//     - reports
-//     - tracking information
-//     - test requests
-//     - user information
-
-// 22. If the user asks you to perform an action such as:
-//     - complete a test
-//     - mark a test as completed
-//     - update a result
-//     - change sample status
-//     - update a report
-//     - assign a barcode
-//     - modify tracking status
-
-//     you must NOT perform the action.
-
-// 23. Instead, clearly explain that the AI chat is read-only
-//     and the requested change must be performed through
-//     the appropriate laboratory management interface.
-
-// 24. Never say "I've updated", "I changed", "I completed",
-//     "I modified", or similar wording unless an actual
-//     authorized backend operation has been performed.
-
-// 25. The AI may only READ and explain the information
-//     provided in the database context.
-
-// 26. The AI must not generate or execute SQL UPDATE,
-//     INSERT, DELETE, or other database modification queries.
-
-// 27. If the user asks to update something, do not pretend
-//     the update happened.
-
-// USER DATA:
-
-// ${JSON.stringify(context)}
-// `;
-
-
-//     // ===================================================
-//     // GROQ MESSAGES
-//     // ===================================================
-
-//     const messages = [
-
-//       {
-//         role: 'system',
-//         content: systemPrompt
-//       }
-
-//     ];
-
-
-//     // ===================================================
-//     // ADD LIMITED HISTORY
-//     // ===================================================
-
-//     if (Array.isArray(history)) {
-
-//       const recentHistory =
-//         history.slice(-6);
-
-//       for (const item of recentHistory) {
-
-//         if (
-//           item &&
-//           item.role &&
-//           item.message
-//         ) {
-
-//           messages.push({
-
-//             role:
-//               item.role === 'assistant'
-//                 ? 'assistant'
-//                 : 'user',
-
-//             content:
-//               String(item.message)
-
-//           });
-
-//         }
-
-//       }
-
-//     }
-
-
-//     // ===================================================
-//     // CURRENT QUESTION
-//     // ===================================================
-
-//     messages.push({
-
-//       role: 'user',
-
-//       content: userMessage
-
-//     });
-
-
-//     console.log(
-//       'Groq Messages Count:',
-//       messages.length
-//     );
-
-
-//     // ===================================================
-//     // GROQ API
-//     // ===================================================
-
-//     const completion =
-//       await groq.chat.completions.create({
-
-//         model: 'llama-3.1-8b-instant',
-
-//         messages,
-
-//         temperature: 0.2,
-
-//         max_tokens: 300
-
-//       });
-
-
-//     // ===================================================
-//     // GET RESPONSE
-//     // ===================================================
-
-//     const response =
-//       completion
-//         .choices?.[0]
-//         ?.message
-//         ?.content;
-
-
-//     if (!response) {
-
-//       throw new Error(
-//         'AI returned an empty response'
-//       );
-
-//     }
-
-
-//     console.log(
-//       'AI Response:',
-//       response
-//     );
-
-//     console.log(
-//       '=========================================='
-//     );
-
-
-//     return response.trim();
-
-//   }
-
-
-//   catch (error) {
-
-//     console.error(
-//       '================ AI SERVICE ERROR ================'
-//     );
-
-//     console.error(
-//       'Error Message:',
-//       error.message
-//     );
-
-//     console.error(
-//       'Error Status:',
-//       error.status
-//     );
-
-
-//     // =================================================
-//     // RATE LIMIT
-//     // =================================================
-
-//     if (error.status === 429) {
-
-//       throw new Error(
-//         'AI service rate limit reached. Please try again later.'
-//       );
-
-//     }
-
-
-//     throw error;
-
-//   }
-
-// }
-
-
-// module.exports = {
-//   generateAIResponse
-// };
-
-// const OpenAI = require('openai');
-// const pool = require('../config/db');
-
-
-// const groq = new OpenAI({
-//   apiKey: process.env.GROQ_API_KEY,
-//   baseURL: 'https://api.groq.com/openai/v1'
-// });
-
-
-// const MODEL = 'llama-3.3-70b-versatile';
-
-
-// async function generateAIResponse(
-//   userId,
-//   role,
-//   conversationId,
-//   userMessage,
-//   context
-// ) {
-
-//   try {
-
-//     // =====================================================
-//     // GET PREVIOUS CHAT HISTORY
-//     // =====================================================
-
-//     let history = [];
-
-//     if (conversationId) {
-
-//       const historyResult = await pool.query(
-//         `
-//         SELECT
-//           role,
-//           message
-//         FROM ai_messages
-//         WHERE conversation_id = $1
-//         ORDER BY created_at ASC
-//         LIMIT 20
-//         `,
-//         [conversationId]
-//       );
-
-//       history = historyResult.rows;
-
-//     }
-
-
-//     // =====================================================
-//     // SYSTEM INSTRUCTION
-//     // =====================================================
-
-//     const systemPrompt = `
-// You are the AI Assistant for a Smart Textile Lab Management System.
-
-// You help customers and laboratory staff.
-
-// CURRENT USER:
-// ${JSON.stringify(context.user, null, 2)}
-
-// USER ROLE:
-// ${role}
-
-// IMPORTANT RULES:
-
-// 1. Never ask the user for their UserID.
-// 2. Never ask the user for their SampleID if the required information can be identified from the provided database context.
-// 3. Automatically use the current logged-in user's data.
-// 4. Understand natural language such as:
-//    - my sample
-//    - my latest sample
-//    - my report
-//    - my tests
-//    - my request
-//    - where is my sample
-//    - what is the status
-//    - what happened to my sample
-// 5. If multiple records exist, use the most recent or most relevant record whenever the question allows it.
-// 6. Use previous conversation history to understand references such as:
-//    - it
-//    - that sample
-//    - that report
-//    - the latest one
-// 7. Never invent database information.
-// 8. Only claim a sample status, test result, report status, tracking stage, or request detail when it is supported by the provided database context.
-// 9. If the requested information is genuinely not available in the context, clearly say that the information is not available.
-// 10. Do not expose SQL queries, database credentials, JWT tokens, or internal implementation details.
-// 11. Answer naturally and clearly.
-// 12. For general textile questions, answer using your general knowledge.
-// 13. For user-specific project questions, prioritize the provided database context over general knowledge.
-// 14. If the user asks something unrelated to textile testing or this application, politely answer if it is a normal general question, but do not pretend it is project data.
-// 15. Never reveal another customer's private information.
-// 16. Keep answers concise but useful.
-
-// DATABASE CONTEXT:
-
-// SAMPLES:
-// ${JSON.stringify(context.samples, null, 2)}
-
-// TRACKING:
-// ${JSON.stringify(context.tracking, null, 2)}
-
-// TESTS PERFORMED:
-// ${JSON.stringify(context.tests, null, 2)}
-
-// REPORTS:
-// ${JSON.stringify(context.reports, null, 2)}
-
-// TEST REQUESTS:
-// ${JSON.stringify(context.testRequests, null, 2)}
-// `;
-
-
-//     // =====================================================
-//     // GROQ MESSAGES
-//     // =====================================================
-
-//     const messages = [
-
-//       {
-//         role: 'system',
-//         content: systemPrompt
-//       },
-
-//       ...history.map(item => ({
-//         role:
-//           item.role === 'assistant'
-//             ? 'assistant'
-//             : 'user',
-
-//         content: item.message
-//       })),
-
-//       {
-//         role: 'user',
-//         content: userMessage
-//       }
-
-//     ];
-
-
-//     // =====================================================
-//     // CALL GROQ
-//     // =====================================================
-
-//     const completion =
-//       await groq.chat.completions.create({
-
-//         model: MODEL,
-
-//         messages: messages,
-
-//         temperature: 0.2,
-
-//         max_tokens: 1000
-
-//       });
-
-
-//     const response =
-//       completion.choices?.[0]?.message?.content;
-
-
-//     if (!response) {
-
-//       throw new Error(
-//         'AI returned an empty response'
-//       );
-
-//     }
-
-
-//     return response;
-
-//   }
-
-//   catch (error) {
-
-//     console.error(
-//       'AI SERVICE ERROR:',
-//       error
-//     );
-
-//     throw error;
-
-//   }
-
-// }
-
-
-// module.exports = {
-//   generateAIResponse
-// };
-
-
-
-
-
-
-
-
-
-// const Groq = require('groq-sdk');
-
-// const groq = new Groq({
-//   apiKey: process.env.GROQ_API_KEY
-// });
-
-
-// // =====================================================
-// // GENERATE AI RESPONSE
-// // =====================================================
-
-// async function generateAIResponse(userMessage, context, history = []) {
-
-//   try {
-
-//     // ===================================================
-//     // SYSTEM PROMPT
-//     // ===================================================
-
-//     const systemPrompt = `
-// You are the AI Assistant for Smart Textile Laboratory.
-
-// You are a database-aware assistant.
-
-// You have access to the logged-in user's information and
-// their textile testing information.
-
-// IMPORTANT RULES:
-
-// 1. Always use the provided database context before answering.
-
-// 2. Never ask the user for information that can already be
-//    determined from the database context.
-
-// 3. Never invent, guess, or hallucinate database values.
-
-// 4. For test progress, calculate the answer from:
-//    testsRequired, completedTests and pendingTests.
-
-// 5. If testsRequired contains 3 tests and completedTests
-//    contains 2 tests, answer:
-//    - 3 total
-//    - 2 completed
-//    - 1 pending
-
-// 6. When answering sample-related questions, use both:
-//    - samples
-//    - testRequests
-//    if either contains relevant information.
-
-// 7. A test request can represent the user's submitted sample
-//    request even when sample_id is NULL.
-
-// 8. If sample_id is NULL, do NOT say:
-//    "There is no sample information."
-
-//    Instead say:
-//    "Your test request is recorded in the system, but a sample
-//    ID has not yet been assigned."
-
-// 9. If barcode is missing, say:
-//    "A barcode has not been assigned yet."
-
-// 10. If DateReceived is missing, say:
-//     "The sample received date is not available yet."
-
-// 11. Do not expose internal database terminology such as:
-//     "database context", "context object", "SQL query",
-//     "JSONB", etc.
-
-// 12. Never tell the user that the AI cannot access the database
-//    when relevant information exists in the provided context.
-
-// 13. Answer naturally and directly.
-
-// 14. If information genuinely does not exist, explain what is
-//    missing in a user-friendly way.
-
-// 15. Never invent:
-//     - sample IDs
-//     - barcodes
-//     - test results
-//     - report results
-//     - tracking updates
-//     - dates
-//     - completion times
-
-// 16. For general textile questions, answer using general
-//     knowledge.
-
-// 17. For user-specific questions, prioritize the provided
-//     database information.
-
-// 18. Keep answers concise but informative.
-
-// IMPORTANT DATABASE RULES:
-
-// 1. The logged-in user's test_requests represent submitted sample/test requests.
-
-// 2. If the Samples array is empty but testRequests contains records,
-//    DO NOT say that the user has no samples.
-
-// 3. Use testRequests as the source for submitted sample information.
-
-// 4. The number of submitted samples can be determined from testRequests
-//    when Samples is empty.
-
-// 5. Do not say "the samples field is empty" to the user.
-
-// 6. Do not expose internal database/context terminology such as:
-//    "database context", "samples field", "testRequests field", etc.
-
-// 7. Never invent a SampleID.
-//    If sample_id is null, clearly say that the system has not assigned
-//    a sample ID yet.
-
-// 8. If sample_id is null, the test request ID may be mentioned as a
-//    test request identifier, but DO NOT call it a SampleID.
-
-// 9. For completed and pending tests, use tests_required and completed_tests
-//    from the test request.
-
-// 10. Always answer using the logged-in user's data only.
-
-// USER DATABASE CONTEXT:
-
-// ${JSON.stringify(context, null, 2)}
-// `;
-
-
-//     // ===================================================
-//     // PREVIOUS CONVERSATION
-//     // ===================================================
-
-//     const messages = [
-
-//       {
-//         role: 'system',
-//         content: systemPrompt
-//       }
-
-//     ];
-
-
-//     // Add previous messages
-
-//     if (Array.isArray(history)) {
-
-//       for (const item of history) {
-
-//         if (
-//           item.role &&
-//           item.message
-//         ) {
-
-//           messages.push({
-//             role:
-//               item.role === 'assistant'
-//                 ? 'assistant'
-//                 : 'user',
-
-//             content: item.message
-//           });
-
-//         }
-
-//       }
-
-//     }
-
-
-//     // ===================================================
-//     // CURRENT USER MESSAGE
-//     // ===================================================
-
-//     messages.push({
-//       role: 'user',
-//       content: userMessage
-//     });
-
-
-//     // ===================================================
-//     // GROQ
-//     // ===================================================
-
-//     const completion =
-//       await groq.chat.completions.create({
-
-//         model: 'llama-3.3-70b-versatile',
-
-//         messages,
-
-//         temperature: 0.2,
-
-//         max_tokens: 1000
-
-//       });
-
-
-//     const response =
-//       completion.choices[0]?.message?.content;
-
-
-//     if (!response) {
-
-//       throw new Error(
-//         'AI returned an empty response'
-//       );
-
-//     }
-
-
-//     return response.trim();
-
-//   } catch (error) {
-
-//     console.error(
-//       "AI SERVICE ERROR:",
-//       error
-//     );
-
-//     throw error;
-//   }
-// }
-
-
-// module.exports = {
-//   generateAIResponse
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-// const OpenAI = require('openai');
-// const pool = require('../config/db');
-
-
-// const groq = new OpenAI({
-//   apiKey: process.env.GROQ_API_KEY,
-//   baseURL: 'https://api.groq.com/openai/v1'
-// });
-
-
-// const MODEL = 'llama-3.3-70b-versatile';
-
-
-// async function generateAIResponse(
-//   userId,
-//   role,
-//   conversationId,
-//   userMessage,
-//   context
-// ) {
-
-//   try {
-
-//     // =====================================================
-//     // GET PREVIOUS CHAT HISTORY
-//     // =====================================================
-
-//     let history = [];
-
-//     if (conversationId) {
-
-//       const historyResult = await pool.query(
-//         `
-//         SELECT
-//           role,
-//           message
-//         FROM ai_messages
-//         WHERE conversation_id = $1
-//         ORDER BY created_at ASC
-//         LIMIT 20
-//         `,
-//         [conversationId]
-//       );
-
-//       history = historyResult.rows;
-
-//     }
-
-
-//     // =====================================================
-//     // SYSTEM INSTRUCTION
-//     // =====================================================
-
-//     const systemPrompt = `
-// You are the AI Assistant for a Smart Textile Lab Management System.
-
-// You help customers and laboratory staff.
-
-// CURRENT USER:
-// ${JSON.stringify(context.user, null, 2)}
-
-// USER ROLE:
-// ${role}
-
-// IMPORTANT RULES:
-
-// 1. Never ask the user for their UserID.
-// 2. Never ask the user for their SampleID if the required information can be identified from the provided database context.
-// 3. Automatically use the current logged-in user's data.
-// 4. Understand natural language such as:
-//    - my sample
-//    - my latest sample
-//    - my report
-//    - my tests
-//    - my request
-//    - where is my sample
-//    - what is the status
-//    - what happened to my sample
-// 5. If multiple records exist, use the most recent or most relevant record whenever the question allows it.
-// 6. Use previous conversation history to understand references such as:
-//    - it
-//    - that sample
-//    - that report
-//    - the latest one
-// 7. Never invent database information.
-// 8. Only claim a sample status, test result, report status, tracking stage, or request detail when it is supported by the provided database context.
-// 9. If the requested information is genuinely not available in the context, clearly say that the information is not available.
-// 10. Do not expose SQL queries, database credentials, JWT tokens, or internal implementation details.
-// 11. Answer naturally and clearly.
-// 12. For general textile questions, answer using your general knowledge.
-// 13. For user-specific project questions, prioritize the provided database context over general knowledge.
-// 14. If the user asks something unrelated to textile testing or this application, politely answer if it is a normal general question, but do not pretend it is project data.
-// 15. Never reveal another customer's private information.
-// 16. Keep answers concise but useful.
-
-// DATABASE CONTEXT:
-
-// SAMPLES:
-// ${JSON.stringify(context.samples, null, 2)}
-
-// TRACKING:
-// ${JSON.stringify(context.tracking, null, 2)}
-
-// TESTS PERFORMED:
-// ${JSON.stringify(context.tests, null, 2)}
-
-// REPORTS:
-// ${JSON.stringify(context.reports, null, 2)}
-
-// TEST REQUESTS:
-// ${JSON.stringify(context.testRequests, null, 2)}
-// `;
-
-
-//     // =====================================================
-//     // GROQ MESSAGES
-//     // =====================================================
-
-//     const messages = [
-
-//       {
-//         role: 'system',
-//         content: systemPrompt
-//       },
-
-//       ...history.map(item => ({
-//         role:
-//           item.role === 'assistant'
-//             ? 'assistant'
-//             : 'user',
-
-//         content: item.message
-//       })),
-
-//       {
-//         role: 'user',
-//         content: userMessage
-//       }
-
-//     ];
-
-
-//     // =====================================================
-//     // CALL GROQ
-//     // =====================================================
-
-//     const completion =
-//       await groq.chat.completions.create({
-
-//         model: MODEL,
-
-//         messages: messages,
-
-//         temperature: 0.2,
-
-//         max_tokens: 1000
-
-//       });
-
-
-//     const response =
-//       completion.choices?.[0]?.message?.content;
-
-
-//     if (!response) {
-
-//       throw new Error(
-//         'AI returned an empty response'
-//       );
-
-//     }
-
-
-//     return response;
-
-//   }
-
-//   catch (error) {
-
-//     console.error(
-//       'AI SERVICE ERROR:',
-//       error
-//     );
-
-//     throw error;
-
-//   }
-
-// }
-
-
-// module.exports = {
-//   generateAIResponse
-// };
-
-
-
-
-
-
-
-
-
-// const Groq = require('groq-sdk');
-
-// const groq = new Groq({
-//   apiKey: process.env.GROQ_API_KEY
-// });
-
-
-// // =====================================================
-// // GENERATE AI RESPONSE
-// // =====================================================
-
-// async function generateAIResponse(userMessage, context, history = []) {
-
-//   try {
-
-//     // ===================================================
-//     // SYSTEM PROMPT
-//     // ===================================================
-
-//     const systemPrompt = `
-// You are the AI Assistant for Smart Textile Laboratory.
-
-// You are a database-aware assistant.
-
-// You have access to the logged-in user's information and
-// their textile testing information.
-
-// IMPORTANT RULES:
-
-// 1. Always use the provided database context before answering.
-
-// 2. Never ask the user for information that can already be
-//    determined from the database context.
-
-// 3. Never invent, guess, or hallucinate database values.
-
-// 4. For test progress, calculate the answer from:
-//    testsRequired, completedTests and pendingTests.
-
-// 5. If testsRequired contains 3 tests and completedTests
-//    contains 2 tests, answer:
-//    - 3 total
-//    - 2 completed
-//    - 1 pending
-
-// 6. When answering sample-related questions, use both:
-//    - samples
-//    - testRequests
-//    if either contains relevant information.
-
-// 7. A test request can represent the user's submitted sample
-//    request even when sample_id is NULL.
-
-// 8. If sample_id is NULL, do NOT say:
-//    "There is no sample information."
-
-//    Instead say:
-//    "Your test request is recorded in the system, but a sample
-//    ID has not yet been assigned."
-
-// 9. If barcode is missing, say:
-//    "A barcode has not been assigned yet."
-
-// 10. If DateReceived is missing, say:
-//     "The sample received date is not available yet."
-
-// 11. Do not expose internal database terminology such as:
-//     "database context", "context object", "SQL query",
-//     "JSONB", etc.
-
-// 12. Never tell the user that the AI cannot access the database
-//    when relevant information exists in the provided context.
-
-// 13. Answer naturally and directly.
-
-// 14. If information genuinely does not exist, explain what is
-//    missing in a user-friendly way.
-
-// 15. Never invent:
-//     - sample IDs
-//     - barcodes
-//     - test results
-//     - report results
-//     - tracking updates
-//     - dates
-//     - completion times
-
-// 16. For general textile questions, answer using general
-//     knowledge.
-
-// 17. For user-specific questions, prioritize the provided
-//     database information.
-
-// 18. Keep answers concise but informative.
-
-// IMPORTANT DATABASE RULES:
-
-// 1. The logged-in user's test_requests represent submitted sample/test requests.
-
-// 2. If the Samples array is empty but testRequests contains records,
-//    DO NOT say that the user has no samples.
-
-// 3. Use testRequests as the source for submitted sample information.
-
-// 4. The number of submitted samples can be determined from testRequests
-//    when Samples is empty.
-
-// 5. Do not say "the samples field is empty" to the user.
-
-// 6. Do not expose internal database/context terminology such as:
-//    "database context", "samples field", "testRequests field", etc.
-
-// 7. Never invent a SampleID.
-//    If sample_id is null, clearly say that the system has not assigned
-//    a sample ID yet.
-
-// 8. If sample_id is null, the test request ID may be mentioned as a
-//    test request identifier, but DO NOT call it a SampleID.
-
-// 9. For completed and pending tests, use tests_required and completed_tests
-//    from the test request.
-
-// 10. Always answer using the logged-in user's data only.
-
-// USER DATABASE CONTEXT:
-
-// ${JSON.stringify(context, null, 2)}
-// `;
-
-
-//     // ===================================================
-//     // PREVIOUS CONVERSATION
-//     // ===================================================
-
-//     const messages = [
-
-//       {
-//         role: 'system',
-//         content: systemPrompt
-//       }
-
-//     ];
-
-
-//     // Add previous messages
-
-//     if (Array.isArray(history)) {
-
-//       for (const item of history) {
-
-//         if (
-//           item.role &&
-//           item.message
-//         ) {
-
-//           messages.push({
-//             role:
-//               item.role === 'assistant'
-//                 ? 'assistant'
-//                 : 'user',
-
-//             content: item.message
-//           });
-
-//         }
-
-//       }
-
-//     }
-
-
-//     // ===================================================
-//     // CURRENT USER MESSAGE
-//     // ===================================================
-
-//     messages.push({
-//       role: 'user',
-//       content: userMessage
-//     });
-
-
-//     // ===================================================
-//     // GROQ
-//     // ===================================================
-
-//     const completion =
-//       await groq.chat.completions.create({
-
-//         model: 'llama-3.3-70b-versatile',
-
-//         messages,
-
-//         temperature: 0.2,
-
-//         max_tokens: 1000
-
-//       });
-
-
-//     const response =
-//       completion.choices[0]?.message?.content;
-
-
-//     if (!response) {
-
-//       throw new Error(
-//         'AI returned an empty response'
-//       );
-
-//     }
-
-
-//     return response.trim();
-
-//   } catch (error) {
-
-//     console.error(
-//       "AI SERVICE ERROR:",
-//       error
-//     );
-
-//     throw error;
-//   }
-// }
-
-
-// module.exports = {
-//   generateAIResponse
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+require('dotenv').config();
 
 const Groq = require('groq-sdk');
+
+
+// =====================================================
+// GROQ CLIENT
+// =====================================================
+
+if (!process.env.GROQ_API_KEY) {
+  console.error('GROQ_API_KEY is missing in .env file');
+}
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY
 });
+
+
+// =====================================================
+// HELPER: SAFE STRING
+// =====================================================
+
+function safeString(value) {
+  if (value === undefined || value === null) {
+    return '';
+  }
+
+  return String(value);
+}
+
+
+// =====================================================
+// HELPER: NORMALIZE HISTORY
+// =====================================================
+
+function normalizeHistory(history) {
+  if (!Array.isArray(history)) {
+    return [];
+  }
+
+  return history
+    .slice(-6)
+    .filter(item => {
+      return (
+        item &&
+        item.role &&
+        item.message
+      );
+    })
+    .map(item => {
+      const role =
+        item.role === 'assistant'
+          ? 'assistant'
+          : 'user';
+
+      return {
+        role,
+        content: safeString(item.message)
+      };
+    });
+}
 
 
 // =====================================================
@@ -1650,10 +72,10 @@ async function generateAIResponse(
   context,
   history = []
 ) {
-
   try {
-
-    console.log('================ AI SERVICE ================');
+    console.log(
+      '================ AI SERVICE ================'
+    );
 
     console.log(
       'User Message:',
@@ -1662,236 +84,480 @@ async function generateAIResponse(
 
     console.log(
       'History Length:',
-      history.length
+      Array.isArray(history)
+        ? history.length
+        : 0
     );
 
+    // -------------------------------------------------
+    // VALIDATION
+    // -------------------------------------------------
 
-    // ===================================================
+    if (
+      !process.env.GROQ_API_KEY
+    ) {
+      throw new Error(
+        'GROQ_API_KEY is missing'
+      );
+    }
+
+    if (
+      typeof userMessage !== 'string' ||
+      !userMessage.trim()
+    ) {
+      throw new Error(
+        'User message is required'
+      );
+    }
+
+    // -------------------------------------------------
+    // PREPARE CONTEXT
+    // -------------------------------------------------
+
+    let databaseContext = '';
+
+    if (
+      typeof context === 'string'
+    ) {
+      databaseContext = context;
+    } else {
+      databaseContext = JSON.stringify(
+        context || {},
+        null,
+        2
+      );
+    }
+
+    // -------------------------------------------------
     // SYSTEM PROMPT
-    // ===================================================
+    // -------------------------------------------------
 
     const systemPrompt = `
 You are the AI Assistant for Smart Textile Laboratory.
 
-You help logged-in customers and laboratory staff.
+You help only the currently logged-in customer or laboratory staff.
 
-IMPORTANT RULES:
+Your job is to READ and EXPLAIN the database information provided
+in the database context.
 
-1. Always use the provided user database information.
+You are a READ-ONLY assistant.
 
-2. Never invent database information.
+You must not invent, guess, create, update, delete, or modify any
+database information.
 
-3. Never ask for UserID.
+=====================================================
+IMPORTANT REPORT STATUS INSTRUCTIONS
+=====================================================
 
-4. Never ask for SampleID when the information can be
-   identified from the provided context.
+The database context may contain a section named:
 
-5. Always use the currently logged-in user's data.
+REPORT STATUS INFORMATION
 
-6. For sample questions, use samples and testRequests.
+or:
 
-7. If samples is empty but testRequests contains data,
-   treat the test request as a submitted request.
+PARTICULAR SAMPLE REPORT
 
-8. If sample_id is null, say that a sample ID has not
-   yet been assigned.
+Use that information as the source of truth.
 
-9. Never invent sample IDs, barcodes, reports, test results,
-   tracking stages, or dates.
+A report is considered available when either of these is true:
 
-10. For test questions, use testsRequired, completedTests,
-    and pendingTests when available.
+1. The context explicitly says:
+   Final Report Status: GENERATED
 
-11. For "my sample", "my report", "my tests", "my status",
-    or similar questions, use the current user's data.
+2. The context contains:
+   Report Generated: YES
 
-12. If the requested information is not available,
-    clearly say so.
+3. The context contains a report count greater than zero.
 
-13. Never reveal another user's information.
+4. The context contains actual report records with fields such as:
+   test_name, result, observation, remarks, test_method,
+   test_date, notes, sample_id, or report_id.
 
-14. Do not expose SQL, database context, JSON, JWT,
-    credentials, or internal implementation details.
+IMPORTANT:
 
-15. For general textile questions, use general knowledge.
+Individual test reports and a final consolidated report are different.
 
-16. Keep answers short and clear.
+If individual test report records are available, say:
 
-IMPORTANT READ-ONLY RULES:
+"The report data for this sample is available."
 
-19. You are a READ-ONLY AI Assistant.
+If the context confirms that the final consolidated report is generated,
+say:
 
-20. You must NEVER modify, update, insert, delete, or
-    change any database record.
+"Your final report has been generated."
 
-21. You must NEVER claim that you have updated:
-    - test status
-    - test results
-    - sample status
-    - reports
-    - tracking information
-    - test requests
-    - user information
+Do not say:
+
+"Your final report has not been generated yet"
+
+when the context contains actual report records or a report count
+greater than zero.
+
+Only say that the final report has not been generated when:
+
+- reportGenerated is explicitly false, AND
+- no report records are available, AND
+- report count is zero or unavailable.
+
+If all tests are completed and report records are available, do not
+claim that the report is missing.
+
+If all tests are completed but no report records are available, say:
+
+"All required tests have been completed, but the final report has
+not been generated yet."
+
+Never confuse:
+
+- completed tests
+- individual test reports
+- final consolidated report
+
+=====================================================
+GENERAL RULES
+=====================================================
+
+1. Always use the provided database context.
+
+2. Answer according to the currently logged-in user's data only.
+
+3. Never ask the user for UserID.
+
+4. Never ask for SampleID if it is already available in the context.
+
+5. Never invent:
+
+   - UserID
+   - SampleID
+   - Request ID
+   - Barcode
+   - Test result
+   - Report
+   - Tracking stage
+   - Date
+   - Completion status
+   - Customer information
+
+6. Never reveal another user's information.
+
+7. Do not expose:
+
+   - SQL queries
+   - Database table names
+   - Database JSON
+   - JWT details
+   - API keys
+   - Passwords
+   - Internal backend implementation
+   - Internal field names
+
+8. Keep answers short, clear, and natural.
+
+9. If requested information is unavailable, clearly say so.
+
+10. If there is a conflict between general knowledge and database
+    context, follow the database context.
+
+=====================================================
+SAMPLE RULES
+=====================================================
+
+11. For sample-related questions, use the sample information
+    available in the context.
+
+12. For test-request-related questions, use test request information
+    and test completion information.
+
+13. If test requests exist but samples are empty, treat them as
+    submitted requests.
+
+14. If sample_id is null, say:
+
+    "Your sample ID has not been assigned yet."
+
+15. Never create or guess a sample ID from:
+
+    - Request ID
+    - Report ID
+    - Test ID
+    - Barcode
+    - Any other number
+
+16. If a request exists but sample_id is null, explain that the
+    request exists but the sample has not been linked or assigned.
+
+=====================================================
+TEST STATUS RULES
+=====================================================
+
+17. For test questions, use:
+
+    - required tests
+    - completed tests
+    - pending tests
+    - completed count
+    - pending count
+    - total tests
+
+18. If pending tests are empty and all required tests are completed,
+    say that all required tests are completed.
+
+19. Do not say that the final report is ready only because all tests
+    are completed.
+
+20. Completed tests and generated reports are different things.
+
+21. If all tests are completed and no report records exist, say:
+
+    "All required tests are completed, but the final report has not
+    been generated yet."
+
+22. If some tests are pending and no report records exist, explain
+    the pending tests and say that the final report is not available.
+
+23. If report records exist, mention that report data is available.
 
 
-22. If the user asks you to perform an action such as:
-    - complete a test
-    - mark a test as completed
-    - update a result
-    - change sample status
-    - update a report
-    - assign a barcode
-    - modify tracking status
+For questions like:
 
-    you must NOT perform the action.
+- Is my report ready?
+- Has my report been generated?
+- Show my report
+- Where is my report?
+- Is the final report available?
+- Did the lab generate my report?
+- Is the report ready for sample 12?
 
-23. Instead, clearly explain that the AI chat is read-only
-    and the requested change must be performed through
-    the appropriate laboratory management interface.
+Follow this priority:
 
-24. Never say "I've updated", "I changed", "I completed",
-    "I modified", or similar wording unless an actual
-    authorized backend operation has been performed.
+1. Particular sample report information
+2. Report status information
+3. Actual report records
+4. Test completion information
+5. General sample information
 
-25. The AI may only READ and explain the information
-    provided in the database context.
+If a particular sample report section exists, use that section first.
 
-26. The AI must not generate or execute SQL UPDATE,
-    INSERT, DELETE, or other database modification queries.
+If the report count is greater than zero, the report data is available.
 
-27. If the user asks to update something, do not pretend
-    the update happened.
+If report records are present, do not say that no report was generated.
 
-USER DATA:
+If only individual test reports are available and no consolidated report
+information is available, say:
 
-${JSON.stringify(context)}
+"The available report data contains individual test reports.
+The final consolidated report details are not available in the
+current data."
+
+Do not invent:
+
+- PDF
+- Download link
+- Report number
+- Final result
+- Report date
+- Approval status
+- Signature
+- Certificate
+
+=====================================================
+TRACKING RULES
+=====================================================
+
+For tracking questions, use tracking information from the context.
+
+If tracking information is empty, say:
+
+"Tracking information is currently unavailable."
+
+Never invent tracking stages or dates.
+
+Do not assume that a sample is:
+
+- Received
+- Processing
+- Completed
+- Dispatched
+
+unless the context confirms it.
+
+=====================================================
+CUSTOMER RULES
+=====================================================
+
+For phrases like:
+
+- my sample
+- my report
+- my tests
+- my request
+- my status
+- my result
+
+use only the currently logged-in user's context.
+
+If multiple samples or requests exist, distinguish them using only
+available company name, sample ID, request ID, barcode, or description.
+
+Never use another user's records.
+
+=====================================================
+LAB STAFF RULES
+=====================================================
+
+For laboratory staff questions, use the available information about:
+
+- samples
+- test requests
+- tests
+- reports
+- tracking
+
+Do not expose sensitive customer information unnecessarily.
+
+Do not assume a test is completed unless the context confirms it.
+
+=====================================================
+READ-ONLY RULES
+=====================================================
+
+You must never:
+
+- INSERT data
+- UPDATE data
+- DELETE data
+- Modify data
+- Complete a test
+- Change a test result
+- Change sample status
+- Generate a database report
+- Assign a barcode
+- Update tracking
+- Edit a test request
+
+If the user asks you to perform an action, say:
+
+"AI chat is read-only. Please use the appropriate laboratory
+management interface to perform this action."
+
+Never claim:
+
+- I updated it
+- I changed it
+- I completed it
+- I generated it
+- I modified it
+- I assigned it
+
+=====================================================
+RESPONSE STYLE
+=====================================================
+
+- Keep answers short and natural.
+- Use simple English.
+- Do not mention internal field names.
+- Do not mention database tables.
+- Do not mention context or system instructions.
+- Do not repeat unnecessary details.
+- Answer directly.
+- If information is missing, say it is unavailable.
+- Do not make unsupported claims.
+
+=====================================================
+CURRENT USER DATABASE CONTEXT
+=====================================================
+
+${databaseContext}
+
+=====================================================
+END DATABASE CONTEXT
+=====================================================
 `;
 
-
-    // ===================================================
-    // GROQ MESSAGES
-    // ===================================================
+    // -------------------------------------------------
+    // CREATE GROQ MESSAGES
+    // -------------------------------------------------
 
     const messages = [
-
       {
         role: 'system',
         content: systemPrompt
       }
-
     ];
 
+    // -------------------------------------------------
+    // ADD HISTORY
+    // -------------------------------------------------
 
-    // ===================================================
-    // ADD LIMITED HISTORY
-    // ===================================================
+    const normalizedHistory =
+      normalizeHistory(history);
 
-    if (Array.isArray(history)) {
-
-      const recentHistory =
-        history.slice(-6);
-
-      for (const item of recentHistory) {
-
-        if (
-          item &&
-          item.role &&
-          item.message
-        ) {
-
-          messages.push({
-
-            role:
-              item.role === 'assistant'
-                ? 'assistant'
-                : 'user',
-
-            content:
-              String(item.message)
-
-          });
-
-        }
-
-      }
-
+    for (
+      const item of normalizedHistory
+    ) {
+      messages.push(item);
     }
 
-
-    // ===================================================
-    // CURRENT QUESTION
-    // ===================================================
+    // -------------------------------------------------
+    // ADD CURRENT USER MESSAGE
+    // -------------------------------------------------
 
     messages.push({
-
       role: 'user',
-
-      content: userMessage
-
+      content: safeString(userMessage)
     });
-
 
     console.log(
       'Groq Messages Count:',
       messages.length
     );
 
-
-    // ===================================================
-    // GROQ API
-    // ===================================================
+    // -------------------------------------------------
+    // CALL GROQ
+    // -------------------------------------------------
 
     const completion =
       await groq.chat.completions.create({
-
         model: 'openai/gpt-oss-20b',
-
         messages,
-
-        temperature: 0.2,
-
-        max_tokens: 300
-
+        temperature: 0.1,
+        max_tokens: 1024
       });
 
-
-    // ===================================================
-    // GET RESPONSE
-    // ===================================================
+    // -------------------------------------------------
+    // GET AI RESPONSE
+    // -------------------------------------------------
 
     const response =
       completion
-        .choices?.[0]
+        ?.choices?.[0]
         ?.message
         ?.content;
 
-
-    if (!response) {
-
+    if (
+      typeof response !== 'string' ||
+      !response.trim()
+    ) {
       throw new Error(
         'AI returned an empty response'
       );
-
     }
 
+    const cleanedResponse =
+      response.trim();
 
     console.log(
       'AI Response:',
-      response
+      cleanedResponse
     );
 
     console.log(
       '=========================================='
     );
 
+    return cleanedResponse;
 
-    return response.trim();
-
-  }
-
-
-  catch (error) {
-
+  } catch (error) {
     console.error(
       '================ AI SERVICE ERROR ================'
     );
@@ -1906,26 +572,32 @@ ${JSON.stringify(context)}
       error.status
     );
 
+    console.error(
+      'Error Code:',
+      error.code
+    );
 
-    // =================================================
-    // RATE LIMIT
-    // =================================================
+    // -------------------------------------------------
+    // RATE LIMIT ERROR
+    // -------------------------------------------------
 
-    if (error.status === 429) {
-
+    if (
+      error.status === 429 ||
+      error.code === '429'
+    ) {
       throw new Error(
         'AI service rate limit reached. Please try again later.'
       );
-
     }
 
-
     throw error;
-
   }
-
 }
 
+
+// =====================================================
+// EXPORT
+// =====================================================
 
 module.exports = {
   generateAIResponse

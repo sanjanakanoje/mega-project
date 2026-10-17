@@ -1,61 +1,33 @@
-// const express = require('express');
-// const router = express.Router();
-
-// const reportController = require('../controllers/report');
-
-// // Add / Update report
-// router.post('/', reportController.addReport);
-
-// // Get all reports for a sample
-// router.get('/sample/:sampleId', reportController.getReportsBySample);
-
-// // Get one report
-// router.get('/:sampleId/:testName', reportController.getReport);
-
-// module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const express = require('express');
 
 const router = express.Router();
 
-const reportController =
-    require('../controllers/report');
+const reportController = require('../controllers/report');
 
+// Change this path if your middleware file has another name
+const {
+  authenticateToken
+} = require('../middleware/authMiddleware');
 
 // =====================================================
 // ADD NEW / UPDATE EXISTING REPORT
 // =====================================================
 
 router.post(
-    '/',
-    reportController.addReport
+  '/',
+  authenticateToken,
+  reportController.addReport
 );
 
 
 // =====================================================
 // GET ALL REPORTS FOR SAMPLE + TEST
-// IMPORTANT: keep before /:sampleId/:testName
 // =====================================================
 
 router.get(
-    '/test/:sampleId/:testName',
-    reportController.getReportsByTest
+  '/test/:sampleId/:testName',
+  authenticateToken,
+  reportController.getReportsByTest
 );
 
 
@@ -64,8 +36,9 @@ router.get(
 // =====================================================
 
 router.get(
-    '/id/:reportId',
-    reportController.getReportById
+  '/id/:reportId',
+  authenticateToken,
+  reportController.getReportById
 );
 
 
@@ -74,8 +47,9 @@ router.get(
 // =====================================================
 
 router.get(
-    '/sample/:sampleId',
-    reportController.getReportsBySample
+  '/sample/:sampleId',
+  authenticateToken,
+  reportController.getReportsBySample
 );
 
 
@@ -84,20 +58,10 @@ router.get(
 // =====================================================
 
 router.get(
-    '/:sampleId/:testName',
-    reportController.getReport
+  '/:sampleId/:testName',
+  authenticateToken,
+  reportController.getReport
 );
 
 
 module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
