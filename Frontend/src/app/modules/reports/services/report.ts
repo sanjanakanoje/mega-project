@@ -1,196 +1,9 @@
-// import { Injectable } from '@angular/core';
-// import { HttpClient } from '@angular/common/http';
-// import { Observable } from 'rxjs';
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class ReportService {
-
-//   private apiUrl = 'http://localhost:5000/api/reports';
-
-
-//   constructor(
-//     private http: HttpClient
-//   ) {}
-
-
-//   // ==========================================
-//   // SAVE REPORT
-//   // ==========================================
-//   saveReport(data: any): Observable<any> {
-
-//     return this.http.post(
-//       this.apiUrl,
-//       data
-//     );
-
-//   }
-
-
-//   // ==========================================
-//   // GET SINGLE REPORT
-//   // ==========================================
-//   getReport(
-//     sampleId: number,
-//     testName: string
-//   ): Observable<any> {
-
-//     return this.http.get(
-//       `${this.apiUrl}/${sampleId}/${encodeURIComponent(testName)}`
-//     );
-
-//   }
-
-
-//   // ==========================================
-//   // GET ALL REPORTS
-//   // ==========================================
-//   getReportsBySample(
-//     sampleId: number
-//   ): Observable<any[]> {
-
-//     return this.http.get<any[]>(
-//       `${this.apiUrl}/sample/${sampleId}`
-//     );
-
-//   }
-
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { Injectable } from '@angular/core';
-// import { HttpClient } from '@angular/common/http';
-// import { Observable } from 'rxjs';
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class ReportService {
-
-//   private apiUrl = 'http://localhost:5000/api/reports';
-
-//   constructor(
-//     private http: HttpClient
-//   ) {}
-
-
-//   // ==========================================
-//   // SAVE NEW / UPDATE EXISTING REPORT
-//   // ==========================================
-
-//   saveReport(data: any): Observable<any> {
-
-//     return this.http.post(
-//       this.apiUrl,
-//       data
-//     );
-
-//   }
-
-
-//   // ==========================================
-//   // GET ALL REPORTS FOR SAME SAMPLE + TEST
-//   // ==========================================
-
-//   getReportsByTest(
-//     sampleId: number,
-//     testName: string
-//   ): Observable<any[]> {
-
-//     return this.http.get<any[]>(
-//       `${this.apiUrl}/test/${sampleId}/${encodeURIComponent(testName)}`
-//     );
-
-//   }
-
-
-//   // ==========================================
-//   // GET SINGLE REPORT BY REPORT ID
-//   // ==========================================
-
-//   getReportById(
-//     reportId: number
-//   ): Observable<any> {
-
-//     return this.http.get<any>(
-//       `${this.apiUrl}/id/${reportId}`
-//     );
-
-//   }
-
-
-//   // ==========================================
-//   // OLD METHOD
-//   // Keep this so other pages don't break
-//   // ==========================================
-
-//   getReport(
-//     sampleId: number,
-//     testName: string
-//   ): Observable<any> {
-
-//     return this.http.get(
-//       `${this.apiUrl}/${sampleId}/${encodeURIComponent(testName)}`
-//     );
-
-//   }
-
-
-//   // ==========================================
-//   // GET ALL REPORTS FOR SAMPLE
-//   // ==========================================
-
-//   getReportsBySample(
-//     sampleId: number
-//   ): Observable<any[]> {
-
-//     return this.http.get<any[]>(
-//       `${this.apiUrl}/sample/${sampleId}`
-//     );
-
-//   }
-
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders
+} from '@angular/common/http';
+
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -206,11 +19,35 @@ export class ReportService {
   ) {}
 
   // =====================================================
+  // AUTH HEADERS
+  // =====================================================
+
+  private getHeaders(): HttpHeaders {
+    const token =
+      localStorage.getItem('token') ||
+      localStorage.getItem('accessToken') ||
+      localStorage.getItem('authToken');
+
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    if (token) {
+      headers = headers.set(
+        'Authorization',
+        `Bearer ${token}`
+      );
+    }
+
+    return headers;
+  }
+
+
+  // =====================================================
   // SAVE / UPDATE REPORT
   // =====================================================
 
   saveReport(reportData: any): Observable<any> {
-
     console.log(
       'ReportService - Save/Update:',
       reportData
@@ -218,9 +55,13 @@ export class ReportService {
 
     return this.http.post(
       this.apiUrl,
-      reportData
+      reportData,
+      {
+        headers: this.getHeaders()
+      }
     );
   }
+
 
   // =====================================================
   // GET ALL REPORTS FOR SAMPLE + TEST
@@ -239,8 +80,14 @@ export class ReportService {
       url
     );
 
-    return this.http.get(url);
+    return this.http.get(
+      url,
+      {
+        headers: this.getHeaders()
+      }
+    );
   }
+
 
   // =====================================================
   // GET SINGLE REPORT BY ID
@@ -258,27 +105,28 @@ export class ReportService {
       url
     );
 
-    return this.http.get(url);
+    return this.http.get(
+      url,
+      {
+        headers: this.getHeaders()
+      }
+    );
   }
+
 
   // =====================================================
   // GET ALL REPORTS FOR SAMPLE
   // =====================================================
+getReportsBySample(sampleId: number): Observable<any> {
+  const url = `${this.apiUrl}/sample/${sampleId}`;
 
-  getReportsBySample(
-    sampleId: number
-  ): Observable<any> {
+  console.log('Reports API URL:', url);
 
-    const url =
-      `${this.apiUrl}/sample/${sampleId}`;
+  return this.http.get(url, {
+    headers: this.getHeaders()
+  });
+}
 
-    console.log(
-      'ReportService - Get Reports By Sample:',
-      url
-    );
-
-    return this.http.get(url);
-  }
 
   // =====================================================
   // OLD GET SINGLE REPORT
@@ -297,6 +145,11 @@ export class ReportService {
       url
     );
 
-    return this.http.get(url);
+    return this.http.get(
+      url,
+      {
+        headers: this.getHeaders()
+      }
+    );
   }
 }

@@ -1,5 +1,37 @@
+// // import { Injectable } from '@angular/core';
+// // import { HttpClient } from '@angular/common/http';
+
+// // @Injectable({
+// //   providedIn: 'root'
+// // })
+// // export class TestService {
+
+// //   private apiUrl = 'http://localhost:5000/api/tests';
+
+// //   constructor(private http: HttpClient) {}
+
+// //   createRequest(data: any) {
+// //     return this.http.post(`${this.apiUrl}/create`, data);
+// //   }
+
+// //   // ✅ ADD THIS METHOD
+// //   getAllRequests() {
+// //     return this.http.get<any>('http://localhost:5000/api/tests');
+// //   }
+// //   getSingleTest(id: string) {
+// //   return this.http.get<any>(`${this.apiUrl}/${id}`);
+// //   }
+// //   getTestRequirements(id: string | number) {
+// //     return this.http.get(
+// //       `http://localhost:5000/api/tracking/test/${id}`
+// //     );
+// //   }
+// // }
+
+
 // import { Injectable } from '@angular/core';
 // import { HttpClient } from '@angular/common/http';
+// import { Observable } from 'rxjs';
 
 // @Injectable({
 //   providedIn: 'root'
@@ -7,30 +39,92 @@
 // export class TestService {
 
 //   private apiUrl = 'http://localhost:5000/api/tests';
+//   private trackingUrl = 'http://localhost:5000/api/tracking';
 
 //   constructor(private http: HttpClient) {}
 
-//   createRequest(data: any) {
+
+//   // CREATE TEST REQUEST
+
+//   createRequest(data: any): Observable<any> {
 //     return this.http.post(`${this.apiUrl}/create`, data);
 //   }
 
-//   // ✅ ADD THIS METHOD
-//   getAllRequests() {
-//     return this.http.get<any>('http://localhost:5000/api/tests');
+
+//   // GET ALL TEST REQUESTS
+
+//   getAllRequests(): Observable<any> {
+//     return this.http.get(`${this.apiUrl}`);
 //   }
-//   getSingleTest(id: string) {
-//   return this.http.get<any>(`${this.apiUrl}/${id}`);
+
+
+//   // GET SINGLE TEST BY ID
+//   // (USED IN TEST-SCREEN)
+
+//   getSingleTest(id: string | number): Observable<any> {
+//     return this.http.get(`${this.apiUrl}/${id}`);
 //   }
-//   getTestRequirements(id: string | number) {
+
+//   // (OPTIONAL ALIAS - safer for your component)
+//   getTestById(id: string | number): Observable<any> {
+//     return this.getSingleTest(id);
+//   }
+
+
+//   // GET TEST REQUIREMENTS
+
+//   // getTestRequirements(id: string | number): Observable<any> {
+//   //   return this.http.get(`${this.trackingUrl}/test/${id}`);
+//   // }
+
+//   getAllTests(userId: number): Observable<any[]> {
+//     return this.http.get<any[]>(`${this.apiUrl}?userId=${userId}`);
+//   }
+
+//   // updateCompletedTests(id: number, completedTests: string[]) {
+
+//   //   return this.http.put(
+//   //     `http://localhost:5000/api/tracking/${id}/completed`,
+//   //     { completedTests }
+//   //   );
+//   // }
+
+//   // LAB STAFF
+
+//   getTestRequirements(id: number) {
 //     return this.http.get(
-//       `http://localhost:5000/api/tracking/test/${id}`
+//       `${this.trackingUrl}/test/${id}`
 //     );
 //   }
+
+
+//   // CUSTOMER TRACKING PAGE
+
+//   getTrackingDetails(id: number) {
+//     return this.http.get(
+//       `http://localhost:5000/api/customer-tracking/${id}`
+//     );
+//   }
+
+//   // SAVE COMPLETED TESTS
+
+//   updateCompletedTests(
+//     id: number,
+//     completedTests: string[]
+//   ) {
+//     return this.http.put(
+//       `http://localhost:5000/api/customer-tracking/${id}/completed`,
+//       { completedTests }
+//     );
+//   }
+
 // }
 
-
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders
+} from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -38,83 +132,165 @@ import { Observable } from 'rxjs';
 })
 export class TestService {
 
+  // Tests API
   private apiUrl = 'http://localhost:5000/api/tests';
-  private trackingUrl = 'http://localhost:5000/api/tracking';
 
-  constructor(private http: HttpClient) {}
+  // Tracking API
+  private trackingApiUrl = 'http://localhost:5000/api/tracking';
 
+  constructor(
+    private http: HttpClient
+  ) {}
 
-  // CREATE TEST REQUEST
+  /*
+  ==========================================
+  COMMON AUTH HEADERS
+  ==========================================
+  */
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+
+    let headers = new HttpHeaders();
+
+    if (token) {
+      headers = headers.set(
+        'Authorization',
+        `Bearer ${token}`
+      );
+    }
+
+    return headers;
+  }
+
+  /*
+  ==========================================
+  GET ALL TESTS
+  ==========================================
+  */
+
+  getAllTests(userId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+
+    console.log(
+      'Token exists:',
+      !!localStorage.getItem('token')
+    );
+
+    return this.http.get<any>(
+      `${this.apiUrl}?userId=${userId}`,
+      { headers }
+    );
+  }
+
+  /*
+  ==========================================
+  GET ALL REQUESTS
+  Used by sample-list and test-list pages
+  ==========================================
+  */
+
+  getAllRequests(userId: number = 0): Observable<any> {
+    return this.getAllTests(userId);
+  }
+
+  /*
+  ==========================================
+  CREATE TEST REQUEST
+  ==========================================
+  */
+
+  createTestRequest(data: any): Observable<any> {
+    const headers = this.getAuthHeaders();
+
+    return this.http.post<any>(
+      `${this.apiUrl}/create`,
+      data,
+      { headers }
+    );
+  }
+
+  /*
+  ==========================================
+  CREATE REQUEST
+  Alias method used by create-test-request page
+  ==========================================
+  */
 
   createRequest(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/create`, data);
+    return this.createTestRequest(data);
   }
 
+  /*
+  ==========================================
+  GET SINGLE TEST
+  ==========================================
+  */
 
-  // GET ALL TEST REQUESTS
+  getSingleTest(id: number): Observable<any> {
+    const headers = this.getAuthHeaders();
 
-  getAllRequests(): Observable<any> {
-    return this.http.get(`${this.apiUrl}`);
+    return this.http.get<any>(
+      `${this.apiUrl}/${id}`,
+      { headers }
+    );
   }
 
+  /*
+  ==========================================
+  GET TEST BY ID
+  Alias method used by test-screen page
+  ==========================================
+  */
 
-  // GET SINGLE TEST BY ID
-  // (USED IN TEST-SCREEN)
-
-  getSingleTest(id: string | number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`);
-  }
-
-  // (OPTIONAL ALIAS - safer for your component)
-  getTestById(id: string | number): Observable<any> {
+  getTestById(id: number): Observable<any> {
     return this.getSingleTest(id);
   }
 
+  /*
+  ==========================================
+  GET TEST REQUIREMENTS
+  Alias method used by test-details page
+  ==========================================
+  */
 
-  // GET TEST REQUIREMENTS
-
-  // getTestRequirements(id: string | number): Observable<any> {
-  //   return this.http.get(`${this.trackingUrl}/test/${id}`);
-  // }
-
-  getAllTests(userId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}?userId=${userId}`);
+  getTestRequirements(id: number): Observable<any> {
+    return this.getSingleTest(id);
   }
 
-  // updateCompletedTests(id: number, completedTests: string[]) {
-
-  //   return this.http.put(
-  //     `http://localhost:5000/api/tracking/${id}/completed`,
-  //     { completedTests }
-  //   );
-  // }
-
-  // LAB STAFF
-
-  getTestRequirements(id: number) {
-    return this.http.get(
-      `${this.trackingUrl}/test/${id}`
-    );
-  }
-
-
-  // CUSTOMER TRACKING PAGE
-
-  getTrackingDetails(id: number) {
-    return this.http.get(
-      `http://localhost:5000/api/customer-tracking/${id}`
-    );
-  }
-
-  // SAVE COMPLETED TESTS
+  /*
+  ==========================================
+  UPDATE COMPLETED TESTS
+  ==========================================
+  */
 
   updateCompletedTests(
     id: number,
-    completedTests: string[]
-  ) {
-    return this.http.put(
-      `http://localhost:5000/api/customer-tracking/${id}/completed`,
-      { completedTests }
+    completedTests: any[]
+  ): Observable<any> {
+    const headers = this.getAuthHeaders();
+
+    return this.http.put<any>(
+      `${this.apiUrl}/${id}/completed`,
+      {
+        completedTests
+      },
+      { headers }
+    );
+  }
+
+  /*
+  ==========================================
+  GET TRACKING DETAILS
+  ==========================================
+  */
+
+  getTrackingDetails(id: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+
+    return this.http.get<any>(
+      `${this.trackingApiUrl}/test/${id}`,
+      { headers }
     );
   }
 

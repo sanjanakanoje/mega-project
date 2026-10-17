@@ -1,6 +1,4 @@
-
 <div class="report-view-page">
-
 
   <!-- ========================================= -->
   <!-- PAGE HEADER -->
@@ -12,7 +10,6 @@
       Test Reports
     </h1>
 
-
     <p>
       Sample ID:
       <strong>
@@ -21,7 +18,6 @@
     </p>
 
   </div>
-
 
 
   <!-- ========================================= -->
@@ -40,7 +36,6 @@
   </div>
 
 
-
   <!-- ========================================= -->
   <!-- ERROR -->
   <!-- ========================================= -->
@@ -57,9 +52,8 @@
   </div>
 
 
-
   <!-- ========================================= -->
-  <!-- REPORTS -->
+  <!-- REPORTS SECTION -->
   <!-- ========================================= -->
 
   <div
@@ -67,9 +61,8 @@
     *ngIf="!loading && !errorMessage"
   >
 
-
     <!-- ======================================= -->
-    <!-- REPORT CARD -->
+    <!-- REPORT CARDS -->
     <!-- ======================================= -->
 
     <div
@@ -80,20 +73,16 @@
       "
     >
 
-
       <!-- REPORT TITLE -->
 
       <h2>
         Report {{ i + 1 }}
       </h2>
 
-
       <hr>
 
 
-      <!-- ===================================== -->
       <!-- TEST NAME -->
-      <!-- ===================================== -->
 
       <div class="report-row">
 
@@ -102,15 +91,13 @@
         </div>
 
         <div class="report-value">
-          {{ report.test_name || '-' }}
+          {{ getTestName(report) }}
         </div>
 
       </div>
 
 
-      <!-- ===================================== -->
       <!-- TEST METHOD -->
-      <!-- ===================================== -->
 
       <div class="report-row">
 
@@ -119,15 +106,13 @@
         </div>
 
         <div class="report-value">
-          {{ report.test_method || '-' }}
+          {{ getTestMethod(report) }}
         </div>
 
       </div>
 
 
-      <!-- ===================================== -->
       <!-- TEST DATE -->
-      <!-- ===================================== -->
 
       <div class="report-row">
 
@@ -142,9 +127,7 @@
       </div>
 
 
-      <!-- ===================================== -->
       <!-- RESULT -->
-      <!-- ===================================== -->
 
       <div class="report-row">
 
@@ -153,15 +136,13 @@
         </div>
 
         <div class="report-value">
-          {{ report.result || '-' }}
+          {{ getResult(report) }}
         </div>
 
       </div>
 
 
-      <!-- ===================================== -->
       <!-- OBSERVATION -->
-      <!-- ===================================== -->
 
       <div class="report-row">
 
@@ -170,15 +151,13 @@
         </div>
 
         <div class="report-value">
-          {{ report.observation || '-' }}
+          {{ getObservation(report) }}
         </div>
 
       </div>
 
 
-      <!-- ===================================== -->
       <!-- REMARKS -->
-      <!-- ===================================== -->
 
       <div class="report-row">
 
@@ -187,15 +166,13 @@
         </div>
 
         <div class="report-value">
-          {{ report.remarks || '-' }}
+          {{ getRemarks(report) }}
         </div>
 
       </div>
 
 
-      <!-- ===================================== -->
       <!-- NOTES -->
-      <!-- ===================================== -->
 
       <div class="report-row">
 
@@ -204,11 +181,10 @@
         </div>
 
         <div class="report-value">
-          {{ report.notes || '-' }}
+          {{ getNotes(report) }}
         </div>
 
       </div>
-
 
     </div>
 
@@ -228,9 +204,7 @@
 
     </div>
 
-
   </div>
-
 
 
   <!-- ========================================= -->
@@ -239,37 +213,25 @@
 
   <div
     class="action-section"
-    *ngIf="!loading && reports.length > 0"
+    *ngIf="!loading && !errorMessage && reports.length > 0"
   >
-
-
-    <!-- PRINT -->
 
     <button
       type="button"
       class="print-button"
       (click)="printReport()"
     >
-
       Print Report
-
     </button>
-
-
-    <!-- BACK -->
 
     <button
       type="button"
       class="back-button"
       (click)="goBack()"
     >
-
       Back
-
     </button>
 
-
   </div>
-
 
 </div>
